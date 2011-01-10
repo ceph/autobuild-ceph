@@ -1,0 +1,32 @@
+#!/bin/sh
+set -e
+
+ACCOUNT="$1"
+if [ -z "$ACCOUNT" ]; then
+    echo "$0: usage: $0 ACCOUNTNAME" 1>&2
+    exit 1
+fi
+
+if [ ! -e gitbuilder.git ]; then
+    rm -rf gitbuilder.git.tmp
+    git clone https://github.com/apenwarr/gitbuilder.git gitbuilder.git.tmp
+    ln -s ../build.sh gitbuilder.git.tmp/
+    (
+	cd gitbuilder.git.tmp
+	git clone git://ceph.newdream.net/git/ceph.git build
+    )
+    chown -R "$ACCOUNT:$ACCOUNT" gitbuilder.git.tmp/build gitbuilder.git.tmp/out
+    mv gitbuilder.git.tmp gitbuilder.git
+fi
+
+install -d -m0755 logs
+install -m0644 /dev/null logs/stdout.log
+install -m0644 /dev/null logs/stderr.log
+
+if [ "$(id -un)" != "root" ]; then
+    echo "$0: must run as root, aborting." 1>&2
+    exit 1
+fi
+
+install --owner=root --group=root -m0644 autobuild-ceph.conf /etc/init/autobuild-ceph.conf
+start autobuild-ceph

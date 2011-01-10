@@ -1,0 +1,35 @@
+===================================================
+ Setup for running gitbuilder for the ceph project
+===================================================
+
+Installation:
+
+- create a directory, e.g. /srv/ceph/autobuild-ceph
+- clone this repository there (or move it there)
+- make it owned by root::
+
+  chown -R root:root /srv/ceph/autobuild-ceph
+
+- create a dedicated user account, e.g.::
+
+  adduser --system --group --home /nonexistent --no-create-home autobuild-ceph
+
+- run setup as root, passing the name of the account as a parameter::
+
+  cd /srv/ceph/autobuild-ceph
+  sudo ./setup autobuild-ceph
+
+This will create an upstart service named autobuild-ceph, that runs
+the autobuilder. Use ``sudo stop autobuild-ceph``, ``sudo start
+autobuild-ceph`` and so on to manage it.
+
+Troubleshooting logs will appear in ``/srv/ceph/autobuild-ceph/*.log``.
+
+Main access to the autobuilder is via web, arrange
+/srv/ceph/autobuild-ceph/gitbuilder.git/out to be served as HTML, CGI,
+etc. A quick way to do this is using one of the minimal web servers, e.g.::
+
+  sudo apt-get install weborf
+  weborf --basedir /srv/ceph/autobuild-ceph/gitbuilder.git/out --cgi .cgi,/usr/lib/cgi-bin/weborf_cgi_wrapper --port 8067 --index index.cgi,index.html
+
+(Apparently rss.cgi fails to work with weborf.)
