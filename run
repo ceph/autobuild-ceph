@@ -17,10 +17,11 @@ fi
 
 if [ "$CUR_USER" = "$FILE_OWNER" ]; then
     # we're already the right user
-    exec ./autobuilder.sh
+
+    exec ../run-real
 elif [ "$CUR_USER" = "root" ]; then
     # drop down to the right user
-    exec su -c ./autobuilder.sh "$FILE_OWNER"
+    exec su -c ../run-real "$FILE_OWNER"
 else
     echo "$0: not root and not file owner, aborting." 1>&2
     exit 1
