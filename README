@@ -14,6 +14,10 @@ Installation:
 
   adduser --system --group --home /nonexistent --no-create-home autobuild-ceph
 
+- (optional) install logrotate, to avoid log files growing too big::
+
+  sudo apt-get install logrotate
+
 - run setup as root, passing the name of the account as a parameter::
 
   cd /srv/ceph/autobuild-ceph

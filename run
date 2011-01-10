@@ -1,7 +1,10 @@
 #!/bin/sh
 set -e
 
-logrotate --state=logs/.logrotate.status logrotate.conf
+if command -v logrotate >/dev/null; then
+  logrotate --state=logs/.logrotate.status logrotate.conf
+fi
+
 exec >>logs/stdout.log 2>>logs/stderr.log
 
 cd gitbuilder.git
