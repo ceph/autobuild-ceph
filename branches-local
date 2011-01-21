@@ -1,0 +1,113 @@
+#!/usr/bin/python
+import optparse
+import subprocess
+import sys
+
+def get_refs():
+    p = subprocess.Popen(
+        args=[
+            'git',
+            'for-each-ref',
+            '--format=%(objectname) %(*objectname) %(refname)',
+            '--sort=-taggerdate',
+            'refs/remotes/origin/',
+            'refs/tags/',
+            ],
+        stdout=subprocess.PIPE,
+        close_fds=True,
+        )
+    (stdout, stderr) = p.communicate()
+    assert not stderr
+    for line in stdout.splitlines():
+        obj, tagobj, ref = line.split(' ', 2)
+        if tagobj:
+            obj = tagobj
+        yield obj, ref
+
+def separate_tags_and_branches(refs):
+    tags = []
+    branches = []
+    for obj, ref in refs:
+        if ref.startswith('refs/tags/'):
+            tags.append((obj, ref))
+        elif ref.startswith('refs/remotes/origin/'):
+            branches.append((obj, ref))
+        else:
+            raise RuntimeError('Bad refname: %r' % ref)
+    return tags, branches
+
+PRIORITIZE = [
+    'unstable',
+    'testing',
+    'stable',
+    'master',
+    ]
+
+IGNORE = [
+    'HEAD',
+    ]
+
+IGNORE_PREFIX = [
+    'historic/',
+    ]
+
+def separate_priority_branches(branches):
+    prioritize = ['refs/remotes/origin/{0}'.format(b) for b in PRIORITIZE]
+    ignore = ['refs/remotes/origin/{0}'.format(b) for b in IGNORE]
+    ignore_prefix = ['refs/remotes/origin/{0}'.format(b) for b in IGNORE_PREFIX]
+
+    priority = []
+    normal = []
+
+    for obj, ref in branches:
+        if ref in prioritize:
+            priority.append((obj, ref))
+            continue
+
+        if ref in ignore:
+            continue
+
+        if any(ref.startswith(prefix) for prefix in ignore_prefix):
+            continue
+
+        normal.append((obj, ref))
+
+    # priority lost its ordering, restore it
+    priority.sort(key=lambda (obj,ref): prioritize.index(ref))
+
+    return priority, normal
+
+NUM_OF_TAGS = 5
+
+def doit(output, verbose):
+    refs = get_refs()
+    tags, branches = separate_tags_and_branches(refs)
+    del tags[NUM_OF_TAGS:]
+    priority, normal = separate_priority_branches(branches)
+
+    if verbose:
+        fmt = '{0} {1}'
+    else:
+        fmt = '{1}'
+
+    for l in [priority, normal, tags]:
+        for (obj, ref) in l:
+            print >>output, fmt.format(obj, ref)
+
+def main():
+    parser = optparse.OptionParser(
+        usage='%prog [-v]',
+        description='Output interesting git tags and branches, for gitbuilder.',
+        )
+    parser.add_option(
+        '-v', '--verbose',
+        action='store_true',
+        )
+    opts, args = parser.parse_args()
+    if args:
+        parser.error('Unexpected arguments.')
+
+    doit(sys.stdout, opts.verbose)
+
+if __name__ == '__main__':
+    main()

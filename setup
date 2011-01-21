@@ -11,6 +11,7 @@ if [ ! -e gitbuilder.git ]; then
     rm -rf gitbuilder.git.tmp
     git clone https://github.com/apenwarr/gitbuilder.git gitbuilder.git.tmp
     ln -s ../build.sh gitbuilder.git.tmp/
+    ln -s ../branches-local gitbuilder.git.tmp/
     (
 	cd gitbuilder.git.tmp
 	git clone git://ceph.newdream.net/git/ceph.git build
