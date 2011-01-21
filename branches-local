@@ -52,24 +52,28 @@ IGNORE_PREFIX = [
     ]
 
 def separate_priority_branches(branches):
+    prioritize = ['origin/{0}'.format(b) for b in PRIORITIZE]
+    ignore = ['origin/{0}'.format(b) for b in IGNORE]
+    ignore_prefix = ['origin/{0}'.format(b) for b in IGNORE_PREFIX]
+
     priority = []
     normal = []
 
     for obj, ref in branches:
-        if ref in PRIORITIZE:
+        if ref in prioritize:
             priority.append((obj, ref))
             continue
 
-        if ref in IGNORE:
+        if ref in ignore:
             continue
 
-        if any(ref.startswith(prefix) for prefix in IGNORE_PREFIX):
+        if any(ref.startswith(prefix) for prefix in ignore_prefix):
             continue
 
         normal.append((obj, ref))
 
     # priority lost its ordering, restore it
-    priority.sort(key=lambda (obj,ref): PRIORITIZE.index(ref))
+    priority.sort(key=lambda (obj,ref): prioritize.index(ref))
 
     return priority, normal
 
@@ -87,7 +91,7 @@ def doit(output, verbose):
     del tags[NUM_OF_TAGS:]
     tags = strip_prefix(tags, 'refs/tags/')
 
-    branches = strip_prefix(branches, 'refs/remotes/origin/')
+    branches = strip_prefix(branches, 'refs/remotes/')
     priority, normal = separate_priority_branches(branches)
 
     if verbose:
