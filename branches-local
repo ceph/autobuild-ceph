@@ -17,6 +17,7 @@ def get_refs():
         close_fds=True,
         )
     (stdout, stderr) = p.communicate()
+    # TODO check p.returncode
     assert not stderr
     for line in stdout.splitlines():
         obj, tagobj, ref = line.split(' ', 2)
