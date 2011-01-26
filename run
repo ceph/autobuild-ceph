@@ -20,8 +20,9 @@ if [ "$CUR_USER" = "$FILE_OWNER" ]; then
 
     exec ../run-real
 elif [ "$CUR_USER" = "root" ]; then
-    # drop down to the right user
-    exec su -c ../run-real "$FILE_OWNER"
+    # drop down to the right user;
+    # override /bin/false as shell in passwd
+    exec su -s /bin/sh -c ../run-real "$FILE_OWNER"
 else
     echo "$0: not root and not file owner, aborting." 1>&2
     exit 1
