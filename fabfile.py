@@ -23,6 +23,11 @@ def _apt_install(*packages):
 def gitbuilder():
     _apt_install(
         'build-essential',
+        'automake',
+        'libtool',
+        'pkg-config',
+        'libboost-dev',
+        'libedit-dev',
         'git',
         'logrotate',
         )
