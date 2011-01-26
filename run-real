@@ -1,22 +1,4 @@
 #!/bin/sh
 set -e
 
-## prepare for rsync
-./branches.sh -v | while read commit branch junk; do
-  echo ":$commit $branch"
-  ./revlist.sh "$branch"
-done >out/revcache.tmp
-mv out/revcache.tmp out/revcache
-
-mkdir -p out/describe
-(
-	cd build
-
-	find ../out/pass ../out/fail -mindepth 1 -maxdepth 1 -printf '%f\n' \
-	    | while read b; do
-		git describe --all --contains --always -- "$b" >"../out/describe/$b.tmp"
-		mv "../out/describe/$b.tmp" "../out/describe/$b"
-	done
-)
-
 exec ./autobuilder.sh
