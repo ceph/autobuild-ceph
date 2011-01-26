@@ -47,6 +47,7 @@ def gitbuilder():
     sudo('install -d -m0755 --owner=root --group=root /srv/autobuild-ceph')
     local('git bundle create bundle refs/heads/master')
     put('bundle', 'bundle')
+    local('rm -f bundle')
     with cd('/srv/autobuild-ceph'):
         sudo('git init')
         sudo('git pull ~ubuntu/bundle master')
