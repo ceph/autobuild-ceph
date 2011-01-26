@@ -10,7 +10,10 @@ fi
 if [ ! -e gitbuilder.git ]; then
     rm -rf gitbuilder.git.tmp
     git clone https://github.com/tv42/gitbuilder.git gitbuilder.git.tmp
-    git checkout bf70974a8e70b544b771b30b0849e12a398887ff
+    (
+	cd gitbuilder.git.tmp
+	git checkout bf70974a8e70b544b771b30b0849e12a398887ff
+    )
     ln -s ../build.sh gitbuilder.git.tmp/
     ln -s ../branches-local gitbuilder.git.tmp/
     (
