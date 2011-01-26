@@ -28,6 +28,8 @@ def gitbuilder():
         'pkg-config',
         'libboost-dev',
         'libedit-dev',
+        'libssl-dev',
+        'libcrypto++-dev',
         'git',
         'logrotate',
         )
