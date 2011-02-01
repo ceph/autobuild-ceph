@@ -30,6 +30,7 @@ def gitbuilder():
         'libedit-dev',
         'libssl-dev',
         'libcrypto++-dev',
+        'libgtkmm-2.4-dev',
         'git',
         'logrotate',
         )
