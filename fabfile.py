@@ -31,6 +31,7 @@ def gitbuilder():
         'libssl-dev',
         'libcrypto++-dev',
         'libgtkmm-2.4-dev',
+        'ccache',
         'git',
         'logrotate',
         'python-pip',
