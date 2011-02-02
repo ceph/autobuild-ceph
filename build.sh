@@ -49,8 +49,7 @@ git ls-files --exclude-standard --others >.git/added-files
 if [ -s .git/added-files ]; then
     echo "ADDED FILES:" 1>&2
     cat .git/added-files 1>&2
-    # TODO this is not considered fatal until we fix the current problems
-    #exit 7
+    exit 7
 fi
 
 exit 0
