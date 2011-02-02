@@ -1,6 +1,6 @@
 from fabric.api import *
 from fabric.context_managers import *
-from fabric.contrib.files import exists, append
+from fabric.contrib.files import exists, append, sed
 
 env.roledefs['gitbuilder'] = [
     ]
@@ -73,3 +73,43 @@ def gitbuilder():
         sudo('install --owner=root --group=root -m0644 autobuild-ceph.conf /etc/init/autobuild-ceph.conf')
     sudo('start autobuild-ceph')
     run('rm bundle')
+
+@roles('gitbuilder')
+def gitbuilder_serve():
+    _apt_install(
+        'thttpd',
+        )
+    # TODO $ signs in the regexps seem to get passed in as \$, and
+    # just don't work the right way; avoid for now, even if that means
+    # we could end up doing something very wrong
+    sed(
+        filename='/etc/default/thttpd',
+        before='^ENABLED=no',
+        after='ENABLED=yes',
+        use_sudo=True,
+        )
+    sed(
+        filename='/etc/thttpd/thttpd.conf',
+        before='^user=www-data',
+        after='user=autobuild-ceph',
+        use_sudo=True,
+        )
+    sed(
+        filename='/etc/thttpd/thttpd.conf',
+        before='^dir=/var/www',
+        after='dir=/srv/autobuild-ceph/gitbuilder.git/out',
+        use_sudo=True,
+        )
+    sed(
+        filename='/etc/thttpd/thttpd.conf',
+        before='^cgipat=/cgi-bin/\*',
+        after='cgipat=**.cgi',
+        use_sudo=True,
+        )
+    sed(
+        filename='/etc/thttpd/thttpd.conf',
+        before='^chroot',
+        after='#chroot',
+        use_sudo=True,
+        )
+    sudo('/etc/init.d/thttpd restart')
