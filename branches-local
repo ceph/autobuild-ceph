@@ -38,10 +38,9 @@ def separate_tags_and_branches(refs):
     return tags, branches
 
 PRIORITIZE = [
-    'unstable',
-    'testing',
-    'stable',
     'master',
+    'next',
+    'stable',
     ]
 
 IGNORE = [
