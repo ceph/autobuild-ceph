@@ -67,6 +67,7 @@ def gitbuilder():
                 sudo('git clone git://ceph.newdream.net/git/ceph.git build')
                 sudo('chown -R autobuild-ceph:autobuild-ceph build out')
             sudo('mv gitbuilder.git.tmp gitbuilder.git')
+        sudo('install -d -m0755 --owner=autobuild-ceph --group=autobuild-ceph ccache')
         sudo('install -d -m0755 logs')
 
         sudo('install --owner=root --group=root -m0644 autobuild-ceph.conf /etc/init/autobuild-ceph.conf')
