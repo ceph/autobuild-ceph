@@ -37,17 +37,18 @@ if [ -e src/gtest ]; then
     ../maxtime 1800 ionice -c3 nice -n20 make check "$@" || exit 5
 fi
 
-git ls-files --modified >../modified-files
-if [ -s ../modified-files ]; then
+# put our temp files inside .git/ so ls-files doesn't see them
+git ls-files --modified >.git/modified-files
+if [ -s .git/modified-files ]; then
     echo "MODIFIED FILES:" 1>&2
-    cat ../modified-files 1>&2
+    cat .git/modified-files 1>&2
     exit 6
 fi
 
-git ls-files --exclude-standard --others >../added-files
-if [ -s ../added-files ]; then
+git ls-files --exclude-standard --others >.git/added-files
+if [ -s .git/added-files ]; then
     echo "ADDED FILES:" 1>&2
-    cat ../added-files 1>&2
+    cat .git/added-files 1>&2
     # TODO this is not considered fatal until we fix the current problems
     #exit 7
 fi
