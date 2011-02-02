@@ -18,7 +18,7 @@ set --
 # enable ccache if it is installed
 export CCACHE_DIR="$PWD/../../ccache"
 if command -v ccache >/dev/null; then
-  if ! -e "$CCACHE_DIR"; then
+  if [ ! -e "$CCACHE_DIR" ]; then
     echo "$0: have ccache but cache directory does not exist: $CCACHE_DIR" 1>&2
   else
     set -- CC='ccache gcc' CXX='ccache g++'
