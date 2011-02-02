@@ -33,6 +33,8 @@ def gitbuilder():
         'libgtkmm-2.4-dev',
         'git',
         'logrotate',
+        'python-pip',
+        'python-virtualenv',
         )
     sudo(
         ' '.join([
