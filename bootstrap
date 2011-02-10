@@ -5,9 +5,7 @@ if [ "$(dpkg --status python-dev|sed -n 's/^Status: //p')" != "install ok instal
     aptdcon --install python-dev
 fi
 
-if [ ! -e virtualenv/bin/fab ]; then
-    pip -E virtualenv install -r requirements.txt
-fi
+pip -E virtualenv install -q -r requirements.txt
 
 if [ ! -e bin ]; then
     ln -s virtualenv/bin bin
