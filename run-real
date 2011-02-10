@@ -13,7 +13,7 @@ install -d -m0755 -- "$REF_TARDIR"
     # mangle unsafe characters in branch names, just in case (slashes
     # and leading periods); gitbuilder hanging on to "origin/" here
     # makes the typical result a bit ugly
-    SAFE_REF="$(printf '%s\n' "$REF"|tr -c 'a-zA-Z0-9_.-' '_'|sed 's/^\./_/')"
+    SAFE_REF="$(printf '%s' "$REF"|tr -c 'a-zA-Z0-9_.-' '_'|sed 's/^\./_/')"
 
     # find the latest commit in that history that we have a tar for;
     # assume it's found in the last 100 commits, to limit time wasted
