@@ -1,2 +1,3 @@
 pycrypto
 fabric
+paramiko>=1.7.6
