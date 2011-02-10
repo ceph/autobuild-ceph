@@ -46,7 +46,6 @@ INSTDIR="inst.tmp"
 ../maxtime 1800 ionice -c3 nice -n20 make install DESTDIR="$PWD/$INSTDIR"
 TARBALL="$TARDIR/$MACH.$REV.tgz"
 tar czf "$TARBALL.tmp" -C "$INSTDIR" .
-mv -- "$TARBALL.tmp" "$TARBALL"
 rm -rf -- "$INSTDIR"
 
 # put our temp files inside .git/ so ls-files doesn't see them
@@ -63,5 +62,8 @@ if [ -s .git/added-files ]; then
     cat .git/added-files 1>&2
     exit 7
 fi
+
+# we're successful, the binary tarball is ok to be published
+mv -- "$TARBALL.tmp" "$TARBALL"
 
 exit 0
