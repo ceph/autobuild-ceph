@@ -37,6 +37,18 @@ if [ -e src/gtest ]; then
     ../maxtime 1800 ionice -c3 nice -n20 make check "$@" || exit 5
 fi
 
+TARDIR="../out/tarball/sha1"
+install -d -m0755 -- "$TARDIR"
+MACH="$(uname -m)"
+REV="$(git rev-parse HEAD)"
+INSTDIR="inst.tmp"
+[ ! -e "$INSTDIR" ]
+../maxtime 1800 ionice -c3 nice -n20 make install DESTDIR="$PWD/$INSTDIR"
+TARBALL="$TARDIR/$MACH.$REV.tgz"
+tar czf "$TARBALL.tmp" -C "$INSTDIR" .
+mv -- "$TARBALL.tmp" "$TARBALL"
+rm -rf -- "$INSTDIR"
+
 # put our temp files inside .git/ so ls-files doesn't see them
 git ls-files --modified >.git/modified-files
 if [ -s .git/modified-files ]; then
