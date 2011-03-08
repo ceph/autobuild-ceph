@@ -34,6 +34,7 @@ def gitbuilder():
         'libfuse-dev',
         'libexpat1-dev',
         'libfcgi-dev',
+        'libcurl4-gnutls-dev',
         'libatomic-ops-dev',
         'libgoogle-perftools-dev',
         'ccache',
