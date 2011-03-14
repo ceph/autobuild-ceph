@@ -3,6 +3,8 @@ from fabric.context_managers import *
 from fabric.contrib.files import exists, append, sed
 
 env.roledefs['gitbuilder'] = [
+    'ubuntu@gitbuilder-i386.ceph.newdream.net',
+    'ubuntu@gitbuilder.ceph.newdream.net',
     ]
 
 def _apt_install(*packages):
