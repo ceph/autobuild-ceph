@@ -3,6 +3,10 @@ set -e
 
 ./autobuilder.sh
 
+MACH="$(uname -m)"
+REF_TARDIR="out/tarball/ref"
+SHA_TARDIR="out/tarball/ref"
+
 # clean up temp files from aborted runs of below symlinking; all tmp
 # files are stale
 find "$REF_TARDIR" -mindepth 1 -maxdepth 1 -name '*.tgz.tmp' -print0 \
@@ -10,9 +14,6 @@ find "$REF_TARDIR" -mindepth 1 -maxdepth 1 -name '*.tgz.tmp' -print0 \
 
 # update symlinks that make branch point to the latest successful
 # tarball for that branch
-MACH="$(uname -m)"
-REF_TARDIR="out/tarball/ref"
-SHA_TARDIR="out/tarball/ref"
 install -d -m0755 -- "$REF_TARDIR"
 ( cd build && ../branches-local -v ) \
 | while read LATEST REF; do
