@@ -7,6 +7,7 @@ set -e
 # tarball for that branch
 MACH="$(uname -m)"
 REF_TARDIR="out/tarball/ref"
+SHA_TARDIR="out/tarball/ref"
 install -d -m0755 -- "$REF_TARDIR"
 ( cd build && ../branches-local -v ) \
 | while read LATEST REF; do
@@ -19,10 +20,25 @@ install -d -m0755 -- "$REF_TARDIR"
     # assume it's found in the last 100 commits, to limit time wasted
     git --git-dir=build/.git rev-list --first-parent --topo-order --max-count=100 "$LATEST" \
 	| while read REV; do
-	TARBALL="out/tarball/sha1/$MACH.$REV.tgz"
+	TARBALL="$SHA_TARDIR/$MACH.$REV.tgz"
 	if [ -e "$TARBALL" ]; then
 	    ln -sf -- "../sha1/$MACH.$REV.tgz" "$REF_TARDIR/$SAFE_REF.tgz"
 	    break
 	fi
     done
 done
+
+# clean temp files from tarring; since there cannot be a build running
+# in parallel with us, all tmp files are stale
+find out/tarball/sha1/ -mindepth 1 -maxdepth 1 -name '*.tgz.tmp' -print0 \
+| xargs -0 --no-run-if-empty rm -f --
+
+# note down what sha1's are still pointed to by refs
+find "$REF_TARDIR" -mindepth 1 -maxdepth 1 -name '*.tgz' -type l -printf '%l\n' >out/refs-still-alive
+
+# and finally remove any tarball older than 24h, that is not target of
+# symlink; need to do ugly things in xargs because the symlinks
+# destinations are cross-directory paths
+find "$SHA_TARDIR" -mindepth 1 -maxdepth 1 -name '*.tgz' -mtime +0 -printf '../sha1/%P\0' \
+| grep --null-data --fixed-strings --line-regexp --invert-match --file=out/refs-still-alive \
+| xargs -0 --no-run-if-empty -I '{}' -- rm -f -- "$SHA_TARDIR/{}"
