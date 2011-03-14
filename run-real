@@ -5,7 +5,7 @@ set -e
 
 MACH="$(uname -m)"
 REF_TARDIR="out/tarball/ref"
-SHA_TARDIR="out/tarball/ref"
+SHA_TARDIR="out/tarball/sha"
 
 # clean up temp files from aborted runs of below symlinking; all tmp
 # files are stale
