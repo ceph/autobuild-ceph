@@ -3,6 +3,11 @@ set -e
 
 ./autobuilder.sh
 
+# clean up temp files from aborted runs of below symlinking; all tmp
+# files are stale
+find "$REF_TARDIR" -mindepth 1 -maxdepth 1 -name '*.tgz.tmp' -print0 \
+| xargs -0 --no-run-if-empty rm -f --
+
 # update symlinks that make branch point to the latest successful
 # tarball for that branch
 MACH="$(uname -m)"
@@ -22,7 +27,8 @@ install -d -m0755 -- "$REF_TARDIR"
 	| while read REV; do
 	TARBALL="$SHA_TARDIR/$MACH.$REV.tgz"
 	if [ -e "$TARBALL" ]; then
-	    ln -sf -- "../sha1/$MACH.$REV.tgz" "$REF_TARDIR/$SAFE_REF.tgz"
+	    ln -s -- "../sha1/$MACH.$REV.tgz" "$REF_TARDIR/$SAFE_REF.tgz.tmp"
+	    mv -- "$REF_TARDIR/$SAFE_REF.tgz.tmp" "$REF_TARDIR/$SAFE_REF.tgz"
 	    break
 	fi
     done
