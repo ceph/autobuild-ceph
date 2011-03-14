@@ -34,6 +34,11 @@ install -d -m0755 -- "$REF_TARDIR"
     done
 done
 
+# remove ref symlinks that haven't been touched in 24 hours; as the above
+# will always re-create the symlinks, they are guaranteed fresh
+find "$REF_TARDIR" -mindepth 1 -maxdepth 1 -name '*.tgz' -mtime +0 -printf '%p\0' \
+| xargs -0 --no-run-if-empty -- rm -f --
+
 # clean temp files from tarring; since there cannot be a build running
 # in parallel with us, all tmp files are stale
 find out/tarball/sha1/ -mindepth 1 -maxdepth 1 -name '*.tgz.tmp' -print0 \
