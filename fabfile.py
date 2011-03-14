@@ -21,6 +21,8 @@ def _apt_install(*packages):
 
 @roles('gitbuilder')
 def gitbuilder():
+    # shut down old instance, it exists
+    sudo("initctl list|grep -q '^autobuild-ceph\s' && stop autobuild-ceph || :")
     _apt_install(
         'build-essential',
         'automake',
