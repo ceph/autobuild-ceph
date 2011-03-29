@@ -41,6 +41,7 @@ def gitbuilder():
         'libcurl4-gnutls-dev',
         'libatomic-ops-dev',
         'libgoogle-perftools-dev',
+        'libkeyutils-dev',
         'ccache',
         'git',
         'logrotate',
