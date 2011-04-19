@@ -26,6 +26,7 @@ def gitbuilder():
     # shut down old instance, it exists
     sudo("initctl list|grep -q '^autobuild-ceph\s' && stop autobuild-ceph || :")
     _apt_install(
+        'ntp',
         'build-essential',
         'automake',
         'libtool',
