@@ -2,7 +2,7 @@ from fabric.api import *
 from fabric.context_managers import *
 from fabric.contrib.files import exists, append, sed
 
-env.roledefs['gitbuilder'] = [
+env.roledefs['gitbuilder_ceph'] = [
     'ubuntu@gitbuilder-i386.ceph.newdream.net',
     'ubuntu@gitbuilder.ceph.newdream.net',
     ]
@@ -21,8 +21,8 @@ def _apt_install(*packages):
                 ]
             + list(packages)))
 
-@roles('gitbuilder')
-def gitbuilder():
+@roles('gitbuilder_ceph')
+def gitbuilder_ceph():
     # shut down old instance, it exists
     sudo("initctl list|grep -q '^autobuild-ceph\s' && stop autobuild-ceph || :")
     _apt_install(
@@ -86,7 +86,7 @@ def gitbuilder():
     sudo('start autobuild-ceph')
     run('rm bundle')
 
-@roles('gitbuilder')
+@roles('gitbuilder_ceph')
 def gitbuilder_serve():
     _apt_install(
         'thttpd',
