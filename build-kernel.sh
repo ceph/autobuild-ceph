@@ -25,8 +25,8 @@ fi
 
 install -d -m0755 build~/out
 (
-    cat ../../kernel-config
     # we really need this to get the packages the way we want them, so just enforce it here
+    grep -v '^CONFIG_LOCALVERSION_AUTO=' ../../kernel-config
     echo 'CONFIG_LOCALVERSION_AUTO=y'
     ) >build~/out/.config
 
