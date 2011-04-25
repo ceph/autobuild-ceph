@@ -3,18 +3,17 @@ set -e
 
 ./autobuilder.sh
 
-MACH="$(uname -m)"
-REF_TARDIR="out/tarball/ref"
-SHA_TARDIR="out/tarball/sha1"
+REF_OUTDIR="out/tarball/ref"
+SHA_OUTDIR="out/tarball/sha1"
 
 # clean up temp files from aborted runs of below symlinking; all tmp
 # files are stale
-find "$REF_TARDIR" -mindepth 1 -maxdepth 1 -name '*.tgz.tmp' -print0 \
+find "$REF_OUTDIR" -mindepth 1 -maxdepth 1 -name '*.tmp' -print0 \
 | xargs -0 --no-run-if-empty rm -f --
 
 # update symlinks that make branch point to the latest successful
 # tarball for that branch
-install -d -m0755 -- "$REF_TARDIR"
+install -d -m0755 -- "$REF_OUTDIR"
 ( cd build && ../branches-local -v ) \
 | while read LATEST REF; do
     # mangle unsafe characters in branch names, just in case (slashes
@@ -22,14 +21,14 @@ install -d -m0755 -- "$REF_TARDIR"
     # makes the typical result a bit ugly
     SAFE_REF="$(printf '%s' "$REF"|tr -c 'a-zA-Z0-9_.-' '_'|sed 's/^\./_/')"
 
-    # find the latest commit in that history that we have a tar for;
+    # find the latest commit in that history that we have a result for;
     # assume it's found in the last 100 commits, to limit time wasted
     git --git-dir=build/.git rev-list --first-parent --topo-order --max-count=100 "$LATEST" \
 	| while read REV; do
-	TARBALL="$SHA_TARDIR/$MACH.$REV.tgz"
-	if [ -e "$TARBALL" ]; then
-	    ln -s -- "../sha1/$MACH.$REV.tgz" "$REF_TARDIR/$SAFE_REF.tgz.tmp"
-	    mv -- "$REF_TARDIR/$SAFE_REF.tgz.tmp" "$REF_TARDIR/$SAFE_REF.tgz"
+	OUTDIR="$SHA_OUTDIR"
+	if [ -e "$OUTDIR" ]; then
+	    ln -s -- "../sha1/$REV" "$REF_OUTDIR/$SAFE_REF.tmp"
+	    mv -- "$REF_OUTDIR/$SAFE_REF.tmp" "$REF_OUTDIR/$SAFE_REF"
 	    break
 	fi
     done
@@ -37,20 +36,20 @@ done
 
 # remove ref symlinks that haven't been touched in 24 hours; as the above
 # will always re-create the symlinks, they are guaranteed fresh
-find "$REF_TARDIR" -mindepth 1 -maxdepth 1 -name '*.tgz' -mtime +0 -printf '%p\0' \
-| xargs -0 --no-run-if-empty -- rm -f --
+find "$REF_OUTDIR" -mindepth 1 -maxdepth 1 -mtime +0 -printf '%p\0' \
+| xargs -0 --no-run-if-empty -- rm -rf --
 
-# clean temp files from tarring; since there cannot be a build running
-# in parallel with us, all tmp files are stale
-find out/tarball/sha1/ -mindepth 1 -maxdepth 1 -name '*.tgz.tmp' -print0 \
-| xargs -0 --no-run-if-empty rm -f --
+# clean temp output dirs; since there cannot be a build running in
+# parallel with us, all tmp files are stale
+find out/tarball/sha1/ -mindepth 1 -maxdepth 1 -name '*.tmp' -print0 \
+| xargs -0 --no-run-if-empty rm -rf --
 
 # note down what sha1's are still pointed to by refs
-find "$REF_TARDIR" -mindepth 1 -maxdepth 1 -name '*.tgz' -type l -printf '%l\n' >out/refs-still-alive
+find "$REF_OUTDIR" -mindepth 1 -maxdepth 1 -type l -printf '%l\n' >out/refs-still-alive
 
-# and finally remove any tarball older than 24h, that is not target of
-# symlink; need to do ugly things in xargs because the symlinks
+# and finally remove any output dir older than 24h, that is not target
+# of symlink; need to do ugly things in xargs because the symlinks
 # destinations are cross-directory paths
-find "$SHA_TARDIR" -mindepth 1 -maxdepth 1 -name '*.tgz' -mtime +0 -printf '../sha1/%P\0' \
+find "$SHA_OUTDIR" -mindepth 1 -maxdepth 1 -mtime +0 -printf '../sha1/%P\0' \
 | grep --null-data --fixed-strings --line-regexp --invert-match --file=out/refs-still-alive \
-| xargs -0 --no-run-if-empty -I '{}' -- rm -f -- "$SHA_TARDIR/{}"
+| xargs -0 --no-run-if-empty -I '{}' -- rm -f -- "$SHA_OUTDIR/{}"
