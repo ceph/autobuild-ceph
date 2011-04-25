@@ -69,7 +69,13 @@ if [ -s .git/added-files ]; then
     exit 7
 fi
 
-# we're successful, the files are ok to be published
+# we're successful, the files are ok to be published; try to be as
+# atomic as possible about replacing potentially existing OUTDIR
+if [ -e "$OUTDIR" ]; then
+    rm -rf -- "$OUTDIR.old"
+    mv -- "$OUTDIR" "$OUTDIR.old"
+fi
 mv -- "$OUTDIR_TMP" "$OUTDIR"
+rm -rf -- "$OUTDIR.old"
 
 exit 0
