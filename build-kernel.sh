@@ -70,6 +70,6 @@ if [ -s .git/added-files ]; then
 fi
 
 # we're successful, the files are ok to be published
-mv -- "$OUTDIR.tmp" "$OUTDIR"
+mv -- "$OUTDIR_TMP" "$OUTDIR"
 
 exit 0
