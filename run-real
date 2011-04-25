@@ -3,8 +3,8 @@ set -e
 
 ./autobuilder.sh
 
-REF_OUTDIR="out/tarball/ref"
-SHA_OUTDIR="out/tarball/sha1"
+REF_OUTDIR="out/output/ref"
+SHA_OUTDIR="out/output/sha1"
 
 # clean up temp files from aborted runs of below symlinking; all tmp
 # files are stale
@@ -12,7 +12,7 @@ find "$REF_OUTDIR" -mindepth 1 -maxdepth 1 -name '*.tmp' -print0 \
 | xargs -0 --no-run-if-empty rm -f --
 
 # update symlinks that make branch point to the latest successful
-# tarball for that branch
+# output dir for that branch
 install -d -m0755 -- "$REF_OUTDIR"
 ( cd build && ../branches-local -v ) \
 | while read LATEST REF; do
@@ -41,7 +41,7 @@ find "$REF_OUTDIR" -mindepth 1 -maxdepth 1 -mtime +0 -printf '%p\0' \
 
 # clean temp output dirs; since there cannot be a build running in
 # parallel with us, all tmp files are stale
-find out/tarball/sha1/ -mindepth 1 -maxdepth 1 -name '*.tmp' -print0 \
+find out/output/sha1/ -mindepth 1 -maxdepth 1 -name '*.tmp' -print0 \
 | xargs -0 --no-run-if-empty rm -rf --
 
 # note down what sha1's are still pointed to by refs

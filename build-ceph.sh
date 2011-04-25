@@ -40,7 +40,7 @@ if [ -e src/gtest ]; then
 fi
 
 REV="$(git rev-parse HEAD)"
-OUTDIR="../out/tarball/sha1/$REV"
+OUTDIR="../out/output/sha1/$REV"
 OUTDIR_TMP="${OUTDIR}.tmp"
 install -d -m0755 -- "$OUTDIR_TMP"
 MACH="$(uname -m)"

@@ -47,7 +47,7 @@ echo "$0: building..."
 ionice -c3 nice -n20 make O=build~/out LOCALVERSION=-ceph KDEB_PKGVERSION=ceph deb-pkg -j16 "$@" || exit 4
 
 REV="$(git rev-parse HEAD)"
-OUTDIR="../out/tarball/sha1/$REV"
+OUTDIR="../out/output/sha1/$REV"
 OUTDIR_TMP="${OUTDIR}.tmp"
 install -d -m0755 -- "$OUTDIR_TMP"
 mv -- build~/*.deb "$OUTDIR_TMP/"
