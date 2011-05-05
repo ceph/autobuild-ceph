@@ -52,4 +52,4 @@ find "$REF_OUTDIR" -mindepth 1 -maxdepth 1 -type l -printf '%l\n' >out/refs-stil
 # destinations are cross-directory paths
 find "$SHA_OUTDIR" -mindepth 1 -maxdepth 1 -mtime +0 -printf '../sha1/%P\0' \
 | grep --null-data --fixed-strings --line-regexp --invert-match --file=out/refs-still-alive \
-| xargs -0 --no-run-if-empty -I '{}' -- rm -f -- "$SHA_OUTDIR/{}"
+| xargs -0 --no-run-if-empty -I '{}' -- rm -rf -- "$SHA_OUTDIR/{}"
