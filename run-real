@@ -41,7 +41,7 @@ find "$REF_OUTDIR" -mindepth 1 -maxdepth 1 -mtime +0 -printf '%p\0' \
 
 # clean temp output dirs; since there cannot be a build running in
 # parallel with us, all tmp files are stale
-find out/output/sha1/ -mindepth 1 -maxdepth 1 -name '*.tmp' -print0 \
+find "$SHA_OUTDIR" -mindepth 1 -maxdepth 1 -name '*.tmp' -print0 \
 | xargs -0 --no-run-if-empty rm -rf --
 
 # note down what sha1's are still pointed to by refs
