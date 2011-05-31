@@ -43,6 +43,7 @@ REV="$(git rev-parse HEAD)"
 OUTDIR="../out/output/sha1/$REV"
 OUTDIR_TMP="${OUTDIR}.tmp"
 install -d -m0755 -- "$OUTDIR_TMP"
+printf '%s\n' "$REV" >"$OUTDIR_TMP/sha1"
 MACH="$(uname -m)"
 INSTDIR="inst.tmp"
 [ ! -e "$INSTDIR" ]

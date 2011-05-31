@@ -50,6 +50,7 @@ REV="$(git rev-parse HEAD)"
 OUTDIR="../out/output/sha1/$REV"
 OUTDIR_TMP="${OUTDIR}.tmp"
 install -d -m0755 -- "$OUTDIR_TMP"
+printf '%s\n' "$REV" >"$OUTDIR_TMP/sha1"
 mv -- build~/*.deb "$OUTDIR_TMP/"
 
 # put our temp files inside .git/ so ls-files doesn't see them
