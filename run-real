@@ -26,7 +26,7 @@ install -d -m0755 -- "$REF_OUTDIR"
     git --git-dir=build/.git rev-list --first-parent --topo-order --max-count=100 "$LATEST" \
 	| while read REV; do
 	OUTDIR="$SHA_OUTDIR"
-	if [ -e "$OUTDIR" ]; then
+	if [ -e "$OUTDIR/$REV" ]; then
 	    ln -s -- "../sha1/$REV" "$REF_OUTDIR/$SAFE_REF.tmp"
 	    mv --no-target-directory -- "$REF_OUTDIR/$SAFE_REF.tmp" "$REF_OUTDIR/$SAFE_REF"
 	    break
