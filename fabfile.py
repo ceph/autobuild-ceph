@@ -7,6 +7,10 @@ env.roledefs['gitbuilder_ceph'] = [
     'ubuntu@gitbuilder.ceph.newdream.net',
     ]
 
+env.roledefs['gitbuilder_ceph_gcov'] = [
+    'ubuntu@gitbuilder-gcov-amd64.ceph.newdream.net',
+    ]
+
 env.roledefs['gitbuilder_kernel'] = [
     'ubuntu@gitbuilder-kernel-amd64.ceph.newdream.net',
     ]
@@ -110,6 +114,32 @@ def gitbuilder_kernel():
 def gitbuilder_ceph():
     _gitbuilder(
         flavor='ceph',
+        git_repo='git://ceph.newdream.net/git/ceph.git',
+        extra_packages=[
+            'automake',
+            'libtool',
+            'pkg-config',
+            'libboost-dev',
+            'libedit-dev',
+            'libssl-dev',
+            'libcrypto++-dev',
+            'libgtkmm-2.4-dev',
+            'libfuse-dev',
+            'libexpat1-dev',
+            'libfcgi-dev',
+            'libcurl4-gnutls-dev',
+            'libatomic-ops-dev',
+            'libgoogle-perftools-dev',
+            'libkeyutils-dev',
+            'python-pip',
+            'python-virtualenv',
+            ],
+        )
+
+@roles('gitbuilder_ceph_gcov')
+def gitbuilder_ceph_gcov():
+    _gitbuilder(
+        flavor='ceph-gcov',
         git_repo='git://ceph.newdream.net/git/ceph.git',
         extra_packages=[
             'automake',
