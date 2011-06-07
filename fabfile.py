@@ -162,7 +162,7 @@ def gitbuilder_ceph_gcov():
             ],
         )
 
-@roles('gitbuilder_ceph', 'gitbuilder_kernel')
+@roles('gitbuilder_ceph', 'gitbuilder_ceph_gcov', 'gitbuilder_kernel')
 def gitbuilder_serve():
     _apt_install(
         'thttpd',
