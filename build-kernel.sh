@@ -53,6 +53,8 @@ install -d -m0755 -- "$OUTDIR_TMP"
 printf '%s\n' "$REV" >"$OUTDIR_TMP/sha1"
 mv -- build~/*.deb "$OUTDIR_TMP/"
 
+( cd $OUTDIR_TMP && for f in image headers ; do ln -s linux-$f-*.deb linux-$f.deb ; done )
+
 # put our temp files inside .git/ so ls-files doesn't see them
 git ls-files --modified >.git/modified-files
 if [ -s .git/modified-files ]; then
