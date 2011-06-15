@@ -15,6 +15,10 @@ env.roledefs['gitbuilder_kernel'] = [
     'ubuntu@gitbuilder-kernel-amd64.ceph.newdream.net',
     ]
 
+env.roledefs['gitbuilder_ceph_deb'] = [
+    'ubuntu@10.3.14.67',
+    ]
+
 def _apt_install(*packages):
     sudo(' '.join(
             [
@@ -136,6 +140,58 @@ def gitbuilder_ceph():
             ],
         )
 
+@roles('gitbuilder_ceph_deb')
+def gitbuilder_ceph_deb():
+    _gitbuilder(
+        flavor='ceph-deb',
+        git_repo='git://ceph.newdream.net/git/ceph.git',
+        extra_packages=[
+            'automake',
+            'libtool',
+            'pkg-config',
+            'libboost-dev',
+            'libedit-dev',
+            'libssl-dev',
+            'libcrypto++-dev',
+            'libgtkmm-2.4-dev',
+            'libfuse-dev',
+            'libexpat1-dev',
+            'libfcgi-dev',
+            'libcurl4-gnutls-dev',
+            'libatomic-ops-dev',
+            'libgoogle-perftools-dev',
+            'libkeyutils-dev',
+            'python-pip',
+            'python-virtualenv',
+            'pbuilder',
+            'gnupg',
+            'reprepro',
+            'devscripts',
+            'lintian',
+            ],
+        )
+    with cd('/srv'):
+        if not exists('gnupg'):
+            sudo('mkdir gnupg')
+        sudo('chown autobuild-ceph:autobuild-ceph gnupg ; chmod 700 gnupg')
+        with cd('gnupg'):
+            for file in ['pubring.gpg','secring.gpg']:
+                if not exists(file):
+                    sudo('wget -q -nc http://cephbooter.ceph.dreamhost.com/autobuild-keyring/%s' % (file))
+                    sudo('chown autobuild-ceph:autobuild-ceph %s' % (file))
+                    sudo('chmod 600 %s' % (file))
+        if not exists('ceph-build'):
+            sudo('git clone git://ceph.newdream.net/git/ceph-build.git')
+        with cd('ceph-build'):
+            sudo('git pull')
+        if not exists('debian-base'):
+            sudo('mkdir debian-base')
+        with cd('debian-base'):
+            for dist in ['squeeze','natty']:
+                if not exists('%s.tgz' % (dist)):
+                    sudo('wget -q http://ceph.newdream.net/qa/%s.tgz' % (dist))
+        sudo('grep -q autobuild-ceph /etc/sudoers || echo "autobuild-ceph ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers')
+
 @roles('gitbuilder_ceph_gcov')
 def gitbuilder_ceph_gcov():
     _gitbuilder(
@@ -162,7 +218,7 @@ def gitbuilder_ceph_gcov():
             ],
         )
 
-@roles('gitbuilder_ceph', 'gitbuilder_ceph_gcov', 'gitbuilder_kernel')
+@roles('gitbuilder_ceph', 'gitbuilder_ceph_deb', 'gitbuilder_ceph_gcov', 'gitbuilder_kernel')
 def gitbuilder_serve():
     _apt_install(
         'thttpd',

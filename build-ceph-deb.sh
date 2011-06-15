@@ -1,0 +1,60 @@
+#!/bin/sh -x
+set -e
+
+DISTS="squeeze natty"
+
+echo --START-IGNORE-WARNINGS
+[ ! -x autogen.sh ] || ./autogen.sh || exit 1
+autoconf || true
+echo --STOP-IGNORE-WARNINGS
+[ ! -x configure ] || ./configure --with-debug --with-radosgw --with-fuse --with-tcmalloc --with-libatomic-ops --with-gtk2 || exit 2
+
+if [ ! -e Makefile ]; then
+    echo "$0: no Makefile, aborting." 1>&2
+    exit 3
+fi
+
+# Actually build the project
+
+# clear out any $@ potentially passed in
+set --
+
+# enable ccache if it is installed
+export CCACHE_DIR="$PWD/../../ccache"
+if command -v ccache >/dev/null; then
+  if [ ! -e "$CCACHE_DIR" ]; then
+    echo "$0: have ccache but cache directory does not exist: $CCACHE_DIR" 1>&2
+  else
+    set -- CC='ccache gcc' CXX='ccache g++'
+  fi
+else
+  echo "$0: no ccache found, compiles will be slower." 1>&2
+fi
+
+# build the debs
+mkdir -p release
+GNUPGHOME="/srv/gnupg" ionice -c3 nice -n20 /srv/ceph-build/build_snapshot.sh release /srv/debian-base $DISTS
+
+VER=`cd release && ls`
+echo "VER is $VER"
+
+REV="$(git rev-parse HEAD)"
+OUTDIR="../out/output/sha1/$REV"
+OUTDIR_TMP="${OUTDIR}.tmp"
+install -d -m0755 -- "$OUTDIR_TMP"
+printf '%s\n' "$REV" >"$OUTDIR_TMP/sha1"
+
+mkdir -p $OUTDIR_TMP/conf
+/srv/ceph-build/gen_reprepro_conf.sh $OUTDIR_TMP main $DISTS
+GNUPGHOME="/srv/gnupg" /srv/ceph-build/push_to_repo.sh release $OUTDIR_TMP $VER main
+
+# we're successful, the files are ok to be published; try to be as
+# atomic as possible about replacing potentially existing OUTDIR
+if [ -e "$OUTDIR" ]; then
+    rm -rf -- "$OUTDIR.old"
+    mv -- "$OUTDIR" "$OUTDIR.old"
+fi
+mv -- "$OUTDIR_TMP" "$OUTDIR"
+rm -rf -- "$OUTDIR.old"
+
+exit 0
