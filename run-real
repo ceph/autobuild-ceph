@@ -21,6 +21,10 @@ install -d -m0755 -- "$REF_OUTDIR"
     # makes the typical result a bit ugly
     SAFE_REF="$(printf '%s' "$REF"|tr -c 'a-zA-Z0-9_.-' '_'|sed 's/^\./_/')"
 
+    # strip out the leading origin_ prefix on branches; this might cause
+    # collisions, but we're gonna ignore that for now
+    SAFE_REF="${SAFE_REF#origin_}"
+
     # find the latest commit in that history that we have a result for;
     # assume it's found in the last 100 commits, to limit time wasted
     git --git-dir=build/.git rev-list --first-parent --topo-order --max-count=100 "$LATEST" \
