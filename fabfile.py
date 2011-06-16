@@ -19,6 +19,10 @@ env.roledefs['gitbuilder_ceph_deb'] = [
     'ubuntu@10.3.14.67',
     ]
 
+env.roledefs['gitbuilder_ceph_deb_ndn'] = [
+    'ubuntu@10.3.14.65',
+    ]
+
 def _apt_install(*packages):
     sudo(' '.join(
             [
@@ -140,11 +144,10 @@ def gitbuilder_ceph():
             ],
         )
 
-@roles('gitbuilder_ceph_deb')
-def gitbuilder_ceph_deb():
+def _deb_builder(git_url):
     _gitbuilder(
         flavor='ceph-deb',
-        git_repo='git://ceph.newdream.net/git/ceph.git',
+        git_repo=git_url,
         extra_packages=[
             'automake',
             'libtool',
@@ -192,6 +195,24 @@ def gitbuilder_ceph_deb():
                     sudo('wget -q http://ceph.newdream.net/qa/%s.tgz' % (dist))
         sudo('grep -q autobuild-ceph /etc/sudoers || echo "autobuild-ceph ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers')
 
+@roles('gitbuilder_ceph_deb')
+def gitbuilder_ceph_deb():
+    _deb_builder('git://ceph.newdream.net/git/ceph.git')
+    with cd('/srv/autobuild-ceph'):
+        sudo('echo squeeze natty > dists')
+
+@roles('gitbuilder_ceph_deb_ndn')
+def gitbuilder_ceph_deb_ndn():
+    _deb_builder('git://deploy.benjamin.dhobjects.net/ceph.git')
+    with cd('/srv/autobuild-ceph'):
+        if not exists('rsync-target'):
+            sudo("echo dhodeploy@deploy.benjamin.dhobjects.net:output >> rsync-target")
+        if not exists('rsync-key'):
+            sudo("wget -q http://cephbooter.ceph.dreamhost.com/dhodeploy.key ; mv dhodeploy.key rsync-key")
+            sudo("wget -q http://cephbooter.ceph.dreamhost.com/dhodeploy.key.pub ; mv dhodeploy.key.pub rsync-key.pub")
+        sudo('echo squeeze > dists')
+
+
 @roles('gitbuilder_ceph_gcov')
 def gitbuilder_ceph_gcov():
     _gitbuilder(
@@ -218,7 +239,7 @@ def gitbuilder_ceph_gcov():
             ],
         )
 
-@roles('gitbuilder_ceph', 'gitbuilder_ceph_deb', 'gitbuilder_ceph_gcov', 'gitbuilder_kernel')
+@roles('gitbuilder_ceph', 'gitbuilder_ceph_deb', 'gitbuilder_ceph_deb_ndn', 'gitbuilder_ceph_gcov', 'gitbuilder_kernel')
 def gitbuilder_serve():
     _apt_install(
         'thttpd',

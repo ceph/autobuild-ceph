@@ -1,7 +1,7 @@
 #!/bin/sh -x
 set -e
 
-DISTS="squeeze natty"
+DISTS=`cat ../../dists`
 
 echo --START-IGNORE-WARNINGS
 [ ! -x autogen.sh ] || ./autogen.sh || exit 1
