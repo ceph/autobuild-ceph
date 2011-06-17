@@ -99,7 +99,6 @@ def _gitbuilder(flavor, git_repo, extra_remotes={}, extra_packages=[], ignore=[]
         sudo('install -d -m0755 logs')
 
         sudo('install --owner=root --group=root -m0644 autobuild-ceph.conf /etc/init/autobuild-ceph.conf')
-    sudo('start autobuild-ceph')
     run('rm bundle')
 
 @roles('gitbuilder_kernel')
@@ -117,6 +116,7 @@ def gitbuilder_kernel():
             'fbeb94b65cf784ed8bf852131e28c9fb5c4c760f',
             ],
         )
+    sudo('start autobuild-ceph')
 
 @roles('gitbuilder_ceph')
 def gitbuilder_ceph():
@@ -143,6 +143,7 @@ def gitbuilder_ceph():
             'python-virtualenv',
             ],
         )
+    sudo('start autobuild-ceph')
 
 def _deb_builder(git_url):
     _gitbuilder(
@@ -200,6 +201,7 @@ def gitbuilder_ceph_deb():
     _deb_builder('git://ceph.newdream.net/git/ceph.git')
     with cd('/srv/autobuild-ceph'):
         sudo('echo squeeze natty > dists')
+    sudo('start autobuild-ceph')
 
 @roles('gitbuilder_ceph_deb_ndn')
 def gitbuilder_ceph_deb_ndn():
@@ -211,7 +213,7 @@ def gitbuilder_ceph_deb_ndn():
             sudo("wget -q http://cephbooter.ceph.dreamhost.com/dhodeploy.key ; mv dhodeploy.key rsync-key")
             sudo("wget -q http://cephbooter.ceph.dreamhost.com/dhodeploy.key.pub ; mv dhodeploy.key.pub rsync-key.pub")
         sudo('echo squeeze > dists')
-
+    sudo('start autobuild-ceph')
 
 @roles('gitbuilder_ceph_gcov')
 def gitbuilder_ceph_gcov():
@@ -238,6 +240,7 @@ def gitbuilder_ceph_gcov():
             'python-virtualenv',
             ],
         )
+    sudo('start autobuild-ceph')
 
 @roles('gitbuilder_ceph', 'gitbuilder_ceph_deb', 'gitbuilder_ceph_deb_ndn', 'gitbuilder_ceph_gcov', 'gitbuilder_kernel')
 def gitbuilder_serve():
