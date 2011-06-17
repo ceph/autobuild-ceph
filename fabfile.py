@@ -212,6 +212,7 @@ def gitbuilder_ceph_deb_ndn():
         if not exists('rsync-key'):
             sudo("wget -q http://cephbooter.ceph.dreamhost.com/dhodeploy.key ; mv dhodeploy.key rsync-key")
             sudo("wget -q http://cephbooter.ceph.dreamhost.com/dhodeploy.key.pub ; mv dhodeploy.key.pub rsync-key.pub")
+            sudo("chmod 600 rsync-key* ; chown autobuild-ceph.autobuild-ceph rsync-key*")
         sudo('echo squeeze > dists')
     sudo('start autobuild-ceph')
 
