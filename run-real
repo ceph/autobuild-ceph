@@ -59,7 +59,7 @@ find "$SHA_OUTDIR" -mindepth 1 -maxdepth 1 -mtime +0 -printf '../sha1/%P\0' \
 | xargs -0 --no-run-if-empty -I '{}' -- rm -rf -- "$SHA_OUTDIR/{}"
 
 # rsync result somewhere?
-if [ -e rsync-target ]; then
-    target=`cat rsync-target`
-    rsync -auv --delete -e "ssh -i rsync-key -o StrictHostKeyChecking=no -o /dev/null" out/output/ $target
+if [ -e ../rsync-target ]; then
+    target=`cat ../rsync-target`
+    rsync -auv --delete -e "ssh -i ../rsync-key -o StrictHostKeyChecking=no" out/output/ $target
 fi
