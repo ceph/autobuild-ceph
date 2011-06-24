@@ -91,6 +91,8 @@ def _gitbuilder(flavor, git_repo, extra_remotes={}, extra_packages=[], ignore=[]
                         ),
                     user='autobuild-ceph',
                     )
+                sudo('git config remote.{name}.tagopt true'.format(name=name),
+                     user='autobuild-ceph')
             sudo('git config remote.origin.tagopt true', user='autobuild-ceph')
         if ignore:
             sudo('install -d -m0755 --owner=autobuild-ceph --group=autobuild-ceph gitbuilder.git/out/ignore')
