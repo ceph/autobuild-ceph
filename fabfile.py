@@ -148,9 +148,9 @@ def gitbuilder_ceph():
         )
     sudo('start autobuild-ceph')
 
-def _deb_builder(git_url):
+def _deb_builder(git_url, flavor):
     _gitbuilder(
-        flavor='ceph-deb',
+        flavor=flavor,
         git_repo=git_url,
         extra_packages=[
             'automake',
@@ -175,6 +175,7 @@ def _deb_builder(git_url):
             'reprepro',
             'devscripts',
             'lintian',
+            'flex', 'byacc', # collectd
             ],
         )
     with cd('/srv'):
@@ -201,22 +202,9 @@ def _deb_builder(git_url):
 
 @roles('gitbuilder_ceph_deb')
 def gitbuilder_ceph_deb():
-    _deb_builder('git://ceph.newdream.net/git/ceph.git')
+    _deb_builder('git://ceph.newdream.net/git/ceph.git', 'ceph-deb')
     with cd('/srv/autobuild-ceph'):
         sudo('echo squeeze natty > dists')
-    sudo('start autobuild-ceph')
-
-@roles('gitbuilder_ceph_deb_ndn')
-def gitbuilder_ceph_deb_ndn():
-    _deb_builder('git://deploy.benjamin.dhobjects.net/ceph.git')
-    with cd('/srv/autobuild-ceph'):
-        if not exists('rsync-target'):
-            sudo("echo dhodeploy@deploy.benjamin.dhobjects.net:output >> rsync-target")
-        if not exists('rsync-key'):
-            sudo("wget -q http://cephbooter.ceph.dreamhost.com/dhodeploy.key ; mv dhodeploy.key rsync-key")
-            sudo("wget -q http://cephbooter.ceph.dreamhost.com/dhodeploy.key.pub ; mv dhodeploy.key.pub rsync-key.pub")
-            sudo("chmod 600 rsync-key* ; chown autobuild-ceph.autobuild-ceph rsync-key*")
-        sudo('echo squeeze > dists')
     sudo('start autobuild-ceph')
 
 @roles('gitbuilder_ceph_gcov')
@@ -246,7 +234,35 @@ def gitbuilder_ceph_gcov():
         )
     sudo('start autobuild-ceph')
 
-@roles('gitbuilder_ceph', 'gitbuilder_ceph_deb', 'gitbuilder_ceph_deb_ndn', 'gitbuilder_ceph_gcov', 'gitbuilder_kernel')
+#
+# build ndn debs for dho
+#
+def _ndn_deb_gitbuilder(package, flavor):
+    _deb_builder('git://deploy.benjamin.dhobjects.net/%s.git' % package, flavor)
+    with cd('/srv/autobuild-ceph'):
+        if not exists('rsync-target'):
+            sudo("echo dhodeploy@deploy.benjamin.dhobjects.net:out/%s >> rsync-target" % package)
+        if not exists('rsync-key'):
+            sudo("wget -q http://cephbooter.ceph.dreamhost.com/dhodeploy.key ; mv dhodeploy.key rsync-key")
+            sudo("wget -q http://cephbooter.ceph.dreamhost.com/dhodeploy.key.pub ; mv dhodeploy.key.pub rsync-key.pub")
+            sudo("chmod 600 rsync-key* ; chown autobuild-ceph.autobuild-ceph rsync-key*")
+        sudo('echo squeeze > dists')
+        sudo('echo %s > pkgname' % package)
+    sudo('start autobuild-ceph')
+
+@roles('gitbuilder_ceph_deb_ndn')
+def gitbuilder_ceph_deb_ndn():
+    _ndn_deb_gitbuidler('ceph', 'ceph-deb')
+
+
+
+@roles('gitbuilder_ceph',
+       'gitbuilder_ceph_deb',
+       'gitbuilder_ceph_gcov',
+       'gitbuilder_kernel',
+       # dhodeploy
+       'gitbuilder_ceph_deb_ndn',
+       )
 def gitbuilder_serve():
     _apt_install(
         'thttpd',
