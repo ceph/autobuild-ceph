@@ -156,6 +156,7 @@ def gitbuilder_ceph():
             'libkeyutils-dev',
             'python-pip',
             'python-virtualenv',
+            'reprepro',       # for kernel or deb gitbuilders
             ],
         )
     sudo('start autobuild-ceph')
@@ -184,7 +185,6 @@ def _deb_builder(git_url, flavor):
             'python-virtualenv',
             'pbuilder',
             'gnupg',
-            'reprepro',
             'devscripts',
             'lintian',
             'flex', 'byacc', # collectd

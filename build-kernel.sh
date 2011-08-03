@@ -53,7 +53,31 @@ install -d -m0755 -- "$OUTDIR_TMP"
 printf '%s\n' "$REV" >"$OUTDIR_TMP/sha1"
 mv -- build~/*.deb "$OUTDIR_TMP/"
 
-( cd $OUTDIR_TMP && for f in image headers ; do ln -s linux-$f-*.deb linux-$f.deb ; done )
+# build a simple repro in OUTDIR_TMP too
+DIST="squeeze"    # this could be anything
+(
+    cd $OUTDIR_TMP
+
+    install -d -m0755 -- "conf"
+    cat > conf/distributions <<EOF
+Codename: $DIST
+Suite: stable
+Components: main
+Architectures: i386 amd64 source
+Origin: New Dream Network
+Description: Kernel autobuilds
+DebIndices: Packages Release . .gz .bz2
+DscIndices: Sources Release .gz .bz2
+EOF
+
+    for f in image headers;
+    do
+	reprepro -b . includedeb $DIST linux-$f-*.deb
+
+	# make a consistently named symlink
+	ln -s linux-$f-*.deb linux-$f.deb
+    done
+)
 
 # put our temp files inside .git/ so ls-files doesn't see them
 git ls-files --modified >.git/modified-files
