@@ -264,7 +264,7 @@ def _ndn_deb_gitbuilder(package, flavor):
 
 @roles('gitbuilder_ceph_deb_ndn')
 def gitbuilder_ceph_deb_ndn():
-    _ndn_deb_gitbuidler('ceph', 'ceph-deb')
+    _ndn_deb_gitbuilder('ceph', 'ceph-deb')
 
 @roles('gitbuilder_apache2_deb_ndn')
 def gitbuilder_apache2_deb_ndn():
