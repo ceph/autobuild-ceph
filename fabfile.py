@@ -23,6 +23,18 @@ env.roledefs['gitbuilder_ceph_deb_ndn'] = [
     'ubuntu@10.3.14.65',
     ]
 
+env.roledefs['gitbuilder_apache2_deb_ndn'] = [
+    'ubuntu@10.3.14.71',
+    ]
+
+env.roledefs['gitbuilder_modfastcgi_deb_ndn'] = [
+    'ubuntu@10.3.14.73',
+    ]
+
+env.roledefs['gitbuilder_collectd_deb_ndn'] = [
+    'ubuntu@10.3.14.74',
+    ]
+
 def _apt_install(*packages):
     sudo(' '.join(
             [
@@ -254,6 +266,18 @@ def _ndn_deb_gitbuilder(package, flavor):
 def gitbuilder_ceph_deb_ndn():
     _ndn_deb_gitbuidler('ceph', 'ceph-deb')
 
+@roles('gitbuilder_apache2_deb_ndn')
+def gitbuilder_apache2_deb_ndn():
+    _ndn_deb_gitbuilder('apache2', 'deb')
+
+@roles('gitbuilder_modfastcgi_deb_ndn')
+def gitbuilder_modfastcgi_deb_ndn():
+    _ndn_deb_gitbuilder('libapache-mod-fastcgi', 'deb')
+
+@roles('gitbuilder_collectd_deb_ndn')
+def gitbuilder_collectd_deb_ndn():
+    _ndn_deb_gitbuilder('collectd', 'deb')
+
 
 
 @roles('gitbuilder_ceph',
@@ -262,6 +286,9 @@ def gitbuilder_ceph_deb_ndn():
        'gitbuilder_kernel',
        # dhodeploy
        'gitbuilder_ceph_deb_ndn',
+       'gitbuilder_apache2_deb_ndn',
+       'gitbuilder_modfastcgi_deb_ndn',
+       'gitbuilder_collectd_deb_ndn',
        )
 def gitbuilder_serve():
     _apt_install(
