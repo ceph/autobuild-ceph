@@ -25,11 +25,6 @@ mv .temp $NAME-$VER
 
 cd $NAME-$VER
 
-# hack for collectd, sigh
-if [ ! -x configure ]; then
-    [ -x build.sh ] && ./build.sh
-fi
-
 dch -v $VER 'autobuilder'
 # strip out any .gitignore files (usually there to force empty dirs)
 find . -name .gitignore -delete
