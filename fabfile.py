@@ -35,6 +35,10 @@ env.roledefs['gitbuilder_collectd_deb_ndn'] = [
     'ubuntu@10.3.14.74',
     ]
 
+env.roledefs['gitbuilder_kernel_ndn'] = [
+    'ubuntu@10.3.14.75',
+    ]
+
 def _apt_install(*packages):
     sudo(' '.join(
             [
@@ -249,8 +253,7 @@ def gitbuilder_ceph_gcov():
 #
 # build ndn debs for dho
 #
-def _ndn_deb_gitbuilder(package, flavor):
-    _deb_builder('git://deploy.benjamin.dhobjects.net/%s.git' % package, flavor)
+def _sync_out_to_dho(package):
     with cd('/srv/autobuild-ceph'):
         if not exists('rsync-target'):
             sudo("echo dhodeploy@deploy.benjamin.dhobjects.net:out/%s >> rsync-target" % package)
@@ -258,6 +261,11 @@ def _ndn_deb_gitbuilder(package, flavor):
             sudo("wget -q http://cephbooter.ceph.dreamhost.com/dhodeploy.key ; mv dhodeploy.key rsync-key")
             sudo("wget -q http://cephbooter.ceph.dreamhost.com/dhodeploy.key.pub ; mv dhodeploy.key.pub rsync-key.pub")
             sudo("chmod 600 rsync-key* ; chown autobuild-ceph.autobuild-ceph rsync-key*")
+
+def _ndn_deb_gitbuilder(package, flavor):
+    _deb_builder('git://deploy.benjamin.dhobjects.net/%s.git' % package, flavor)
+    _sync_out_to_dho
+    with cd('/srv/autobuild-ceph'):
         sudo('echo squeeze > dists')
         sudo('echo %s > pkgname' % package)
     sudo('start autobuild-ceph')
@@ -278,7 +286,23 @@ def gitbuilder_modfastcgi_deb_ndn():
 def gitbuilder_collectd_deb_ndn():
     _ndn_deb_gitbuilder('collectd', 'deb')
 
-
+@roles('gitbuilder_kernel_ndn')
+def gitbuilder_kernel_ndn():
+    _gitbuilder(
+        flavor='kernel',
+        git_repo='git://deploy.benjamin.dhobjects.net/linux-2.6.git',
+        extra_remotes=dict(
+            linus='git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git',
+            ),
+        extra_packages=[
+            'fakeroot',
+            ],
+        ignore=[
+            'fbeb94b65cf784ed8bf852131e28c9fb5c4c760f',
+            ],
+        )
+    _sync_out_to_dho('kernel')
+    sudo('start autobuild-ceph')
 
 @roles('gitbuilder_ceph',
        'gitbuilder_ceph_deb',
@@ -289,6 +313,7 @@ def gitbuilder_collectd_deb_ndn():
        'gitbuilder_apache2_deb_ndn',
        'gitbuilder_modfastcgi_deb_ndn',
        'gitbuilder_collectd_deb_ndn',
+       'gitbuilder_kernel_ndn',
        )
 def gitbuilder_serve():
     _apt_install(
