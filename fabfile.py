@@ -131,6 +131,7 @@ def gitbuilder_kernel():
             ),
         extra_packages=[
             'fakeroot',
+            'reprepro',
             ],
         ignore=[
             'fbeb94b65cf784ed8bf852131e28c9fb5c4c760f',
@@ -161,7 +162,6 @@ def gitbuilder_ceph():
             'libkeyutils-dev',
             'python-pip',
             'python-virtualenv',
-            'reprepro',       # for kernel or deb gitbuilders
             ],
         )
     sudo('start autobuild-ceph')
@@ -297,6 +297,7 @@ def gitbuilder_kernel_ndn():
             ),
         extra_packages=[
             'fakeroot',
+            'reprepro',
             ],
         ignore=[
             'fbeb94b65cf784ed8bf852131e28c9fb5c4c760f',
