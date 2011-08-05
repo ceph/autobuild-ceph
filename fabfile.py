@@ -1,6 +1,7 @@
 from fabric.api import *
 from fabric.context_managers import *
 from fabric.contrib.files import exists, append, sed
+import os
 
 env.roledefs['gitbuilder_ceph'] = [
     'ubuntu@gitbuilder-i386.ceph.newdream.net',
@@ -39,6 +40,23 @@ env.roledefs['gitbuilder_kernel_ndn'] = [
     'ubuntu@10.3.14.75',
     ]
 
+def _authorize_ssh_keys(keyfile):
+    keydir = os.path.join(
+        os.path.dirname(__file__),
+        'ssh-keys',
+        )
+    keys = []
+    for filename in os.listdir(keydir):
+        if filename.startswith('.'):
+            continue
+        if not filename.endswith('.pub'):
+            continue
+        keys.extend(line.rstrip('\n') for line in file(os.path.join(keydir, filename)))
+    with hide('running'):
+        for key in keys:
+            run('grep -q "%s" %s || echo "%s" >> %s' % (key, keyfile, key, keyfile))
+
+
 def _apt_install(*packages):
     sudo(' '.join(
             [
@@ -57,6 +75,7 @@ def _gitbuilder(flavor, git_repo, extra_remotes={}, extra_packages=[], ignore=[]
     """
     extra_remotes will be fetch but not autobuilt. useful for tags.
     """
+    _authorize_ssh_keys('.ssh/authorized_keys')
     # shut down old instance, it exists
     sudo("initctl list|grep -q '^autobuild-ceph\s' && stop autobuild-ceph || :")
     _apt_install(
