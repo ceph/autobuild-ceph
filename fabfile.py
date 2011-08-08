@@ -290,14 +290,13 @@ def gitbuilder_collectd_deb_ndn():
 @roles('gitbuilder_kernel_ndn')
 def gitbuilder_kernel_ndn():
     _gitbuilder(
-        flavor='kernel',
+        flavor='kernel-raw',
         git_repo='git://deploy.benjamin.dhobjects.net/linux-2.6.git',
         extra_remotes=dict(
             linus='git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git',
             ),
         extra_packages=[
             'fakeroot',
-            'reprepro',
             ],
         ignore=[
             'fbeb94b65cf784ed8bf852131e28c9fb5c4c760f',
