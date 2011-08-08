@@ -53,6 +53,8 @@ OUTDIR="../out/output/sha1/$REV"
 OUTDIR_TMP="${OUTDIR}.tmp"
 install -d -m0755 -- "$OUTDIR_TMP"
 printf '%s\n' "$REV" >"$OUTDIR_TMP/sha1"
+printf '%s\n' "$VER" >"$OUTDIR_TMP/version"
+printf '%s\n' "$NAME" >"$OUTDIR_TMP/name"
 
 mkdir -p $OUTDIR_TMP/conf
 /srv/ceph-build/gen_reprepro_conf.sh $OUTDIR_TMP main $DISTS
