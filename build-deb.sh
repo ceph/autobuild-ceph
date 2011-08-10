@@ -77,4 +77,11 @@ fi
 mv -- "$OUTDIR_TMP" "$OUTDIR"
 rm -rf -- "$OUTDIR.old"
 
+# rebuild combined debian repo output
+(
+    cd ../out/output
+    rm -rf combined
+    /srv/ceph-build/merge_repos.sh combined sha1/*
+)
+
 exit 0
