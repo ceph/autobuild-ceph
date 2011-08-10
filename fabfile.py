@@ -291,7 +291,7 @@ def gitbuilder_collectd_deb_ndn():
 def gitbuilder_kernel_ndn():
     _gitbuilder(
         flavor='kernel-raw',
-        git_repo='git://deploy.benjamin.dhobjects.net/linux-2.6.git',
+        git_repo='git://deploy.benjamin.dhobjects.net/kernel.git',
         extra_remotes=dict(
             linus='git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git',
             ),
