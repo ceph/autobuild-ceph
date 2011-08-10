@@ -56,6 +56,7 @@ printf '%s\n' "$REV" >"$OUTDIR_TMP/sha1"
 mv -- arch/x86/boot/bzImage $OUTDIR_TMP/
 mv -- System.map $OUTDIR_TMP/
 cp -- .config $OUTDIR_TMP/config
+cp -- include/config/kernel.release $OUTDIR_TMP/version
 
 # we're successful, the files are ok to be published; try to be as
 # atomic as possible about replacing potentially existing OUTDIR
