@@ -63,7 +63,7 @@ rm -rf -- "$OUTDIR.old"
 (
     cd ../out/output
     rm -rf combined
-    /srv/ceph-build/merge_repos.sh combined sha1/*
+    GNUPGHOME="/srv/gnupg" /srv/ceph-build/merge_repos.sh combined sha1/*
 )
 
 exit 0
