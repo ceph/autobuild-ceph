@@ -25,6 +25,8 @@ mv .temp $NAME-$VER
 
 cd $NAME-$VER
 
+[ -x pre-debian-build.sh ] && ./pre-debian-build.sh
+
 dch -v $VER 'autobuilder'
 # strip out any .gitignore files (usually there to force empty dirs)
 find . -name .gitignore -delete
