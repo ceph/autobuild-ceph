@@ -44,7 +44,7 @@ echo "$0: building..."
 # the source tree look modified (get "+" in version); using subdir out
 # so the debs go to e.g.
 # build~/linux-image-2.6.38-ceph-00020-g4b2a58a_ceph_amd64.deb
-ionice -c3 nice -n20 make O=build~/out LOCALVERSION=-ceph KDEB_PKGVERSION=ceph deb-pkg -j16 "$@" || exit 4
+ionice -c3 nice -n20 make O=build~/out LOCALVERSION=-ceph deb-pkg -j16 "$@" || exit 4
 
 REV="$(git rev-parse HEAD)"
 OUTDIR="../out/output/sha1/$REV"
