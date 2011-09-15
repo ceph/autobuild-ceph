@@ -104,6 +104,12 @@ def _gitbuilder(flavor, git_repo, extra_remotes={}, extra_packages=[], ignore=[]
                 sudo('chown -R autobuild-ceph:autobuild-ceph build out')
             sudo('mv gitbuilder.git.tmp gitbuilder.git')
         with cd('gitbuilder.git/build'):
+            sudo(
+                'git remote set-url origin {url}'.format(
+                    url=git_repo,
+                    ),
+                user='autobuild-ceph',
+                )
             for name, url in extra_remotes.items():
                 sudo(
                     'git remote set-url {name} {url} || git remote add {name} {url}'.format(
@@ -129,7 +135,7 @@ def _gitbuilder(flavor, git_repo, extra_remotes={}, extra_packages=[], ignore=[]
 def gitbuilder_kernel():
     _gitbuilder(
         flavor='kernel',
-        git_repo='git://ceph.newdream.net/git/ceph-client.git',
+        git_repo='https://github.com/NewDreamNetwork/ceph-client.git',
         extra_remotes=dict(
             linus='git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git',
             ),
@@ -147,7 +153,7 @@ def gitbuilder_kernel():
 def gitbuilder_ceph():
     _gitbuilder(
         flavor='ceph',
-        git_repo='git://ceph.newdream.net/git/ceph.git',
+        git_repo='https://github.com/NewDreamNetwork/ceph.git',
         extra_packages=[
             'automake',
             'libtool',
@@ -210,7 +216,7 @@ def _deb_builder(git_url, flavor):
                     sudo('chown autobuild-ceph:autobuild-ceph %s' % (file))
                     sudo('chmod 600 %s' % (file))
         if not exists('ceph-build'):
-            sudo('git clone git://ceph.newdream.net/git/ceph-build.git')
+            sudo('git clone https://github.com/NewDreamNetwork/ceph-build.git')
         with cd('ceph-build'):
             sudo('git pull')
         if not exists('debian-base'):
@@ -223,7 +229,7 @@ def _deb_builder(git_url, flavor):
 
 @roles('gitbuilder_ceph_deb')
 def gitbuilder_ceph_deb():
-    _deb_builder('git://ceph.newdream.net/git/ceph.git', 'ceph-deb')
+    _deb_builder('https://github.com/NewDreamNetwork/ceph.git', 'ceph-deb')
     with cd('/srv/autobuild-ceph'):
         sudo('echo squeeze natty > dists')
     sudo('start autobuild-ceph')
@@ -232,7 +238,7 @@ def gitbuilder_ceph_deb():
 def gitbuilder_ceph_gcov():
     _gitbuilder(
         flavor='ceph-gcov',
-        git_repo='git://ceph.newdream.net/git/ceph.git',
+        git_repo='https://github.com/NewDreamNetwork/ceph.git',
         extra_packages=[
             'automake',
             'libtool',
@@ -259,7 +265,7 @@ def gitbuilder_ceph_gcov():
 def gitbuilder_ceph_notcmalloc():
     _gitbuilder(
         flavor='ceph-notcmalloc',
-        git_repo='git://ceph.newdream.net/git/ceph.git',
+        git_repo='https://github.com/NewDreamNetwork/ceph.git',
         extra_packages=[
             'automake',
             'libtool',
