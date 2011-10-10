@@ -29,9 +29,6 @@ else
   echo "$0: no ccache found, compiles will be slower." 1>&2
 fi
 
-# use sun-java6
-export CPATH="$CPATH:/usr/lib/jvm/java-6-sun/include:/usr/lib/jvm/java-6-sun/include/linux"
-
 ionice -c3 nice -n20 make -j16 "$@" || exit 4
 
 # The "make -q check" probe in build.sh.example is faulty in that

@@ -45,6 +45,8 @@ env.roledefs['gitbuilder_kernel_ndn'] = [
     ]
 
 def _apt_install(*packages):
+    
+    sudo("apt-get update")
     sudo(' '.join(
             [
                 'env DEBIAN_FRONTEND=noninteractive DEBIAN_PRIORITY=critical',
@@ -64,12 +66,18 @@ def _gitbuilder(flavor, git_repo, extra_remotes={}, extra_packages=[], ignore=[]
     """
     # shut down old instance, it exists
     sudo("initctl list|grep -q '^autobuild-ceph\s' && stop autobuild-ceph || :")
+
+    # sun-java6 is in partner repo.  accept license.
+    sudo("echo 'deb http://archive.canonical.com/ubuntu maverick partner' > /etc/apt/sources.list.d/partner.list")
+    sudo("echo 'sun-java5-jdk shared/accepted-sun-dlj-v1-1 boolean true' | debconf-set-selections")
+
     _apt_install(
         'ntp',
         'build-essential',
         'ccache',
         'git',
         'logrotate',
+        'sun-java6-jdk',
         *extra_packages
         )
     sudo(
@@ -304,6 +312,7 @@ def _sync_out_to_dho(package):
             sudo("wget -q http://cephbooter.ceph.dreamhost.com/dhodeploy.key ; mv dhodeploy.key rsync-key")
             sudo("wget -q http://cephbooter.ceph.dreamhost.com/dhodeploy.key.pub ; mv dhodeploy.key.pub rsync-key.pub")
             sudo("chmod 600 rsync-key* ; chown autobuild-ceph.autobuild-ceph rsync-key*")
+        sudo("echo emerging@hq.newdream.net > notify-email")
 
 def _ndn_deb_gitbuilder(package, flavor):
     _deb_builder('git://deploy.benjamin.dhobjects.net/%s.git' % package, flavor)
