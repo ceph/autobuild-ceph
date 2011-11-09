@@ -38,9 +38,9 @@ install -d -m0755 -- "$REF_OUTDIR"
     done
 done
 
-# remove ref symlinks that haven't been touched in 24 hours; as the above
+# remove ref symlinks that haven't been touched in 48 hours; as the above
 # will always re-create the symlinks, they are guaranteed fresh
-find "$REF_OUTDIR" -mindepth 1 -maxdepth 1 -mtime +0 -printf '%p\0' \
+find "$REF_OUTDIR" -mindepth 1 -maxdepth 1 -mtime +1 -printf '%p\0' \
 | xargs -0 --no-run-if-empty -- rm -rf --
 
 # clean temp output dirs; since there cannot be a build running in
@@ -51,10 +51,10 @@ find "$SHA_OUTDIR" -mindepth 1 -maxdepth 1 -name '*.tmp' -print0 \
 # note down what sha1's are still pointed to by refs
 find "$REF_OUTDIR" -mindepth 1 -maxdepth 1 -type l -printf '%l\n' >out/refs-still-alive
 
-# and finally remove any output dir older than 24h, that is not target
+# and finally remove any output dir older than 48h, that is not target
 # of symlink; need to do ugly things in xargs because the symlinks
 # destinations are cross-directory paths
-find "$SHA_OUTDIR" -mindepth 1 -maxdepth 1 -mtime +0 -printf '../sha1/%P\0' \
+find "$SHA_OUTDIR" -mindepth 1 -maxdepth 1 -mtime +1 -printf '../sha1/%P\0' \
 | grep --null-data --fixed-strings --line-regexp --invert-match --file=out/refs-still-alive \
 | xargs -0 --no-run-if-empty -I '{}' -- rm -rf -- "$SHA_OUTDIR/{}"
 
