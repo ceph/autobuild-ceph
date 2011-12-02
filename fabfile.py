@@ -182,6 +182,7 @@ def gitbuilder_ceph():
             'uuid-dev',
             'python-pip',
             'python-virtualenv',
+            'uuid-dev',
             ],
         )
     sudo('start autobuild-ceph')
