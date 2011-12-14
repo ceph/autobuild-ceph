@@ -54,6 +54,7 @@ OUTDIR_TMP="${OUTDIR}.tmp"
 install -d -m0755 -- "$OUTDIR_TMP"
 printf '%s\n' "$REV" >"$OUTDIR_TMP/sha1"
 mv -- arch/x86/boot/bzImage $OUTDIR_TMP/
+mv -- vmlinux $OUTDIR_TMP/
 mv -- System.map $OUTDIR_TMP/
 cp -- .config $OUTDIR_TMP/config
 cp -- include/config/kernel.release $OUTDIR_TMP/version
