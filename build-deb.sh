@@ -33,6 +33,8 @@ dpkg-source -b $NAME-$VER
 
 yes | debsign -pgpg -sgpg -k$KEYID *.dsc
 
+APTCACHE=/srv/aptcache
+
 for dist in $DISTS
 do
     sudo pbuilder --clean

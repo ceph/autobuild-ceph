@@ -220,6 +220,9 @@ def _deb_builder(git_url, flavor):
     with cd('/srv'):
         if not exists('gnupg'):
             sudo('mkdir gnupg')
+        if not exists('aptcache'):
+            sudo('mkdir aptcache ; chown autobuild-ceph:autobuild-ceph aptcache')
+            
         sudo('chown autobuild-ceph:autobuild-ceph gnupg ; chmod 700 gnupg')
         with cd('gnupg'):
             for file in ['pubring.gpg','secring.gpg']:
