@@ -188,6 +188,7 @@ def gitbuilder_ceph():
             'python-pip',
             'python-virtualenv',
             'uuid-dev',
+            'libaio-dev',
             ],
         )
     sudo('start autobuild-ceph')
