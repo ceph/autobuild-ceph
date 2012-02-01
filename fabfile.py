@@ -224,6 +224,7 @@ def _deb_builder(git_url, flavor):
             'flex', 'byacc', # collectd
             'debhelper',
             'reprepro',
+            'fakeroot',
             ],
         )
     with cd('/srv'):
@@ -259,7 +260,7 @@ def gitbuilder_ceph_deb():
     sudo('start autobuild-ceph')
 
 @roles('gitbuilder_ceph_deb_native')
-def gitbuilder_ceph_deb():
+def gitbuilder_ceph_deb_native():
     _deb_builder('https://github.com/NewDreamNetwork/ceph.git', 'ceph-deb-native')
     sudo('start autobuild-ceph')
 
