@@ -378,6 +378,7 @@ def gitbuilder_kernel_ndn():
 
 @roles('gitbuilder_ceph',
        'gitbuilder_ceph_deb',
+       'gitbuilder_ceph_deb_native',
        'gitbuilder_ceph_gcov',
        'gitbuilder_kernel',
        # dhodeploy
