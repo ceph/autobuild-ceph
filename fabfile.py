@@ -24,6 +24,11 @@ env.roledefs['gitbuilder_ceph_deb'] = [
     'ubuntu@10.3.14.67',
     ]
 
+env.roledefs['gitbuilder_ceph_deb_native'] = [
+    'ubuntu@10.3.14.85',
+    'ubuntu@10.3.14.86',
+    ]
+
 env.roledefs['gitbuilder_ceph_deb_ndn'] = [
     'ubuntu@10.3.14.65',
     ]
@@ -208,13 +213,17 @@ def _deb_builder(git_url, flavor):
             'libgoogle-perftools-dev',
             'libkeyutils-dev',
             'uuid-dev',
+            'libaio-dev',
             'python-pip',
             'python-virtualenv',
+            'python-support',
             'pbuilder',
             'gnupg',
             'devscripts',
             'lintian',
             'flex', 'byacc', # collectd
+            'debhelper',
+            'reprepro',
             ],
         )
     with cd('/srv'):
@@ -247,6 +256,11 @@ def gitbuilder_ceph_deb():
     _deb_builder('https://github.com/NewDreamNetwork/ceph.git', 'ceph-deb')
     with cd('/srv/autobuild-ceph'):
         sudo('echo squeeze natty > dists')
+    sudo('start autobuild-ceph')
+
+@roles('gitbuilder_ceph_deb_native')
+def gitbuilder_ceph_deb():
+    _deb_builder('https://github.com/NewDreamNetwork/ceph.git', 'ceph-deb-native')
     sudo('start autobuild-ceph')
 
 @roles('gitbuilder_ceph_gcov')
