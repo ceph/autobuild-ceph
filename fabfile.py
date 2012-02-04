@@ -167,9 +167,12 @@ def gitbuilder_kernel():
 
 @roles('gitbuilder_ceph')
 def gitbuilder_ceph():
+    _gitbuilder_ceph('https://github.com/NewDreamNetwork/ceph.git','ceph')
+
+def _gitbuilder_ceph(url, flavor):
     _gitbuilder(
         flavor='ceph',
-        git_repo='https://github.com/NewDreamNetwork/ceph.git',
+        git_repo=url,
         extra_packages=[
             'automake',
             'libtool',
@@ -269,59 +272,11 @@ def gitbuilder_ceph_deb_native():
 
 @roles('gitbuilder_ceph_gcov')
 def gitbuilder_ceph_gcov():
-    _gitbuilder(
-        flavor='ceph-gcov',
-        git_repo='https://github.com/NewDreamNetwork/ceph.git',
-        extra_packages=[
-            'automake',
-            'libtool',
-            'pkg-config',
-            'libboost-dev',
-            'libedit-dev',
-            'libssl-dev',
-            'libcrypto++-dev',
-            'libgtkmm-2.4-dev',
-            'libfuse-dev',
-            'libexpat1-dev',
-            'libfcgi-dev',
-            'libcurl4-gnutls-dev',
-            'libatomic-ops-dev',
-            'libgoogle-perftools-dev',
-            'libkeyutils-dev',
-            'uuid-dev',
-            'python-pip',
-            'python-virtualenv',
-            ],
-        )
-    sudo('start autobuild-ceph')
+    _gitbuilder_ceph('https://github.com/NewDreamNetwork/ceph.git', 'ceph-gcov')
 
 @roles('gitbuilder_ceph_notcmalloc')
 def gitbuilder_ceph_notcmalloc():
-    _gitbuilder(
-        flavor='ceph-notcmalloc',
-        git_repo='https://github.com/NewDreamNetwork/ceph.git',
-        extra_packages=[
-            'automake',
-            'libtool',
-            'pkg-config',
-            'libboost-dev',
-            'libedit-dev',
-            'libssl-dev',
-            'libcrypto++-dev',
-            'libgtkmm-2.4-dev',
-            'libfuse-dev',
-            'libexpat1-dev',
-            'libfcgi-dev',
-            'libcurl4-gnutls-dev',
-            'libatomic-ops-dev',
-            'libgoogle-perftools-dev',
-            'libkeyutils-dev',
-            'uuid-dev',
-            'python-pip',
-            'python-virtualenv',
-            ],
-        )
-    sudo('start autobuild-ceph')
+    _gitbuilder_ceph('https://github.com/NewDreamNetwork/ceph.git', 'ceph-notcmalloc')
 
 #
 # build ndn debs for dho
