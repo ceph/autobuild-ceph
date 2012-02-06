@@ -12,6 +12,10 @@ if [ ! -e Makefile ]; then
     exit 3
 fi
 
+# pull down submodules
+git submodule init
+git submodule update
+
 # Actually build the project
 
 # clear out any $@ potentially passed in
