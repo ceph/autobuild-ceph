@@ -112,7 +112,7 @@ def _gitbuilder(flavor, git_repo, extra_remotes={}, extra_packages=[], ignore=[]
             sudo('rm -rf gitbuilder.git.tmp')
             sudo('git clone https://github.com/tv42/gitbuilder.git gitbuilder.git.tmp')
             with cd('gitbuilder.git.tmp'):
-                sudo('git checkout 4c26550e018bcfe397275153a3b66bf30cb53a84')
+                sudo('git checkout 65a6317dd153d1c7074527718f1c49ee2858c741')
                 sudo('ln -s ../build.sh ./')
                 sudo('ln -s ../branches-local ./')
                 sudo('git clone {git_repo} build'.format(git_repo=git_repo))
