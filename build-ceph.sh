@@ -13,6 +13,7 @@ if [ ! -e Makefile ]; then
 fi
 
 # pull down submodules
+rm -rf ceph-object-corpus
 git submodule init
 git submodule update
 
