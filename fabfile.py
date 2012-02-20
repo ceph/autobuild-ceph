@@ -171,7 +171,7 @@ def gitbuilder_ceph():
 
 def _gitbuilder_ceph(url, flavor):
     _gitbuilder(
-        flavor='ceph',
+        flavor=flavor,
         git_repo=url,
         extra_packages=[
             'automake',
