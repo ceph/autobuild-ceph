@@ -13,7 +13,7 @@ if [ ! -e Makefile ]; then
 fi
 
 # pull down submodules
-rm -rf ceph-object-corpus
+git submodule foreach 'git clean -fdx && git reset --hard'
 git submodule init
 git submodule update
 
