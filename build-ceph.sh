@@ -1,6 +1,12 @@
 #!/bin/sh -x
 set -e
 
+# pull down submodules
+git submodule foreach 'git clean -fdx && git reset --hard'
+git submodule init
+git submodule update
+git clean -fdx
+
 echo --START-IGNORE-WARNINGS
 [ ! -x autogen.sh ] || ./autogen.sh || exit 1
 autoconf || true
@@ -11,11 +17,6 @@ if [ ! -e Makefile ]; then
     echo "$0: no Makefile, aborting." 1>&2
     exit 3
 fi
-
-# pull down submodules
-git submodule foreach 'git clean -fdx && git reset --hard'
-git submodule init
-git submodule update
 
 # Actually build the project
 
