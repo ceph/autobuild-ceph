@@ -34,6 +34,12 @@ env.roledefs['gitbuilder_ceph_deb_native'] = [
 env.roledefs['gitbuilder_ceph_deb_ndn'] = [
     'ubuntu@10.3.14.65',
     ]
+env.roledefs['gitbuilder_ceph_deb_oneiric_ndn'] = [
+    'ubuntu@10.3.14.87',
+    ]
+env.roledefs['gitbuilder_ceph_deb_precise_ndn'] = [
+    'ubuntu@10.3.14.88',
+    ]
 
 env.roledefs['gitbuilder_apache2_deb_ndn'] = [
     'ubuntu@10.3.14.71',
@@ -84,7 +90,7 @@ def _gitbuilder(flavor, git_repo, extra_remotes={}, extra_packages=[], ignore=[]
         'ccache',
         'git',
         'logrotate',
-        'sun-java6-jdk',
+#        'sun-java6-jdk',
         *extra_packages
         )
     sudo(
@@ -293,7 +299,6 @@ def _sync_out_to_dho(package):
 
 def _ndn_deb_gitbuilder(package, flavor):
     _deb_builder('git://deploy.benjamin.dhobjects.net/%s.git' % package, flavor)
-    _sync_out_to_dho
     with cd('/srv/autobuild-ceph'):
         sudo('echo squeeze > dists')
         sudo('echo %s > pkgname' % package)
@@ -302,6 +307,19 @@ def _ndn_deb_gitbuilder(package, flavor):
 @roles('gitbuilder_ceph_deb_ndn')
 def gitbuilder_ceph_deb_ndn():
     _ndn_deb_gitbuilder('ceph', 'ceph-deb')
+    _sync_out_to_dho('ceph')
+
+@roles('gitbuilder_ceph_deb_oneiric_ndn')
+def gitbuilder_ceph_deb_oneiric_ndn():
+    _ndn_deb_gitbuilder('ceph', 'ceph-deb-native')
+    _sync_out_to_dho('ceph-oneiric')
+    sudo('start autobuild-ceph')
+
+@roles('gitbuilder_ceph_deb_precise_ndn')
+def gitbuilder_ceph_deb_precise_ndn():
+    _ndn_deb_gitbuilder('ceph', 'ceph-deb-native')
+    _sync_out_to_dho('ceph-precise')
+    sudo('start autobuild-ceph')
 
 @roles('gitbuilder_apache2_deb_ndn')
 def gitbuilder_apache2_deb_ndn():
@@ -388,10 +406,12 @@ def gitbuilder_serve():
 
 @roles('gitbuilder_ceph',
        'gitbuilder_ceph_deb',
+       'gitbuilder_ceph_deb_native',
        'gitbuilder_ceph_gcov',
        'gitbuilder_kernel',
        # dhodeploy
        'gitbuilder_ceph_deb_ndn',
+       'gitbuilder_ceph_deb_ndn_native',
        'gitbuilder_apache2_deb_ndn',
        'gitbuilder_modfastcgi_deb_ndn',
        'gitbuilder_collectd_deb_ndn',
