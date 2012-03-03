@@ -150,7 +150,7 @@ def _gitbuilder(flavor, git_repo, extra_remotes={}, extra_packages=[], ignore=[]
 def gitbuilder_kernel():
     _gitbuilder(
         flavor='kernel',
-        git_repo='https://github.com/NewDreamNetwork/ceph-client.git',
+        git_repo='https://github.com/ceph/ceph-client.git',
         extra_remotes=dict(
             # linus='git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git',
             linus='https://github.com/torvalds/linux.git',
@@ -167,7 +167,7 @@ def gitbuilder_kernel():
 
 @roles('gitbuilder_ceph')
 def gitbuilder_ceph():
-    _gitbuilder_ceph('https://github.com/NewDreamNetwork/ceph.git','ceph')
+    _gitbuilder_ceph('https://github.com/ceph/ceph.git','ceph')
 
 def _gitbuilder_ceph(url, flavor):
     _gitbuilder(
@@ -247,7 +247,7 @@ def _deb_builder(git_url, flavor):
                     sudo('chown autobuild-ceph:autobuild-ceph %s' % (file))
                     sudo('chmod 600 %s' % (file))
         if not exists('ceph-build'):
-            sudo('git clone https://github.com/NewDreamNetwork/ceph-build.git')
+            sudo('git clone https://github.com/ceph/ceph-build.git')
         with cd('ceph-build'):
             sudo('git pull')
         if not exists('debian-base'):
@@ -260,23 +260,23 @@ def _deb_builder(git_url, flavor):
 
 @roles('gitbuilder_ceph_deb')
 def gitbuilder_ceph_deb():
-    _deb_builder('https://github.com/NewDreamNetwork/ceph.git', 'ceph-deb')
+    _deb_builder('https://github.com/ceph/ceph.git', 'ceph-deb')
     with cd('/srv/autobuild-ceph'):
         sudo('echo squeeze natty > dists')
     sudo('start autobuild-ceph')
 
 @roles('gitbuilder_ceph_deb_native')
 def gitbuilder_ceph_deb_native():
-    _deb_builder('https://github.com/NewDreamNetwork/ceph.git', 'ceph-deb-native')
+    _deb_builder('https://github.com/ceph/ceph.git', 'ceph-deb-native')
     sudo('start autobuild-ceph')
 
 @roles('gitbuilder_ceph_gcov')
 def gitbuilder_ceph_gcov():
-    _gitbuilder_ceph('https://github.com/NewDreamNetwork/ceph.git', 'ceph-gcov')
+    _gitbuilder_ceph('https://github.com/ceph/ceph.git', 'ceph-gcov')
 
 @roles('gitbuilder_ceph_notcmalloc')
 def gitbuilder_ceph_notcmalloc():
-    _gitbuilder_ceph('https://github.com/NewDreamNetwork/ceph.git', 'ceph-notcmalloc')
+    _gitbuilder_ceph('https://github.com/ceph/ceph.git', 'ceph-notcmalloc')
 
 #
 # build ndn debs for dho
