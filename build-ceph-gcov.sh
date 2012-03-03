@@ -1,6 +1,13 @@
 #!/bin/sh -x
 set -e
 
+git submodule foreach 'git clean -fdx && git reset --hard'
+rm -rf ceph-object-corpus
+rm -rf src/leveldb
+git submodule init
+git submodule update
+git clean -fdx
+
 echo --START-IGNORE-WARNINGS
 [ ! -x autogen.sh ] || ./autogen.sh || exit 1
 autoconf || true
