@@ -413,7 +413,8 @@ def gitbuilder_serve():
        'gitbuilder_kernel',
        # dhodeploy
        'gitbuilder_ceph_deb_ndn',
-       'gitbuilder_ceph_deb_ndn_native',
+       'gitbuilder_ceph_deb_oneiric_ndn',
+       'gitbuilder_ceph_deb_precise_ndn',
        'gitbuilder_apache2_deb_ndn',
        'gitbuilder_modfastcgi_deb_ndn',
        'gitbuilder_collectd_deb_ndn',
