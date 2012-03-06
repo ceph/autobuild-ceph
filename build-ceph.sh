@@ -37,7 +37,8 @@ set --
 #  echo "$0: no ccache found, compiles will be slower." 1>&2
 #fi
 
-ionice -c3 nice -n20 make -j16 "$@" || exit 4
+NCPU=$(( 2 * `grep -c processor /proc/cpuinfo` ))
+ionice -c3 nice -n20 make -j$NCPU "$@" || exit 4
 
 # The "make -q check" probe in build.sh.example is faulty in that
 # screwups in Makefiles make it think there are no unit tests to
