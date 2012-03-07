@@ -314,13 +314,11 @@ def gitbuilder_ceph_deb_ndn():
 def gitbuilder_ceph_deb_oneiric_ndn():
     _ndn_deb_gitbuilder('ceph', 'ceph-deb-native')
     _sync_out_to_dho('ceph-oneiric')
-    sudo('start autobuild-ceph')
 
 @roles('gitbuilder_ceph_deb_precise_ndn')
 def gitbuilder_ceph_deb_precise_ndn():
     _ndn_deb_gitbuilder('ceph', 'ceph-deb-native')
     _sync_out_to_dho('ceph-precise')
-    sudo('start autobuild-ceph')
 
 @roles('gitbuilder_apache2_deb_ndn')
 def gitbuilder_apache2_deb_ndn():
