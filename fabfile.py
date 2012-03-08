@@ -314,12 +314,12 @@ def gitbuilder_ceph_deb_ndn():
 @roles('gitbuilder_ceph_deb_oneiric_ndn')
 def gitbuilder_ceph_deb_oneiric_ndn():
     _ndn_deb_gitbuilder('ceph', 'ceph-deb-native')
-    _sync_out_to_dho('ceph-oneiric')
+    _sync_out_to_dho('ceph')
 
 @roles('gitbuilder_ceph_deb_precise_ndn')
 def gitbuilder_ceph_deb_precise_ndn():
     _ndn_deb_gitbuilder('ceph', 'ceph-deb-native')
-    _sync_out_to_dho('ceph-precise')
+    _sync_out_to_dho('ceph')
 
 @roles('gitbuilder_apache2_deb_ndn')
 def gitbuilder_apache2_deb_ndn():
