@@ -4,7 +4,7 @@ set -e
 # clear out any $@ potentially passed in
 set --
 
-admin/build-doc
+vdir=/tmp/virtualenv-docs admin/build-doc
 
 REV="$(git rev-parse HEAD)"
 OUTDIR="../out/output/sha1/$REV"
