@@ -59,6 +59,10 @@ env.roledefs['gitbuilder_kernel_ndn'] = [
     'ubuntu@10.3.14.75',
     ]
 
+env.roledefs['gitbuilder_doc'] = [
+    'ubuntu@10.3.14.91',
+    ]
+
 def _apt_install(*packages):
     
     sudo("apt-get update")
@@ -288,6 +292,27 @@ def gitbuilder_ceph_gcov():
 def gitbuilder_ceph_notcmalloc():
     _gitbuilder_ceph('https://github.com/ceph/ceph.git', 'ceph-notcmalloc')
 
+@roles('gitbuilder_doc')
+def gitbuilder_doc():
+    _apt_install(
+        'libxml2-dev',
+        'libxslt-dev',
+        'python-dev',
+        'python-pip',
+        'python-virtualenv',
+        'doxygen',
+        'ditaa',
+        )
+    _gitbuilder_ceph('https://github.com/ceph/ceph.git', 'ceph-docs')
+    with cd('/srv/autobuild-ceph'):
+        if not exists('rsync-target'):
+            sudo("echo cephdocs@ceph.newdream.net:/home/sage/ceph.newdream.net/docs.raw >> rsync-target")
+        if not exists('rsync-key'):
+            sudo("wget -q http://cephbooter.ceph.dreamhost.com/dhodeploy.key ; mv dhodeploy.key rsync-key")
+            sudo("wget -q http://cephbooter.ceph.dreamhost.com/dhodeploy.key.pub ; mv dhodeploy.key.pub rsync-key.pub")
+            sudo("chmod 600 rsync-key* ; chown autobuild-ceph.autobuild-ceph rsync-key*")
+
+
 #
 # build ndn debs for dho
 #
@@ -420,6 +445,7 @@ def gitbuilder_serve():
        'gitbuilder_modfastcgi_deb_ndn',
        'gitbuilder_collectd_deb_ndn',
        'gitbuilder_kernel_ndn',
+       'gitbuilder_doc',
        )
 def authorize_ssh_keys():
     keyfile = '.ssh/authorized_keys'
