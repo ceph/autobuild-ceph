@@ -177,6 +177,7 @@ def gitbuilder_kernel():
             'fbeb94b65cf784ed8bf852131e28c9fb5c4c760f',
             ],
         )
+    _sync_to_gitbuilder('kernel','basic')
     sudo('start autobuild-ceph')
 
 @roles('gitbuilder_ceph')
