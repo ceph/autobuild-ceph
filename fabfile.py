@@ -321,7 +321,7 @@ def gitbuilder_doc():
 def _sync_to_gitbuilder(package, format, flavor):
     with cd('/srv/autobuild-ceph'):
         # fugliness
-        sudo("echo gitbuilder@gitbuilder.ceph.com:gitbuilder.ceph.com/%s-%s-%s-`lsb_release -s -c`-`uname -m` > rsync-target" % (package,format,flavor))
+        sudo("echo gitbuilder@gitbuilder.ceph.com:gitbuilder.ceph.com/%s-%s-`lsb_release -s -c`-`uname -m`-%s > rsync-target" % (package,format,flavor))
         if not exists('rsync-key'):
             sudo("wget -q http://cephbooter.ceph.dreamhost.com/dhodeploy.key ; mv dhodeploy.key rsync-key")
             sudo("wget -q http://cephbooter.ceph.dreamhost.com/dhodeploy.key.pub ; mv dhodeploy.key.pub rsync-key.pub")
