@@ -15,9 +15,6 @@ MACH="$(uname -m)"
 
 cp -a build-doc/output/html/* $OUTDIR_TMP
 
-# latest -> stable symlink
-ln -s stable $OUTDIR_TMP/latest
-
 # we're successful, the files are ok to be published; try to be as
 # atomic as possible about replacing potentially existing OUTDIR
 if [ -e "$OUTDIR" ]; then
