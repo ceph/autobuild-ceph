@@ -177,13 +177,13 @@ def gitbuilder_kernel():
             'fbeb94b65cf784ed8bf852131e28c9fb5c4c760f',
             ],
         )
-    _sync_to_gitbuilder('kernel','basic')
+    _sync_to_gitbuilder('kernel', 'deb', 'basic')
     sudo('start autobuild-ceph')
 
 @roles('gitbuilder_ceph')
 def gitbuilder_ceph():
     _gitbuilder_ceph('https://github.com/ceph/ceph.git','ceph')
-    _sync_to_gitbuilder('tarball','basic')
+    _sync_to_gitbuilder('ceph', 'tarball', 'basic')
 
 def _gitbuilder_ceph(url, flavor):
     _gitbuilder(
@@ -279,24 +279,24 @@ def gitbuilder_ceph_deb():
     _deb_builder('https://github.com/ceph/ceph.git', 'ceph-deb')
     with cd('/srv/autobuild-ceph'):
         sudo('echo squeeze natty > dists')
-    _sync_to_gitbuilder('deb','basic')
+    _sync_to_gitbuilder('ceph', 'deb', 'basic')
     sudo('start autobuild-ceph')
 
 @roles('gitbuilder_ceph_deb_native')
 def gitbuilder_ceph_deb_native():
     _deb_builder('https://github.com/ceph/ceph.git', 'ceph-deb-native')
     sudo('start autobuild-ceph')
-    _sync_to_gitbuilder('deb','basic')
+    _sync_to_gitbuilder('ceph', 'deb', 'basic')
 
 @roles('gitbuilder_ceph_gcov')
 def gitbuilder_ceph_gcov():
     _gitbuilder_ceph('https://github.com/ceph/ceph.git', 'ceph-gcov')
-    _sync_to_gitbuilder('tarball','gcov')
+    _sync_to_gitbuilder('ceph', 'tarball', 'gcov')
 
 @roles('gitbuilder_ceph_notcmalloc')
 def gitbuilder_ceph_notcmalloc():
     _gitbuilder_ceph('https://github.com/ceph/ceph.git', 'ceph-notcmalloc')
-    _sync_to_gitbuilder('tarball','notcmalloc')
+    _sync_to_gitbuilder('ceph', 'tarball', 'notcmalloc')
 
 @roles('gitbuilder_doc')
 def gitbuilder_doc():
@@ -318,11 +318,11 @@ def gitbuilder_doc():
             sudo("wget -q http://cephbooter.ceph.dreamhost.com/dhodeploy.key.pub ; mv dhodeploy.key.pub rsync-key.pub")
             sudo("chmod 600 rsync-key* ; chown autobuild-ceph.autobuild-ceph rsync-key*")
 
-def _sync_to_gitbuilder(btype, flavor):
+def _sync_to_gitbuilder(package, format, flavor):
     with cd('/srv/autobuild-ceph'):
         # fugliness
         if not exists('rsync-target'):
-            sudo("echo gitbuilder@gitbuilder.ceph.com:gitbuilder.ceph.com/`lsb_release -s -c`-`uname -m`-%s-%s >> rsync-target" % (btype,flavor))
+            sudo("echo gitbuilder@gitbuilder.ceph.com:gitbuilder.ceph.com/%s-%s-%s-`lsb_release -s -c`-`uname -m` >> rsync-target" % (package,format,flavor))
         if not exists('rsync-key'):
             sudo("wget -q http://cephbooter.ceph.dreamhost.com/dhodeploy.key ; mv dhodeploy.key rsync-key")
             sudo("wget -q http://cephbooter.ceph.dreamhost.com/dhodeploy.key.pub ; mv dhodeploy.key.pub rsync-key.pub")
