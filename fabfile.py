@@ -5,7 +5,7 @@ import os
 
 env.roledefs['gitbuilder_ceph'] = [
     'ubuntu@gitbuilder-i386.ceph.newdream.net',
-    'ubuntu@gitbuilder.ceph.newdream.net',
+#    'ubuntu@gitbuilder.ceph.newdream.net',
     'ubuntu@gitbuilder-oneiric-amd64.ceph.newdream.net',
     'ubuntu@gitbuilder-precise-amd64.ceph.newdream.net',
     ]
