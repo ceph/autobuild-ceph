@@ -43,6 +43,19 @@ env.roledefs['gitbuilder_ceph_deb_precise_ndn'] = [
     'ubuntu@10.3.14.88',
     ]
 
+env.roledefs['gitbuilder_doc'] = [
+    'ubuntu@10.3.14.91',
+    ]
+
+env.roledefs['gitbuilder_apache2_deb_oneiric'] = [
+    'ubuntu@10.3.14.92',
+    ]
+env.roledefs['gitbuilder_modfastcgi_deb_oneiric'] = [
+    'ubuntu@10.3.14.93',
+    ]
+
+
+## ndn
 env.roledefs['gitbuilder_apache2_deb_ndn'] = [
     'ubuntu@10.3.14.71',
     ]
@@ -59,9 +72,7 @@ env.roledefs['gitbuilder_kernel_ndn'] = [
     'ubuntu@10.3.14.75',
     ]
 
-env.roledefs['gitbuilder_doc'] = [
-    'ubuntu@10.3.14.91',
-    ]
+
 
 def _apt_install(*packages):
     
@@ -269,7 +280,7 @@ def _deb_builder(git_url, flavor):
         if not exists('debian-base'):
             sudo('mkdir debian-base')
         with cd('debian-base'):
-            for dist in ['squeeze','natty']:
+            for dist in ['squeeze','oneiric']:
                 if not exists('%s.tgz' % (dist)):
                     sudo('wget -q http://ceph.newdream.net/qa/%s.tgz' % (dist))
         sudo('grep -q autobuild-ceph /etc/sudoers || echo "autobuild-ceph ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers')
@@ -363,6 +374,22 @@ def gitbuilder_ceph_deb_precise_ndn():
     _ndn_deb_gitbuilder('ceph', 'ceph-deb-native')
     _sync_out_to_dho('ceph-precise')
 
+@roles('gitbuilder_apache2_deb_oneiric')
+def gitbuilder_apache2_deb_oneiric():
+    _deb_builder('git://ceph.newdream.net/git/apache2-2.2.20.git', 'deb')
+    with cd('/srv/autobuild-ceph'):
+        sudo('echo oneiric > dists')
+        sudo('echo apache2 > pkgname')
+    _sync_to_gitbuilder('apache2','deb','basic')
+
+@roles('gitbuilder_modfastcgi_deb_oneiric')
+def gitbuilder_modfastcgi_deb_oneiric():
+    _deb_builder('git://ceph.newdream.net/git/libapache-mod-fastcgi-2.4.7.git', 'deb')
+    with cd('/srv/autobuild-ceph'):
+        sudo('echo oneiric > dists')
+        sudo('echo libapache-mod-fastcgi > pkgname')
+    _sync_to_gitbuilder('libapache-mod-fastcgi','deb','basic')
+
 @roles('gitbuilder_apache2_deb_ndn')
 def gitbuilder_apache2_deb_ndn():
     _ndn_deb_gitbuilder('apache2', 'deb')
@@ -450,8 +477,13 @@ def gitbuilder_serve():
 @roles('gitbuilder_ceph',
        'gitbuilder_ceph_deb',
        'gitbuilder_ceph_deb_native',
+       'gitbuilder_ceph_deb_oneiric_ndn',
+       'gitbuilder_ceph_deb_precise_ndn',
        'gitbuilder_ceph_gcov',
        'gitbuilder_kernel',
+       'gitbuilder_apache2_deb_oneiric',
+       'gitbuilder_modfastcgi_deb_oneiric',
+       'gitbuilder_doc',
        # dhodeploy
        'gitbuilder_ceph_deb_ndn',
        'gitbuilder_ceph_deb_oneiric_ndn',
@@ -460,7 +492,6 @@ def gitbuilder_serve():
        'gitbuilder_modfastcgi_deb_ndn',
        'gitbuilder_collectd_deb_ndn',
        'gitbuilder_kernel_ndn',
-       'gitbuilder_doc',
        )
 def authorize_ssh_keys():
     keyfile = '.ssh/authorized_keys'
