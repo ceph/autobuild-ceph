@@ -65,5 +65,11 @@ find "$SHA_OUTDIR" -mindepth 1 -maxdepth 1 -mtime +1 -printf '../sha1/%P\0' \
 # rsync result somewhere?
 if [ -e ../rsync-target ]; then
     target=`cat ../rsync-target`
+    if [ -e out/output/sha1 ]; then
+	# KLUDGE: first rsync skipping the links, then do everything
+	# else.  this avoids breaking symlinks before their targets
+	# are in place.
+	rsync -ruv -e "ssh -i ../rsync-key -o StrictHostKeyChecking=no" out/output/ $target
+    fi
     rsync -auv --delete -e "ssh -i ../rsync-key -o StrictHostKeyChecking=no" out/output/ $target
 fi

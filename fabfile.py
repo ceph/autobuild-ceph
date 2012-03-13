@@ -182,6 +182,7 @@ def gitbuilder_kernel():
 @roles('gitbuilder_ceph')
 def gitbuilder_ceph():
     _gitbuilder_ceph('https://github.com/ceph/ceph.git','ceph')
+    _sync_to_gitbuilder('tarball','basic')
 
 def _gitbuilder_ceph(url, flavor):
     _gitbuilder(
@@ -277,20 +278,24 @@ def gitbuilder_ceph_deb():
     _deb_builder('https://github.com/ceph/ceph.git', 'ceph-deb')
     with cd('/srv/autobuild-ceph'):
         sudo('echo squeeze natty > dists')
+    _sync_to_gitbuilder('deb','basic')
     sudo('start autobuild-ceph')
 
 @roles('gitbuilder_ceph_deb_native')
 def gitbuilder_ceph_deb_native():
     _deb_builder('https://github.com/ceph/ceph.git', 'ceph-deb-native')
     sudo('start autobuild-ceph')
+    _sync_to_gitbuilder('deb','basic')
 
 @roles('gitbuilder_ceph_gcov')
 def gitbuilder_ceph_gcov():
     _gitbuilder_ceph('https://github.com/ceph/ceph.git', 'ceph-gcov')
+    _sync_to_gitbuilder('tarball','gcov')
 
 @roles('gitbuilder_ceph_notcmalloc')
 def gitbuilder_ceph_notcmalloc():
     _gitbuilder_ceph('https://github.com/ceph/ceph.git', 'ceph-notcmalloc')
+    _sync_to_gitbuilder('tarball','notcmalloc')
 
 @roles('gitbuilder_doc')
 def gitbuilder_doc():
@@ -307,6 +312,16 @@ def gitbuilder_doc():
     with cd('/srv/autobuild-ceph'):
         if not exists('rsync-target'):
             sudo("echo cephdocs@ceph.newdream.net:/home/sage/ceph.newdream.net/docs.raw >> rsync-target")
+        if not exists('rsync-key'):
+            sudo("wget -q http://cephbooter.ceph.dreamhost.com/dhodeploy.key ; mv dhodeploy.key rsync-key")
+            sudo("wget -q http://cephbooter.ceph.dreamhost.com/dhodeploy.key.pub ; mv dhodeploy.key.pub rsync-key.pub")
+            sudo("chmod 600 rsync-key* ; chown autobuild-ceph.autobuild-ceph rsync-key*")
+
+def _sync_to_gitbuilder(btype, flavor):
+    with cd('/srv/autobuild-ceph'):
+        # fugliness
+        if not exists('rsync-target'):
+            sudo("echo gitbuilder@gitbuilder.ceph.com:gitbuilder.ceph.com/`lsb_release -s -c`-`uname -m`-%s-%s >> rsync-target" % (btype,flavor))
         if not exists('rsync-key'):
             sudo("wget -q http://cephbooter.ceph.dreamhost.com/dhodeploy.key ; mv dhodeploy.key rsync-key")
             sudo("wget -q http://cephbooter.ceph.dreamhost.com/dhodeploy.key.pub ; mv dhodeploy.key.pub rsync-key.pub")
