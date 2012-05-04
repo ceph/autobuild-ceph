@@ -231,10 +231,11 @@ def _gitbuilder_ceph(url, flavor):
         )
     sudo('start autobuild-ceph')
 
-def _deb_builder(git_url, flavor):
+def _deb_builder(git_url, flavor, extra_remotes={}):
     _gitbuilder(
         flavor=flavor,
         git_repo=git_url,
+        extra_remotes=extra_remotes,
         extra_packages=[
             'automake',
             'libtool',
@@ -359,8 +360,9 @@ def _sync_out_to_dho(package):
             sudo("chmod 600 rsync-key* ; chown autobuild-ceph.autobuild-ceph rsync-key*")
         sudo("echo emerging@hq.newdream.net > notify-email")
 
-def _ndn_deb_gitbuilder(package, flavor):
-    _deb_builder('git://deploy.benjamin.dhobjects.net/%s.git' % package, flavor)
+def _ndn_deb_gitbuilder(package, flavor, extra_remotes={}):
+    _deb_builder('git://deploy.benjamin.dhobjects.net/%s.git' % package, flavor,
+                 extra_remotes=extra_remotes)
     with cd('/srv/autobuild-ceph'):
         sudo('echo squeeze > dists')
         sudo('echo %s > pkgname' % package)
@@ -368,17 +370,20 @@ def _ndn_deb_gitbuilder(package, flavor):
 
 @roles('gitbuilder_ceph_deb_ndn')
 def gitbuilder_ceph_deb_ndn():
-    _ndn_deb_gitbuilder('ceph', 'ceph-deb')
+    _ndn_deb_gitbuilder('ceph', 'ceph-deb',
+                        extra_remotes={'gh': 'git://github.com/ceph/ceph.git'})
     _sync_out_to_dho('ceph')
 
 @roles('gitbuilder_ceph_deb_oneiric_ndn')
 def gitbuilder_ceph_deb_oneiric_ndn():
-    _ndn_deb_gitbuilder('ceph', 'ceph-deb-native')
+    _ndn_deb_gitbuilder('ceph', 'ceph-deb-native',
+                        extra_remotes={'gh': 'git://github.com/ceph/ceph.git'})
     _sync_out_to_dho('ceph-oneiric')
 
 @roles('gitbuilder_ceph_deb_precise_ndn')
 def gitbuilder_ceph_deb_precise_ndn():
-    _ndn_deb_gitbuilder('ceph', 'ceph-deb-native')
+    _ndn_deb_gitbuilder('ceph', 'ceph-deb-native',
+                        extra_remotes={'gh': 'git://github.com/ceph/ceph.git'})
     _sync_out_to_dho('ceph-precise')
 
 @roles('gitbuilder_apache2_deb_oneiric')
