@@ -53,6 +53,12 @@ env.roledefs['gitbuilder_apache2_deb_oneiric'] = [
 env.roledefs['gitbuilder_modfastcgi_deb_oneiric'] = [
     'ubuntu@10.3.14.93',
     ]
+env.roledefs['gitbuilder_apache2_deb_precise'] = [
+    'ubuntu@10.3.14.94',
+    ]
+env.roledefs['gitbuilder_modfastcgi_deb_precise'] = [
+    'ubuntu@10.3.14.95',
+    ]
 
 
 ## ndn
@@ -391,6 +397,22 @@ def gitbuilder_modfastcgi_deb_oneiric():
         sudo('echo libapache-mod-fastcgi > pkgname')
     _sync_to_gitbuilder('libapache-mod-fastcgi','deb','basic')
 
+@roles('gitbuilder_apache2_deb_precise')
+def gitbuilder_apache2_deb_precise():
+    _deb_builder('git://ceph.newdream.net/git/apache2-2.2.22.git', 'deb')
+    with cd('/srv/autobuild-ceph'):
+        sudo('echo precise > dists')
+        sudo('echo apache2 > pkgname')
+    _sync_to_gitbuilder('apache2','deb','basic')
+
+@roles('gitbuilder_modfastcgi_deb_precise')
+def gitbuilder_modfastcgi_deb_precise():
+    _deb_builder('git://ceph.newdream.net/git/libapache-mod-fastcgi-2.4.7-0910052141.git', 'deb')
+    with cd('/srv/autobuild-ceph'):
+        sudo('echo precise > dists')
+        sudo('echo libapache-mod-fastcgi > pkgname')
+    _sync_to_gitbuilder('libapache-mod-fastcgi','deb','basic')
+
 @roles('gitbuilder_apache2_deb_ndn')
 def gitbuilder_apache2_deb_ndn():
     _ndn_deb_gitbuilder('apache2', 'deb')
@@ -484,6 +506,8 @@ def gitbuilder_serve():
        'gitbuilder_kernel',
        'gitbuilder_apache2_deb_oneiric',
        'gitbuilder_modfastcgi_deb_oneiric',
+       'gitbuilder_apache2_deb_precise',
+       'gitbuilder_modfastcgi_deb_precise',
        'gitbuilder_doc',
        # dhodeploy
        'gitbuilder_ceph_deb_ndn',
