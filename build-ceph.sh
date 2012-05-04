@@ -4,6 +4,7 @@ set -e
 # pull down submodules
 rm -rf ceph-object-corpus
 rm -rf src/leveldb
+rm -rf src/libs3
 #git submodule foreach 'git clean -fdx && git reset --hard'
 git submodule init
 git submodule update
