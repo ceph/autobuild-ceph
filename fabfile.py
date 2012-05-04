@@ -330,7 +330,7 @@ def gitbuilder_doc():
     _gitbuilder_ceph('https://github.com/ceph/ceph.git', 'ceph-docs')
     with cd('/srv/autobuild-ceph'):
         if not exists('rsync-target'):
-            sudo("echo cephdocs@ceph.newdream.net:/home/sage/ceph.newdream.net/docs.raw >> rsync-target")
+            sudo("echo cephdocs@ceph.newdream.net:/home/ceph_site/ceph.com/docs.raw >> rsync-target")
         if not exists('rsync-key'):
             sudo("wget -q http://cephbooter.ceph.dreamhost.com/dhodeploy.key ; mv dhodeploy.key rsync-key")
             sudo("wget -q http://cephbooter.ceph.dreamhost.com/dhodeploy.key.pub ; mv dhodeploy.key.pub rsync-key.pub")
