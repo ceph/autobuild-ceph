@@ -227,6 +227,7 @@ def _gitbuilder_ceph(url, flavor):
             'python-virtualenv',
             'uuid-dev',
             'libaio-dev',
+            'libxml2-dev',
             ],
         )
     sudo('start autobuild-ceph')
