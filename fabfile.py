@@ -255,6 +255,7 @@ def _deb_builder(git_url, flavor, extra_remotes={}):
             'libkeyutils-dev',
             'uuid-dev',
             'libaio-dev',
+            'libxml2-dev',
             'python-pip',
             'python-virtualenv',
             'python-support',
