@@ -65,6 +65,16 @@ find "$SHA_OUTDIR" -mindepth 1 -maxdepth 1 -mtime +1 -printf '../sha1/%P\0' \
 # rsync result somewhere?
 if [ -e ../rsync-target ]; then
     target=`cat ../rsync-target`
+
+    if [ -e ../rsync-notify ]; then
+	rsync -auv --delete -n -e "ssh -i ../rsync-key -o StrictHostKeyChecking=no" out/output/ $target > /tmp/would
+	len=`cat /tmp/would | wc -l`
+	notify=`cat ../rsync-notify`
+	if [ $len -gt 4 ]; then
+	    mail -s "gitbuilder rsync to $target" $notify < /tmp/would
+	fi
+    fi
+
     if [ -e out/output/sha1 ]; then
 	# KLUDGE: first rsync skipping the links, then do everything
 	# else.  this avoids breaking symlinks before their targets

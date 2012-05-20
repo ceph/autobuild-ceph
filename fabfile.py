@@ -352,10 +352,12 @@ def _sync_to_gitbuilder(package, format, flavor):
 #
 # build ndn debs for dho
 #
-def _sync_out_to_dho(package):
+def _sync_out_to_dho(package, notify):
     with cd('/srv/autobuild-ceph'):
         if not exists('rsync-target'):
-            sudo("echo dhodeploy@deploy.benjamin.dhobjects.net:out/%s >> rsync-target" % package)
+            sudo("echo dhodeploy@deploy.benjamin.dhobjects.net:out/%s > rsync-target" % package)
+        if not exists('rsync-notify'):
+            sudo("echo %s > rsync-notify" % notify)
         if not exists('rsync-key'):
             sudo("wget -q http://cephbooter.ceph.dreamhost.com/dhodeploy.key ; mv dhodeploy.key rsync-key")
             sudo("wget -q http://cephbooter.ceph.dreamhost.com/dhodeploy.key.pub ; mv dhodeploy.key.pub rsync-key.pub")
@@ -374,19 +376,19 @@ def _ndn_deb_gitbuilder(package, flavor, extra_remotes={}):
 def gitbuilder_ceph_deb_ndn():
     _ndn_deb_gitbuilder('ceph', 'ceph-deb',
                         extra_remotes={'gh': 'git://github.com/ceph/ceph.git'})
-    _sync_out_to_dho('ceph')
+    _sync_out_to_dho('ceph', 'emerging@hq.newdream.net')
 
 @roles('gitbuilder_ceph_deb_oneiric_ndn')
 def gitbuilder_ceph_deb_oneiric_ndn():
     _ndn_deb_gitbuilder('ceph', 'ceph-deb-native',
                         extra_remotes={'gh': 'git://github.com/ceph/ceph.git'})
-    _sync_out_to_dho('ceph-oneiric')
+    _sync_out_to_dho('ceph-oneiric', 'emerging@hq.newdream.net')
 
 @roles('gitbuilder_ceph_deb_precise_ndn')
 def gitbuilder_ceph_deb_precise_ndn():
     _ndn_deb_gitbuilder('ceph', 'ceph-deb-native',
                         extra_remotes={'gh': 'git://github.com/ceph/ceph.git'})
-    _sync_out_to_dho('ceph-precise')
+    _sync_out_to_dho('ceph-precise', 'emerging@hq.newdream.net')
 
 @roles('gitbuilder_apache2_deb_oneiric')
 def gitbuilder_apache2_deb_oneiric():
@@ -449,7 +451,7 @@ def gitbuilder_kernel_ndn():
             'fbeb94b65cf784ed8bf852131e28c9fb5c4c760f',
             ],
         )
-    _sync_out_to_dho('kernel')
+    _sync_out_to_dho('kernel', 'emerging@hq.newdream.net')
     sudo('start autobuild-ceph')
 
 @roles('gitbuilder_ceph',
