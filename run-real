@@ -70,7 +70,7 @@ if [ -e ../rsync-target ]; then
 	rsync -auv --delete -n -e "ssh -i ../rsync-key -o StrictHostKeyChecking=no" out/output/ $target > /tmp/would
 	len=`cat /tmp/would | wc -l`
 	notify=`cat ../rsync-notify`
-	if [ $len -gt 4 ]; then
+	if [ $len -gt 10 ]; then
 	    mail -s "gitbuilder rsync to $target" $notify < /tmp/would
 	fi
     fi
