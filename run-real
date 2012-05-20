@@ -68,11 +68,6 @@ if [ -e ../rsync-target ]; then
 
     if [ -e ../rsync-notify ]; then
 	rsync -auv --delete -n -e "ssh -i ../rsync-key -o StrictHostKeyChecking=no" out/output/ $target > /tmp/would
-	len=`cat /tmp/would | wc -l`
-	notify=`cat ../rsync-notify`
-	if [ $len -gt 10 ]; then
-	    mail -s "gitbuilder rsync to $target" $notify < /tmp/would
-	fi
     fi
 
     if [ -e out/output/sha1 ]; then
@@ -82,4 +77,13 @@ if [ -e ../rsync-target ]; then
 	rsync -ruv -e "ssh -i ../rsync-key -o StrictHostKeyChecking=no" out/output/ $target
     fi
     rsync -auv --delete -e "ssh -i ../rsync-key -o StrictHostKeyChecking=no" out/output/ $target
+
+    if [ -e ../rsync-notify ]; then
+	len=`cat /tmp/would | wc -l`
+	notify=`cat ../rsync-notify`
+	if [ $len -gt 10 ]; then
+	    mail -s "gitbuilder rsync to $target" $notify < /tmp/would
+	fi
+    fi
+
 fi
