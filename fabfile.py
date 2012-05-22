@@ -467,44 +467,28 @@ def gitbuilder_kernel_ndn():
        'gitbuilder_kernel_ndn',
        )
 def gitbuilder_serve():
-    _apt_install(
-        'thttpd',
-        )
-    # TODO $ signs in the regexps seem to get passed in as \$, and
-    # just don't work the right way; avoid for now, even if that means
-    # we could end up doing something very wrong
-    sed(
-        filename='/etc/default/thttpd',
-        before='^ENABLED=no',
-        after='ENABLED=yes',
-        use_sudo=True,
-        )
-    sed(
-        filename='/etc/thttpd/thttpd.conf',
-        before='^user=www-data',
-        after='user=autobuild-ceph',
-        use_sudo=True,
-        )
-    sed(
-        filename='/etc/thttpd/thttpd.conf',
-        before='^dir=/var/www',
-        after='dir=/srv/autobuild-ceph/gitbuilder.git/out',
-        use_sudo=True,
-        )
-    sed(
-        filename='/etc/thttpd/thttpd.conf',
-        before='^cgipat=/cgi-bin/\*',
-        after='cgipat=**.cgi',
-        use_sudo=True,
-        )
-    sed(
-        filename='/etc/thttpd/thttpd.conf',
-        before='^chroot',
-        after='#chroot',
-        use_sudo=True,
-        )
-    sudo('/etc/init.d/thttpd restart')
+    # kill any remaining thttpd's in favor of lighttpd.  Do this before
+    # installing lighttpd so that lighttpd can start without errors
+    # (albeit with the default config)
 
+    sudo('/etc/init.d/thttpd stop')
+
+    _apt_install(
+        'lighttpd',
+        )
+
+    put('lighttpd.conf', '/tmp/lighttpd.conf')
+
+    with settings(hide('warnings'), warn_only = True):
+	same = sudo('diff -q /etc/lighttpd/lighttpd.conf /tmp/lighttpd.conf')
+	if same.succeeded == False:
+	    sudo('/etc/init.d/lighttpd stop')
+	    sudo('mv /etc/lighttpd/lighttpd.conf /etc/lighttpd.orig')
+	    sudo('mv /tmp/lighttpd.conf /etc/lighttpd/lighttpd.conf')
+	    sudo('chown autobuild-ceph:autobuild-ceph /var/log/lighttpd')
+	    sudo('/etc/init.d/lighttpd start')
+	else:
+	    sudo('rm /tmp/lighttpd.conf')
 
 @roles('gitbuilder_ceph',
        'gitbuilder_ceph_deb',
