@@ -471,7 +471,7 @@ def gitbuilder_serve():
     # installing lighttpd so that lighttpd can start without errors
     # (albeit with the default config)
 
-    sudo('/etc/init.d/thttpd stop')
+    sudo('/etc/init.d/thttpd stop || true')
 
     _apt_install(
         'lighttpd',
