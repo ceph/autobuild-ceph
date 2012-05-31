@@ -485,7 +485,7 @@ def gitbuilder_serve():
 	    sudo('/etc/init.d/lighttpd stop')
 	    sudo('mv /etc/lighttpd/lighttpd.conf /etc/lighttpd.orig')
 	    sudo('mv /tmp/lighttpd.conf /etc/lighttpd/lighttpd.conf')
-	    sudo('chown autobuild-ceph:autobuild-ceph /var/log/lighttpd')
+	    sudo('chown -R autobuild-ceph:autobuild-ceph /var/log/lighttpd')
 	    sudo('/etc/init.d/lighttpd start')
 	else:
 	    sudo('rm /tmp/lighttpd.conf')
