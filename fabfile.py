@@ -102,6 +102,9 @@ def _gitbuilder(flavor, git_repo, extra_remotes={}, extra_packages=[], ignore=[]
     """
     extra_remotes will be fetch but not autobuilt. useful for tags.
     """
+    gitbuilder_commit='045788e7dd048d49c7549e647d65bc2561d5474f'
+    gitbuilder_origin='git://github.com/ceph/gitbuilder.git'
+
     # shut down old instance, it exists
     sudo("initctl list|grep -q '^autobuild-ceph\s' && stop autobuild-ceph || :")
 
@@ -142,14 +145,19 @@ def _gitbuilder(flavor, git_repo, extra_remotes={}, extra_packages=[], ignore=[]
         sudo('ln -sf build-{flavor}.sh build.sh'.format(flavor=flavor))
         if not exists('gitbuilder.git'):
             sudo('rm -rf gitbuilder.git.tmp')
-            sudo('git clone https://github.com/tv42/gitbuilder.git gitbuilder.git.tmp')
+            sudo('git clone %s gitbuilder.git.tmp' % gitbuilder_origin)
             with cd('gitbuilder.git.tmp'):
-                sudo('git checkout 65a6317dd153d1c7074527718f1c49ee2858c741')
+                sudo('git checkout %s' % gitbuilder_commit)
                 sudo('ln -s ../build.sh ./')
                 sudo('ln -s ../branches-local ./')
                 sudo('git clone {git_repo} build'.format(git_repo=git_repo))
                 sudo('chown -R autobuild-ceph:autobuild-ceph build out')
             sudo('mv gitbuilder.git.tmp gitbuilder.git')
+        else:
+            with cd('gitbuilder.git'):
+                sudo('git remote set-url origin %s' % gitbuilder_origin)
+                sudo('git fetch origin')
+                sudo('git reset --hard %s' % gitbuilder_commit)
         with cd('gitbuilder.git/build'):
             sudo(
                 'git remote set-url origin {url}'.format(
