@@ -2,7 +2,7 @@
 set -e
 
 # use sun-java6
-export CPATH="$CPATH:/usr/lib/jvm/java-6-sun/include:/usr/lib/jvm/java-6-sun/include/linux"
+export CPATH="$CPATH:/usr/lib/jvm/default-java/include:/usr/lib/jvm/default-java/include/linux"
 
 
 ./autobuilder.sh
