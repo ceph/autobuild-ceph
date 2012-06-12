@@ -12,13 +12,13 @@ env.roledefs['gitbuilder_ceph'] = [
 
 env.roledefs['gitbuilder_ceph_gcov'] = [
 #    'ubuntu@gitbuilder-gcov-amd64.ceph.newdream.net',
-    'ubuntu@gitbuilder-oneiric-gcov-amd64.ceph.newdream.net',
+#    'ubuntu@gitbuilder-oneiric-gcov-amd64.ceph.newdream.net',
     'ubuntu@gitbuilder-precise-gcov-amd64.ceph.newdream.net',
     ]
 
 env.roledefs['gitbuilder_ceph_notcmalloc'] = [
 #    'ubuntu@10.3.14.76',
-    'ubuntu@gitbuilder-oneiric-notcmalloc-amd64.ceph.newdream.net',
+#    'ubuntu@gitbuilder-oneiric-notcmalloc-amd64.ceph.newdream.net',
     'ubuntu@gitbuilder-precise-notcmalloc-amd64.ceph.newdream.net',
     ]
 
