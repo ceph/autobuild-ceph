@@ -10,7 +10,7 @@ git submodule init
 git submodule update
 git clean -fdx
 
-DIST=`grep DISTRIB_CODENAME /etc/lsb-release | sed 's/.*=//'`
+DIST=`lsb_release -sc`
 
 echo --START-IGNORE-WARNINGS
 [ ! -x autogen.sh ] || ./autogen.sh || exit 1
