@@ -108,11 +108,11 @@ def _gitbuilder(flavor, git_repo, extra_remotes={}, extra_packages=[], ignore=[]
     gitbuilder_origin='git://github.com/ceph/gitbuilder.git'
 
     # shut down old instance, it exists
-    sudo("initctl list|grep -q '^autobuild-ceph\s' && stop autobuild-ceph || :")
+    sudo("initctl list|grep -q '^autobuild-ceph\s' && stop autobuild-ceph || /etc/init.d/autobuild-ceph stop || :")
 
     # sun-java6 is in partner repo.  accept license.
-    sudo("echo 'deb http://archive.canonical.com/ubuntu maverick partner' > /etc/apt/sources.list.d/partner.list")
-    sudo("echo 'sun-java5-jdk shared/accepted-sun-dlj-v1-1 boolean true' | debconf-set-selections")
+    #sudo("echo 'deb http://archive.canonical.com/ubuntu maverick partner' > /etc/apt/sources.list.d/partner.list")
+    #sudo("echo 'sun-java5-jdk shared/accepted-sun-dlj-v1-1 boolean true' | debconf-set-selections")
 
     _apt_install(
         'ntp',
@@ -144,7 +144,9 @@ def _gitbuilder(flavor, git_repo, extra_remotes={}, extra_packages=[], ignore=[]
     local('rm -f bundle')
     with cd('/srv/autobuild-ceph'):
         sudo('git init')
-        sudo('git pull ~ubuntu/bundle master')
+        # blarg
+        sudo('test -d /home/ubuntu || ln -sf /home/debian /home/ubuntu')
+        sudo('git pull /home/ubuntu/bundle master')
         sudo('ln -sf build-{flavor}.sh build.sh'.format(flavor=flavor))
         if not exists('gitbuilder.git'):
             sudo('rm -rf gitbuilder.git.tmp')
@@ -186,7 +188,7 @@ def _gitbuilder(flavor, git_repo, extra_remotes={}, extra_packages=[], ignore=[]
         sudo('install -d -m0755 --owner=autobuild-ceph --group=autobuild-ceph ccache')
         sudo('install -d -m0755 logs')
 
-        sudo('install --owner=root --group=root -m0644 autobuild-ceph.conf /etc/init/autobuild-ceph.conf')
+        sudo('install --owner=root --group=root -m0644 autobuild-ceph.conf /etc/init/autobuild-ceph.conf || install --owner=root --group=root -m0755 autobuild-ceph.init /etc/init.d/autobuild-ceph')
     run('rm bundle')
 
 @roles('gitbuilder_kernel')
@@ -208,7 +210,7 @@ def gitbuilder_kernel():
             ],
         )
     _sync_to_gitbuilder('kernel', 'deb', 'basic')
-    sudo('start autobuild-ceph')
+    sudo('start autobuild-ceph || /etc/init.d/autobuild-ceph start')
 
 @roles('gitbuilder_ceph')
 def gitbuilder_ceph():
@@ -243,7 +245,7 @@ def _gitbuilder_ceph(url, flavor):
             'libxml2-dev',
             ],
         )
-    sudo('start autobuild-ceph')
+    sudo('start autobuild-ceph || /etc/init.d/autobuild-ceph start')
 
 def _deb_builder(git_url, flavor, extra_remotes={}):
     _gitbuilder(
@@ -313,12 +315,12 @@ def gitbuilder_ceph_deb():
     with cd('/srv/autobuild-ceph'):
         sudo('echo squeeze natty > dists')
     _sync_to_gitbuilder('ceph', 'deb', 'basic')
-    sudo('start autobuild-ceph')
+    sudo('start autobuild-ceph || /etc/init.d/autobuild-ceph start')
 
 @roles('gitbuilder_ceph_deb_native')
 def gitbuilder_ceph_deb_native():
     _deb_builder('https://github.com/ceph/ceph.git', 'ceph-deb-native')
-    sudo('start autobuild-ceph')
+    sudo('start autobuild-ceph || /etc/init.d/autobuild-ceph start')
     _sync_to_gitbuilder('ceph', 'deb', 'basic')
 
 @roles('gitbuilder_ceph_gcov')
@@ -383,7 +385,7 @@ def _ndn_deb_gitbuilder(package, flavor, extra_remotes={}):
     with cd('/srv/autobuild-ceph'):
         sudo('echo squeeze > dists')
         sudo('echo %s > pkgname' % package)
-    sudo('start autobuild-ceph')
+    sudo('start autobuild-ceph || /etc/init.d/autobuild-ceph start')
 
 @roles('gitbuilder_ceph_deb_ndn')
 def gitbuilder_ceph_deb_ndn():
@@ -465,7 +467,7 @@ def gitbuilder_kernel_ndn():
             ],
         )
     _sync_out_to_dho('kernel', 'emerging@hq.newdream.net')
-    sudo('start autobuild-ceph')
+    sudo('start autobuild-ceph || /etc/init.d/autobuild-ceph start')
 
 @roles('gitbuilder_ceph',
        'gitbuilder_ceph_deb',
