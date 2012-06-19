@@ -122,6 +122,7 @@ def _gitbuilder(flavor, git_repo, extra_remotes={}, extra_packages=[], ignore=[]
         'logrotate',
 #        'sun-java6-jdk',
         'default-jdk',
+        'rsync',
         *extra_packages
         )
     sudo(
