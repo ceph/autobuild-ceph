@@ -243,6 +243,7 @@ def _gitbuilder_ceph(url, flavor):
             'uuid-dev',
             'libaio-dev',
             'libxml2-dev',
+            'libnss3-dev',
             ],
         )
     sudo('start autobuild-ceph || /etc/init.d/autobuild-ceph start')
@@ -271,6 +272,7 @@ def _deb_builder(git_url, flavor, extra_remotes={}):
             'uuid-dev',
             'libaio-dev',
             'libxml2-dev',
+            'libnss3-dev',
             'python-pip',
             'python-virtualenv',
             'python-support',
