@@ -9,6 +9,7 @@ env.roledefs['gitbuilder_ceph'] = [
     'ubuntu@gitbuilder-oneiric-amd64.ceph.newdream.net',
     'ubuntu@gitbuilder-precise-amd64.ceph.newdream.net',
     'ubuntu@gitbuilder-precise-i386.ceph.newdream.net',
+    'debian@gitbuilder-squeeze-amd64.ceph.newdream.net',
     ]
 
 env.roledefs['gitbuilder_ceph_gcov'] = [
@@ -35,6 +36,7 @@ env.roledefs['gitbuilder_ceph_deb_native'] = [
     'ubuntu@10.3.14.85',
     'ubuntu@10.3.14.86',
     'ubuntu@gitbuilder-natty-deb-amd64.ceph.newdream.net',
+    'debian@gitbuilder-wheezy-deb-amd64.ceph.newdream.net',
     ]
 
 env.roledefs['gitbuilder_ceph_deb_ndn'] = [
