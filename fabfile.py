@@ -25,7 +25,8 @@ env.roledefs['gitbuilder_ceph_notcmalloc'] = [
     ]
 
 env.roledefs['gitbuilder_kernel'] = [
-    'ubuntu@gitbuilder-kernel-amd64.ceph.newdream.net',
+#    'ubuntu@gitbuilder-kernel-amd64.ceph.newdream.net',
+    'ubuntu@gitbuilder-precise-kernel-amd64.ceph.newdream.net',
     ]
 
 env.roledefs['gitbuilder_ceph_deb'] = [
