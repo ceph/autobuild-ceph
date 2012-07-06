@@ -107,7 +107,7 @@ def _gitbuilder(flavor, git_repo, extra_remotes={}, extra_packages=[], ignore=[]
     """
     extra_remotes will be fetch but not autobuilt. useful for tags.
     """
-    gitbuilder_commit='46a6faf453dbc6da1acb74965618fa304d479474'
+    gitbuilder_commit='ac4ae27b9854470ac2a732eea55218f6eb1edc32'
     gitbuilder_origin='git://github.com/ceph/gitbuilder.git'
 
     # shut down old instance, it exists

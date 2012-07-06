@@ -35,9 +35,18 @@ install -d -m0755 -- "$REF_OUTDIR"
     SHA=`cd build && git rev-parse $REF`
     echo "ref $SAFE_REF $SHA"
 
-    # make a symlink
-    ln -s -- "../sha1/$SHA" "$REF_OUTDIR/$SAFE_REF.tmp"
-    mv --no-target-directory -- "$REF_OUTDIR/$SAFE_REF.tmp" "$REF_OUTDIR/$SAFE_REF"
+    if [ -e "$REF_OUTDIR/$SAFE_REF" ]; then
+	# keep symlink fresh
+	touch --no-dereference "$REF_OUTDIR/$SAFE_REF"
+    else
+	if [ -e "out/pass/$SHA" ]; then
+	    # we did a successful build; make a new symlink.  this only
+	    # happens if we aborted somewhere before, though; the pass.sh
+	    # really should have done this!
+	    ln -s -- "../sha1/$SHA" "$REF_OUTDIR/$SAFE_REF.tmp"
+	    mv --no-target-directory -- "$REF_OUTDIR/$SAFE_REF.tmp" "$REF_OUTDIR/$SAFE_REF"
+	fi
+    fi
 done
 
 target=`cat ../rsync-target`
@@ -45,16 +54,13 @@ target_host=`cat ../rsync-target | sed 's/:.*//'`
 target_dir=`cat ../rsync-target | sed 's/.*://'`
 echo "rsync target host $target_host dir $target_dir"
 
-# remove sha1's that haven't been touched in 48 hours; as the above
-# will always re-create the symlinks, they are guaranteed fresh
+# remove refs symlinks that haven't been touched in 48 hours; as the
+# above will always touch everything, they are guaranteed fresh
 find "$REF_OUTDIR" -mindepth 1 -maxdepth 1 -mtime +1  \
 | while read old ; do
     ref=`echo $old | sed 's/.*\///'`
-    sha1=`readlink $REF_OUTDIR/$ref | sed 's/.*\///'`
-    echo "removing old ref $ref sha1 $sha1"
-    if [ -n "$target_dir" ]; then
-	ssh -i ../rsync-key -o StrictHostKeyChecking=no $target_host rm -r $target_dir/ref/$ref $target_dir/sha1/$sha1
-    fi
+    echo "removing old ref $ref"
+    rm $old
 done
 
 # clean temp output dirs; since there cannot be a build running in
@@ -62,7 +68,8 @@ done
 find "$SHA_OUTDIR" -mindepth 1 -maxdepth 1 -name '*.tmp' -print0 \
 | xargs -0 --no-run-if-empty rm -rf --
 
-# rsync --delete on the refs, to clean up old refs
+# rsync --delete on the refs, so that stale refs on the target are
+# removed.  remove remote sha1 dirs that are stale.
 if [ -n "$target" ]; then
     echo "removing old refs"
     rsync -auv --delete -e "ssh -i ../rsync-key -o StrictHostKeyChecking=no" \
