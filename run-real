@@ -10,6 +10,9 @@ export CPATH="$CPATH:/usr/lib/jvm/default-java/include:/usr/lib/jvm/default-java
 REF_OUTDIR="out/output/ref"
 SHA_OUTDIR="out/output/sha1"
 
+mkdir -p $REF_OUTDIR
+mkdir -p $SHA_OUTDIR
+
 # clean up temp files from aborted runs of below symlinking; all tmp
 # files are stale
 find "$REF_OUTDIR" -mindepth 1 -maxdepth 1 -name '*.tmp' -print0 \
@@ -18,8 +21,8 @@ find "$REF_OUTDIR" -mindepth 1 -maxdepth 1 -name '*.tmp' -print0 \
 # update symlinks that make branch point to the latest successful
 # output dir for that branch
 install -d -m0755 -- "$REF_OUTDIR"
-( cd build && ../branches-local -v ) \
-| while read LATEST REF; do
+( ./branches.sh ) \
+| while read REF; do
     # mangle unsafe characters in branch names, just in case (slashes
     # and leading periods); gitbuilder hanging on to "origin/" here
     # makes the typical result a bit ugly
@@ -29,61 +32,46 @@ install -d -m0755 -- "$REF_OUTDIR"
     # collisions, but we're gonna ignore that for now
     SAFE_REF="${SAFE_REF#origin_}"
 
-    # find the latest commit in that history that we have a result for;
-    # assume it's found in the last 100 commits, to limit time wasted
-    git --git-dir=build/.git rev-list --first-parent --topo-order --max-count=100 "$LATEST" \
-	| while read REV; do
-	OUTDIR="$SHA_OUTDIR"
-	if [ -e "$OUTDIR/$REV" ]; then
-	    ln -s -- "../sha1/$REV" "$REF_OUTDIR/$SAFE_REF.tmp"
-	    mv --no-target-directory -- "$REF_OUTDIR/$SAFE_REF.tmp" "$REF_OUTDIR/$SAFE_REF"
-	    break
-	fi
-    done
+    SHA=`cd build && git rev-parse $REF`
+    echo "ref $SAFE_REF $SHA"
+
+    # make a symlink
+    ln -s -- "../sha1/$SHA" "$REF_OUTDIR/$SAFE_REF.tmp"
+    mv --no-target-directory -- "$REF_OUTDIR/$SAFE_REF.tmp" "$REF_OUTDIR/$SAFE_REF"
 done
 
-# remove ref symlinks that haven't been touched in 48 hours; as the above
+target=`cat ../rsync-target`
+target_host=`cat ../rsync-target | sed 's/:.*//'`
+target_dir=`cat ../rsync-target | sed 's/.*://'`
+echo "rsync target host $target_host dir $target_dir"
+
+# remove sha1's that haven't been touched in 48 hours; as the above
 # will always re-create the symlinks, they are guaranteed fresh
-find "$REF_OUTDIR" -mindepth 1 -maxdepth 1 -mtime +1 -printf '%p\0' \
-| xargs -0 --no-run-if-empty -- rm -rf --
+find "$REF_OUTDIR" -mindepth 1 -maxdepth 1 -mtime +1  \
+| while read old ; do
+    ref=`echo $old | sed 's/.*\///'`
+    sha1=`readlink $REF_OUTDIR/$ref | sed 's/.*\///'`
+    echo "removing old ref $ref sha1 $sha1"
+    if [ -n "$target_dir" ]; then
+	ssh -i ../rsync-key -o StrictHostKeyChecking=no $target_host rm -r $target_dir/ref/$ref $target_dir/sha1/$sha1
+    fi
+done
 
 # clean temp output dirs; since there cannot be a build running in
 # parallel with us, all tmp files are stale
 find "$SHA_OUTDIR" -mindepth 1 -maxdepth 1 -name '*.tmp' -print0 \
 | xargs -0 --no-run-if-empty rm -rf --
 
-# note down what sha1's are still pointed to by refs
-find "$REF_OUTDIR" -mindepth 1 -maxdepth 1 -type l -printf '%l\n' >out/refs-still-alive
+# rsync --delete on the refs, to clean up old refs
+if [ -n "$target" ]; then
+    echo "removing old refs"
+    rsync -auv --delete -e "ssh -i ../rsync-key -o StrictHostKeyChecking=no" \
+	"$REF_OUTDIR/" $target/ref
 
-# and finally remove any output dir older than 48h, that is not target
-# of symlink; need to do ugly things in xargs because the symlinks
-# destinations are cross-directory paths
-find "$SHA_OUTDIR" -mindepth 1 -maxdepth 1 -mtime +1 -printf '../sha1/%P\0' \
-| grep --null-data --fixed-strings --line-regexp --invert-match --file=out/refs-still-alive \
-| xargs -0 --no-run-if-empty -I '{}' -- rm -rf -- "$SHA_OUTDIR/{}"
-
-# rsync result somewhere?
-if [ -e ../rsync-target ]; then
-    target=`cat ../rsync-target`
-
-    if [ -e ../rsync-notify ]; then
-	rsync -auv --delete -n -e "ssh -i ../rsync-key -o StrictHostKeyChecking=no" out/output/ $target > /tmp/would
-    fi
-
-    if [ -e out/output/sha1 ]; then
-	# KLUDGE: first rsync skipping the links, then do everything
-	# else.  this avoids breaking symlinks before their targets
-	# are in place.
-	rsync -ruv -e "ssh -i ../rsync-key -o StrictHostKeyChecking=no" out/output/ $target
-    fi
-    rsync -auv --delete -e "ssh -i ../rsync-key -o StrictHostKeyChecking=no" out/output/ $target
-
-    if [ -e ../rsync-notify ]; then
-	len=`cat /tmp/would | wc -l`
-	notify=`cat ../rsync-notify`
-	if [ $len -gt 10 ]; then
-	    mail -s "gitbuilder rsync to $target" $notify < /tmp/would
-	fi
-    fi
-
+    # touch any active sha1 dirs, and remove any older than 2 days.
+    echo "removing old builds"
+    ssh -i ../rsync-key -o StrictHostKeyChecking=no $target_host \
+	touch $target_dir/ref/\*/. \; \
+	find $target_dir/sha1 -mindepth 1 -maxdepth 1 -mtime +1 \| \
+	xargs --no-run-if-empty -- rm -rfv --
 fi
