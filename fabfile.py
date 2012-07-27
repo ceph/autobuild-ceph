@@ -6,27 +6,27 @@ import os
 env.roledefs['gitbuilder_ceph'] = [
 #    'ubuntu@gitbuilder-i386.ceph.newdream.net',
 #    'ubuntu@gitbuilder.ceph.newdream.net',
-    'ubuntu@gitbuilder-oneiric-amd64.ceph.newdream.net',
-    'ubuntu@gitbuilder-precise-amd64.ceph.newdream.net',
-    'ubuntu@gitbuilder-precise-i386.ceph.newdream.net',
-    'debian@gitbuilder-squeeze-amd64.ceph.newdream.net',
+    'ubuntu@gitbuilder-oneiric-amd64.front.sepia.ceph.com',
+    'ubuntu@gitbuilder-precise-amd64.front.sepia.ceph.com',
+    'ubuntu@gitbuilder-precise-i386.front.sepia.ceph.com',
+    'debian@gitbuilder-squeeze-amd64.front.sepia.ceph.com',
     ]
 
 env.roledefs['gitbuilder_ceph_gcov'] = [
 #    'ubuntu@gitbuilder-gcov-amd64.ceph.newdream.net',
 #    'ubuntu@gitbuilder-oneiric-gcov-amd64.ceph.newdream.net',
-    'ubuntu@gitbuilder-precise-gcov-amd64.ceph.newdream.net',
+    'ubuntu@gitbuilder-precise-gcov-amd64.front.sepia.ceph.com',
     ]
 
 env.roledefs['gitbuilder_ceph_notcmalloc'] = [
 #    'ubuntu@10.3.14.76',
 #    'ubuntu@gitbuilder-oneiric-notcmalloc-amd64.ceph.newdream.net',
-    'ubuntu@gitbuilder-precise-notcmalloc-amd64.ceph.newdream.net',
+    'ubuntu@gitbuilder-precise-notcmalloc-amd64.front.sepia.ceph.com',
     ]
 
 env.roledefs['gitbuilder_kernel'] = [
 #    'ubuntu@gitbuilder-kernel-amd64.ceph.newdream.net',
-    'ubuntu@gitbuilder-precise-kernel-amd64.ceph.newdream.net',
+    'ubuntu@gitbuilder-precise-kernel-amd64.front.sepia.ceph.com',
     ]
 
 env.roledefs['gitbuilder_ceph_deb'] = [
@@ -34,56 +34,56 @@ env.roledefs['gitbuilder_ceph_deb'] = [
     ]
 
 env.roledefs['gitbuilder_ceph_deb_native'] = [
-    'ubuntu@10.3.14.85',
-    'ubuntu@10.3.14.86',
-    'ubuntu@gitbuilder-natty-deb-amd64.ceph.newdream.net',
-    'debian@gitbuilder-wheezy-deb-amd64.ceph.newdream.net',
+    'ubuntu@gitbuilder-oneiric-deb-amd64.front.sepia.ceph.com',
+    'ubuntu@gitbuilder-precise-deb-amd64.front.sepia.ceph.com',
+    'ubuntu@gitbuilder-natty-deb-amd64.front.sepia.ceph.com',
+    'debian@gitbuilder-wheezy-deb-amd64.front.sepia.ceph.com',
     ]
 
-env.roledefs['gitbuilder_ceph_deb_ndn'] = [
-    'ubuntu@10.3.14.65',
-    ]
-env.roledefs['gitbuilder_ceph_deb_oneiric_ndn'] = [
-    'ubuntu@10.3.14.87',
-    ]
+#env.roledefs['gitbuilder_ceph_deb_ndn'] = [
+#    'ubuntu@10.3.14.65',
+#    ]
+#env.roledefs['gitbuilder_ceph_deb_oneiric_ndn'] = [
+#    'ubuntu@10.3.14.87',
+#    ]
 env.roledefs['gitbuilder_ceph_deb_precise_ndn'] = [
-    'ubuntu@10.3.14.88',
+    'ubuntu@gitbuilder-precise-ceph-deb-ndn.front.sepia.ceph.com',
     ]
 
 env.roledefs['gitbuilder_doc'] = [
-    'ubuntu@10.3.14.91',
+    'ubuntu@gitbuilder-doc.front.sepia.ceph.com',
     ]
 
-env.roledefs['gitbuilder_apache2_deb_oneiric'] = [
-    'ubuntu@10.3.14.92',
-    ]
-env.roledefs['gitbuilder_modfastcgi_deb_oneiric'] = [
-    'ubuntu@10.3.14.93',
-    ]
-env.roledefs['gitbuilder_apache2_deb_precise'] = [
-    'ubuntu@10.3.14.94',
-    ]
-env.roledefs['gitbuilder_modfastcgi_deb_precise'] = [
-    'ubuntu@10.3.14.95',
-    ]
+#env.roledefs['gitbuilder_apache2_deb_oneiric'] = [
+#    'ubuntu@10.3.14.92',
+#    ]
+#env.roledefs['gitbuilder_modfastcgi_deb_oneiric'] = [
+#    'ubuntu@10.3.14.93',
+#    ]
+#env.roledefs['gitbuilder_apache2_deb_precise'] = [
+#    'ubuntu@10.3.14.94',
+#    ]
+#env.roledefs['gitbuilder_modfastcgi_deb_precise'] = [
+#    'ubuntu@10.3.14.95',
+#    ]
 
 
 ## ndn
-env.roledefs['gitbuilder_apache2_deb_ndn'] = [
-    'ubuntu@10.3.14.71',
-    ]
+#env.roledefs['gitbuilder_apache2_deb_ndn'] = [
+#    'ubuntu@10.3.14.71',
+#    ]
 
-env.roledefs['gitbuilder_modfastcgi_deb_ndn'] = [
-    'ubuntu@10.3.14.73',
-    ]
+#env.roledefs['gitbuilder_modfastcgi_deb_ndn'] = [
+#    'ubuntu@10.3.14.73',
+#    ]
 
-env.roledefs['gitbuilder_collectd_deb_ndn'] = [
-    'ubuntu@10.3.14.74',
-    ]
+#env.roledefs['gitbuilder_collectd_deb_ndn'] = [
+#    'ubuntu@10.3.14.74',
+#    ]
 
-env.roledefs['gitbuilder_kernel_ndn'] = [
-    'ubuntu@10.3.14.75',
-    ]
+#env.roledefs['gitbuilder_kernel_ndn'] = [
+#    'ubuntu@10.3.14.75',
+#    ]
 
 
 
