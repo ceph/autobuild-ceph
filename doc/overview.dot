@@ -1,0 +1,69 @@
+digraph "autobuild-overview" {
+  // force edge ordering to match calling order
+  { rank=same; autobuilder_sh;
+    update_ref_symlinks;
+    rsync_out; }
+    autobuilder_sh -> update_ref_symlinks -> rsync_out [style=invis];
+  
+  { rank=same; logrotate; run_real; }
+  logrotate -> run_real [style=invis];
+  
+  { rank=same; git_remote_update;
+    branches_sh;
+    autobuilder_sh_subshell; }
+  git_remote_update -> branches_sh -> autobuilder_sh_subshell [style=invis];
+  
+  { rank=same; next_rev_sh;
+    run_build_sh; }
+  next_rev_sh -> run_build_sh [style=invis];
+  
+  // provided by base OS
+  upstart [color="lightblue", style=filled];;
+  
+  // in autobuild-ceph.git
+  autobuild_ceph_conf [label="autobuild-ceph.conf", color="#F05C56", style=filled];
+  autobuild_ceph_init [label="autobuild-ceph.init", color="#F05C56", style=filled];
+  run [color="#F05C56", style=filled];;
+  logrotate [color="#F05C56", style=filled];;
+  run_real [label="run-real", color="#F05C56", style=filled];
+  update_ref_symlinks [label="update ref\nsymlinks", color="#F05C56", style=filled];
+  rsync_out [label="rsync out", color="#F05C56", style=filled];
+  branches_local [label="../branches-local", color="#F05C56", style=filled];
+  build_sh [label="../build.sh\n(symlink based\non flavor)", color="#F05C56", style=filled];
+  
+  // in gitbuilder.git
+  autobuilder_sh [label="autobuilder.sh", color="lightgray", style=filled];
+  autobuilder_sh_loop [shape=point, , color="lightgray"];
+  autobuilder_sh_subshell [label="(subshell)", color="lightgray", style=filled];
+  git_remote_update [label="git remote update\netc", color="lightgray", style=filled];
+  branches_sh [label="branches.sh", color="lightgray", style=filled];
+  branches_sh [label="branches.sh", color="lightgray", style=filled];
+  next_rev_sh [label="next-rev.sh", color="lightgray", style=filled];
+  run_build_sh [label="run-build.sh", color="lightgray", style=filled];
+  
+  // who calls who
+  upstart -> autobuild_ceph_conf;
+  {autobuild_ceph_conf; autobuild_ceph_init} -> run;
+  run -> {
+    logrotate;
+    run_real;
+  };
+  run_real -> {
+    autobuilder_sh;
+    update_ref_symlinks;
+    rsync_out;
+    };
+    autobuilder_sh -> autobuilder_sh_loop [label="loop while did_something"];
+  autobuilder_sh_loop -> {
+    git_remote_update;
+    branches_sh;
+    autobuilder_sh_subshell;
+    };
+  branches_sh -> branches_local;
+  branches_sh -> autobuilder_sh_subshell [style=dotted, weight=1000, label="pipe"];
+  autobuilder_sh_subshell -> {
+    next_rev_sh;
+    run_build_sh;
+    };
+  run_build_sh -> build_sh;
+}
