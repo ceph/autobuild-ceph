@@ -355,8 +355,8 @@ def gitbuilder_doc():
         if not exists('rsync-target'):
             sudo("echo cephdocs@ceph.newdream.net:/home/ceph_site/ceph.com/docs.raw >> rsync-target")
         if not exists('rsync-key'):
-            sudo("wget -q http://cephbooter.ceph.dreamhost.com/dhodeploy.key ; mv dhodeploy.key rsync-key")
-            sudo("wget -q http://cephbooter.ceph.dreamhost.com/dhodeploy.key.pub ; mv dhodeploy.key.pub rsync-key.pub")
+            sudo("mv /tmp/rsync-key rsync-key")
+            sudo("mv /tmp/rsync-key.pub rsync-key.pub")
             sudo("chmod 600 rsync-key* ; chown autobuild-ceph.autobuild-ceph rsync-key*")
 
 def _sync_to_gitbuilder(package, format, flavor):
@@ -364,8 +364,8 @@ def _sync_to_gitbuilder(package, format, flavor):
         # fugliness
         sudo("echo gitbuilder@gitbuilder.ceph.com:gitbuilder.ceph.com/%s-%s-`lsb_release -s -c`-`uname -m`-%s > rsync-target" % (package,format,flavor))
         if not exists('rsync-key'):
-            sudo("wget -q http://cephbooter.ceph.dreamhost.com/dhodeploy.key ; mv dhodeploy.key rsync-key")
-            sudo("wget -q http://cephbooter.ceph.dreamhost.com/dhodeploy.key.pub ; mv dhodeploy.key.pub rsync-key.pub")
+            sudo("mv /tmp/rsync-key rsync-key")
+            sudo("mv /tmp/rsync-key.pub rsync-key.pub")
             sudo("chmod 600 rsync-key* ; chown autobuild-ceph.autobuild-ceph rsync-key*")
 
 
@@ -379,8 +379,8 @@ def _sync_out_to_dho(package, notify):
         if not exists('rsync-notify'):
             sudo("echo %s > rsync-notify" % notify)
         if not exists('rsync-key'):
-            sudo("wget -q http://cephbooter.ceph.dreamhost.com/dhodeploy.key ; mv dhodeploy.key rsync-key")
-            sudo("wget -q http://cephbooter.ceph.dreamhost.com/dhodeploy.key.pub ; mv dhodeploy.key.pub rsync-key.pub")
+            sudo("mv /tmp/rsync-key rsync-key")
+            sudo("mv /tmp/rsync-key.pub rsync-key.pub")
             sudo("chmod 600 rsync-key* ; chown autobuild-ceph.autobuild-ceph rsync-key*")
         sudo("echo emerging@hq.newdream.net > notify-email")
 
