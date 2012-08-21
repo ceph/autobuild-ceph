@@ -84,23 +84,6 @@ EOF
     done
 )
 
-# put our temp files inside .git/ so ls-files doesn't see them
-git ls-files --modified >.git/modified-files
-if [ -s .git/modified-files ]; then
-    rm -rf "$OUTDIR_TMP"
-    echo "error: Modified files:" 1>&2
-    cat .git/modified-files 1>&2
-    exit 6
-fi
-
-git ls-files --exclude-standard --others >.git/added-files
-if [ -s .git/added-files ]; then
-    rm -rf "$OUTDIR_TMP"
-    echo "error: Added files:" 1>&2
-    cat .git/added-files 1>&2
-    exit 7
-fi
-
 # we're successful, the files are ok to be published; try to be as
 # atomic as possible about replacing potentially existing OUTDIR
 if [ -e "$OUTDIR" ]; then
