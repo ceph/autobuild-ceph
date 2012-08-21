@@ -194,8 +194,21 @@ def _gitbuilder(flavor, git_repo, extra_remotes={}, extra_packages=[], ignore=[]
         sudo('install --owner=root --group=root -m0644 autobuild-ceph.conf /etc/init/autobuild-ceph.conf || install --owner=root --group=root -m0755 autobuild-ceph.init /etc/init.d/autobuild-ceph')
     run('rm bundle')
 
+def _kernel_deps():
+    _apt_install(
+        # kernel tools
+        'bison',
+        'flex',
+        'asciidoc',
+        'libdw-dev',
+        'libnewt-dev',
+        'xmlto',
+#        'libgtk2-dev',
+        )
+
 @roles('gitbuilder_kernel')
 def gitbuilder_kernel():
+    _kernel_deps()
     _gitbuilder(
         flavor='kernel',
         git_repo='https://github.com/ceph/ceph-client.git',
@@ -456,6 +469,7 @@ def gitbuilder_collectd_deb_ndn():
 
 @roles('gitbuilder_kernel_ndn')
 def gitbuilder_kernel_ndn():
+    _kernel_deps()
     _gitbuilder(
         flavor='kernel-raw',
         git_repo='git://deploy.benjamin.dhobjects.net/kernel.git',
