@@ -18,13 +18,13 @@ digraph "autobuild-overview" {
   next_rev_sh -> run_build_sh [style=invis];
   
   // provided by base OS
-  upstart [color="lightblue", style=filled];;
+  upstart [color="lightblue", style=filled];
   
   // in autobuild-ceph.git
   autobuild_ceph_conf [label="autobuild-ceph.conf", color="#F05C56", style=filled];
   autobuild_ceph_init [label="autobuild-ceph.init", color="#F05C56", style=filled];
-  run [color="#F05C56", style=filled];;
-  logrotate [color="#F05C56", style=filled];;
+  run [color="#F05C56", style=filled];
+  logrotate [color="#F05C56", style=filled];
   run_real [label="run-real", color="#F05C56", style=filled];
   update_ref_symlinks [label="update ref\nsymlinks", color="#F05C56", style=filled];
   rsync_out [label="rsync out", color="#F05C56", style=filled];
@@ -33,7 +33,7 @@ digraph "autobuild-overview" {
   
   // in gitbuilder.git
   autobuilder_sh [label="autobuilder.sh", color="lightgray", style=filled];
-  autobuilder_sh_loop [shape=point, , color="lightgray"];
+  autobuilder_sh_loop [shape=point, color="lightgray"];
   autobuilder_sh_subshell [label="(subshell)", color="lightgray", style=filled];
   git_remote_update [label="git remote update\netc", color="lightgray", style=filled];
   branches_sh [label="branches.sh", color="lightgray", style=filled];
