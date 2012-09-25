@@ -135,6 +135,8 @@ def _rh_gitbuilder(flavor, git_repo, extra_remotes={}, extra_packages=[], ignore
         'git',
         'logrotate',
         'rsync',
+        'pkgconfig',
+        'tar',
         *extra_packages
         )
     #
@@ -229,6 +231,7 @@ def _gitbuilder(flavor, git_repo, extra_remotes={}, extra_packages=[], ignore=[]
 #        'sun-java6-jdk',
         'default-jdk',
         'rsync',
+        'pbuilder',
         *extra_packages
         )
     sudo(
