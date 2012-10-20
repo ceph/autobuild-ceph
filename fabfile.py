@@ -230,6 +230,7 @@ def _gitbuilder(flavor, git_repo, extra_remotes={}, extra_packages=[], ignore=[]
         'logrotate',
 #        'sun-java6-jdk',
         'default-jdk',
+        'javahelper',
         'rsync',
         'pbuilder',
         *extra_packages
