@@ -57,7 +57,7 @@ printf '%s\n' "$VER" >"$OUTDIR_TMP/version"
 printf '%s\n' "ceph" >"$OUTDIR_TMP/name"
 
 mkdir -p $OUTDIR_TMP/conf
-/srv/ceph-build/gen_reprepro_conf.sh $OUTDIR_TMP main $DISTS
+/srv/ceph-build/gen_reprepro_conf.sh $OUTDIR_TMP 03C3951A
 GNUPGHOME="/srv/gnupg" /srv/ceph-build/push_to_repo.sh release $OUTDIR_TMP $VER main
 
 # we're successful, the files are ok to be published; try to be as

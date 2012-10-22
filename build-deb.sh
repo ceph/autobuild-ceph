@@ -59,7 +59,7 @@ printf '%s\n' "$VER" >"$OUTDIR_TMP/version"
 printf '%s\n' "$NAME" >"$OUTDIR_TMP/name"
 
 mkdir -p $OUTDIR_TMP/conf
-/srv/ceph-build/gen_reprepro_conf.sh $OUTDIR_TMP main $DISTS
+/srv/ceph-build/gen_reprepro_conf.sh $OUTDIR_TMP 03C3951A
 
 for dist in $DISTS
 do
