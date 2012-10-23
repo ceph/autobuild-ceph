@@ -57,6 +57,10 @@ env.roledefs['gitbuilder_doc'] = [
     'ubuntu@gitbuilder-doc.front.sepia.ceph.com',
     ]
 
+env.roledefs['gitbuilder_samba'] = [
+    'ubuntu@samba-builder.front.sepia.ceph.com',
+    ]
+
 #env.roledefs['gitbuilder_apache2_deb_oneiric'] = [
 #    'ubuntu@10.3.14.92',
 #    ]
@@ -118,6 +122,9 @@ def _apt_install(*packages):
                 '--',
                 ]
             + list(packages)))
+
+def _gem_install(*packages):
+    sudo('gem install ' + ' '.join(list(packages)))
 
 def _rh_gitbuilder(flavor, git_repo, extra_remotes={}, extra_packages=[], ignore=[]):
     """
@@ -333,6 +340,31 @@ def gitbuilder_kernel():
             ],
         )
     _sync_to_gitbuilder('kernel', 'deb', 'basic')
+    sudo('start autobuild-ceph || /etc/init.d/autobuild-ceph start')
+
+def _samba_deps():
+    _apt_install(
+        'libldap2-dev',
+        'libkrb5-dev',
+        'ruby1.8-dev',
+        'rubygems',
+        'libcephfs-dev',
+        'make',
+        )
+    _gem_install('fpm')
+
+@roles('gitbuilder_samba')
+def gitbuilder_samba():
+    _samba_deps()
+    _gitbuilder(
+        flavor='samba',
+        git_repo='https://github.com/ceph/samba.git',
+        extra_packages=[
+            'fakeroot',
+            'reprepro',
+            ],
+        )
+    _sync_to_gitbuilder('samba', 'deb', 'basic')
     sudo('start autobuild-ceph || /etc/init.d/autobuild-ceph start')
 
 @roles('gitbuilder_ceph')
@@ -702,6 +734,7 @@ def gitbuilder_serve():
        'gitbuilder_modfastcgi_deb_ndn',
        'gitbuilder_collectd_deb_ndn',
        'gitbuilder_kernel_ndn',
+       'gitbuilder_samba',
        )
 def authorize_ssh_keys():
     keyfile = '.ssh/authorized_keys'
