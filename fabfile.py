@@ -519,6 +519,7 @@ def gitbuilder_doc():
         'doxygen',
         'ditaa',
         'graphviz',
+        'ant',
         )
     _gitbuilder_ceph('https://github.com/ceph/ceph.git', 'ceph-docs')
     with cd('/srv/autobuild-ceph'):
