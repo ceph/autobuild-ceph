@@ -21,7 +21,7 @@ echo "$0: installing..."
 ionice -c3 nice -n20 make -j$NCPU install DESTDIR=${DESTDIR_TMP} || exit 4
 
 REV="$(git rev-parse HEAD)"
-OUTDIR="../out/output/sha1/$REV"
+OUTDIR="../../out/output/sha1/$REV"
 OUTDIR_TMP="${OUTDIR}.tmp"
 
 SMBVERS=$(./bin/smbd --version | sed -e "s|Version ||")
