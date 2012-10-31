@@ -715,25 +715,14 @@ def gitbuilder_serve():
 	    sudo('rm /tmp/lighttpd.conf')
 
 @roles('gitbuilder_ceph',
-       'gitbuilder_ceph_deb',
-       'gitbuilder_ceph_deb_native',
-       'gitbuilder_ceph_deb_oneiric_ndn',
-       'gitbuilder_ceph_deb_precise_ndn',
        'gitbuilder_ceph_gcov',
+       'gitbuilder_ceph_notcmalloc',
        'gitbuilder_kernel',
-       'gitbuilder_apache2_deb_oneiric',
-       'gitbuilder_modfastcgi_deb_oneiric',
-       'gitbuilder_apache2_deb_precise',
-       'gitbuilder_modfastcgi_deb_precise',
-       'gitbuilder_doc',
-       # dhodeploy
-       'gitbuilder_ceph_deb_ndn',
-       'gitbuilder_ceph_deb_oneiric_ndn',
+       'gitbuilder_ceph_deb',
+       'gitbuilder_ceph_rpm',
+       'gitbuilder_ceph_deb_native',
        'gitbuilder_ceph_deb_precise_ndn',
-       'gitbuilder_apache2_deb_ndn',
-       'gitbuilder_modfastcgi_deb_ndn',
-       'gitbuilder_collectd_deb_ndn',
-       'gitbuilder_kernel_ndn',
+       'gitbuilder_doc',
        'gitbuilder_samba',
        )
 def authorize_ssh_keys():
