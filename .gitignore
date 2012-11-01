@@ -16,3 +16,5 @@
 
 /logs
 /gitbuilder.git
+rsync-key
+rsync-key.pub

@@ -2,15 +2,31 @@
 
 set -e
 
-cd source3
-./autogen-waf.sh
+if test -f ./VERSION; then
+   vers=4x
+else
+   vers=3x
+fi
 
-DESTDIR_TMP="../install.tmp"
+CONFIGOPTS="--enable-selftest --with-ldap --with-ads"
+REV="$(git rev-parse HEAD)"
+if test x"${vers}" = x3x; then
+	# version 3 requires a different setup
+	cd source3
+	./autogen-waf.sh
+	DESTDIR_TMP="../install.tmp"
+	OUTDIR="../../out/output/sha1/$REV"
+	CONFIGOPTS="${CONFIGOPTS} --with-krb5"
+else
+	DESTDIR_TMP="install.tmp"
+	OUTDIR="../out/output/sha1/$REV"
+fi
+
 
 install -d -m0755 -- "$DESTDIR_TMP"
 
 echo "$0: configuring..."
-ionice -c3 nice -n20 ./configure --with-ads --with-krb5 --with-ldap
+ionice -c3 nice -n20 ./configure ${CONFIGOPTS}
 
 NCPU=$(( 2 * `grep -c processor /proc/cpuinfo` ))
 
@@ -23,13 +39,11 @@ echo "$0: installing..."
 ionice -c3 nice -n20 make -j$NCPU install DESTDIR=${DESTDIR_TMP} || exit 4
 echo --STOP-IGNORE-WARNINGS
 
-REV="$(git rev-parse HEAD)"
-OUTDIR="../../out/output/sha1/$REV"
 OUTDIR_TMP="${OUTDIR}.tmp"
 
 SMBVERS=$(./bin/smbd --version | sed -e "s|Version ||")
 
-fpm -s dir -t deb -n samba -v ${SMBVERS} -C ${DESTDIR_TMP} -d libldap2-dev -d libkrb5-dev usr
+fpm -s dir -t deb -n samba -v ${SMBVERS} -C ${DESTDIR_TMP} usr
 
 install -d -m0755 -- "$OUTDIR_TMP"
 mv *deb "$OUTDIR_TMP/"
