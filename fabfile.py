@@ -1,5 +1,5 @@
+from fabric.context_managers import cd, hide, settings
 from fabric.api import *
-from fabric.context_managers import *
 from fabric.contrib.files import exists, append, sed
 import os
 
