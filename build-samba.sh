@@ -15,10 +15,13 @@ ionice -c3 nice -n20 ./configure --with-ads --with-krb5 --with-ldap
 NCPU=$(( 2 * `grep -c processor /proc/cpuinfo` ))
 
 echo "$0: building..."
-ionice -c3 nice -n20 make -j$NCPU || exit 4
+echo --START-IGNORE-WARNINGS
+# filter out idl errors "Unable to determine origin..." to avoid gitbuilder failing
+ionice -c3 nice -n20 make -j$NCPU 2> >(grep -v "Unable to determine origin of type") || exit 4
 
 echo "$0: installing..."
 ionice -c3 nice -n20 make -j$NCPU install DESTDIR=${DESTDIR_TMP} || exit 4
+echo --STOP-IGNORE-WARNINGS
 
 REV="$(git rev-parse HEAD)"
 OUTDIR="../../out/output/sha1/$REV"
