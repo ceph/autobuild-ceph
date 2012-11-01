@@ -346,6 +346,7 @@ def _samba_deps():
     _apt_install(
         'libldap2-dev',
         'libkrb5-dev',
+        'heimdal-dev',
         'ruby1.8-dev',
         'rubygems',
         'libcephfs-dev',
@@ -558,8 +559,9 @@ def gitbuilder_doc():
         if not exists('rsync-target'):
             sudo("echo cephdocs@ceph.newdream.net:/home/ceph_site/ceph.com/docs.raw >> rsync-target")
         if not exists('rsync-key'):
-            sudo("mv /tmp/rsync-key rsync-key")
-            sudo("mv /tmp/rsync-key.pub rsync-key.pub")
+            put("rsync-key")
+            put("rsync-key.pub")
+            sudo("mv /home/ubuntu/rsync-key* ./")
             sudo("chmod 600 rsync-key* ; chown autobuild-ceph.autobuild-ceph rsync-key*")
 
 def _sync_to_gitbuilder(package, format, flavor):
@@ -567,8 +569,10 @@ def _sync_to_gitbuilder(package, format, flavor):
         # fugliness
         sudo("echo gitbuilder@gitbuilder.ceph.com:gitbuilder.ceph.com/%s-%s-`lsb_release -s -c`-`uname -m`-%s > rsync-target" % (package,format,flavor))
         if not exists('rsync-key'):
-            sudo("mv /tmp/rsync-key rsync-key")
-            sudo("mv /tmp/rsync-key.pub rsync-key.pub")
+            # for whatever reason, put doesn't seem to honor cd and use_sudo fails
+            put("rsync-key")
+            put("rsync-key.pub")
+            sudo("mv /home/ubuntu/rsync-key* ./")
             sudo("chmod 600 rsync-key* ; chown autobuild-ceph.autobuild-ceph rsync-key*")
 
 
@@ -582,8 +586,9 @@ def _sync_out_to_dho(package, notify):
         if not exists('rsync-notify'):
             sudo("echo %s > rsync-notify" % notify)
         if not exists('rsync-key'):
-            sudo("mv /tmp/rsync-key rsync-key")
-            sudo("mv /tmp/rsync-key.pub rsync-key.pub")
+            put("rsync-key")
+            put("rsync-key.pub")
+            sudo("mv /home/ubuntu/rsync-key* ./")
             sudo("chmod 600 rsync-key* ; chown autobuild-ceph.autobuild-ceph rsync-key*")
         sudo("echo emerging@hq.newdream.net > notify-email")
 
@@ -689,6 +694,7 @@ def gitbuilder_kernel_ndn():
        'gitbuilder_modfastcgi_deb_ndn',
        'gitbuilder_collectd_deb_ndn',
        'gitbuilder_kernel_ndn',
+       'gitbuilder_samba'
        )
 def gitbuilder_serve():
     # kill any remaining thttpd's in favor of lighttpd.  Do this before
