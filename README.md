@@ -25,7 +25,7 @@ To get a list of other available commands, run '''fab -l'''.  Note
 that fabric expects to be able to ssh to the host you specify, so you 
 should already have ssh keys setup for that host.  If
 no host is specified, fabric will deploy to the set of hosts for the role associated with
-that command.  Also note that the gitbuilder_ceph command sets up the
+that command.  Also note that the gitbuilder\_ceph command sets up the
 autobuilder to deploy the binary packages to the package server.  This
 requires the rsync keys (rsync-key and rsync-key.pub) for the package
 server be located in your current directory (fabric copies them to the deployment
@@ -39,12 +39,12 @@ for displaying gitbuilder results.
 
 Fabric uses the fabfile.py file in your current working directory.
 The fabfile.py is essentially a set of roles and commands.  The
-'''gitbuilder_ceph''' command runs the defined gitbuilder_ceph
+'''gitbuilder\_ceph''' command runs the defined gitbuilder\_ceph
 function, sending remote commands to each of the hosts defined by
 the role(s) associated with that function.
 A role defines a list of hosts where a command will be run, for example,
-the '''gitbuilder_ceph''' role (happens to share the same name as the
-command) runs the gitbuilder_ceph command on all all the VMs defined
+the '''gitbuilder\_ceph''' role (happens to share the same name as the
+command) runs the gitbuilder\_ceph command on all all the VMs defined
 in that role.
 
 ## Implementing your own autobuild
@@ -66,13 +66,13 @@ you can add the following echo statements around your build commands:
 	echo --STOP-IGNORE-WARNINGS
 
 To limit which branches are built by gitbuilder, a branches-local script should
-be installed by the fabfile.py function/command for '''gitbuilder_foo''' that outputs
+be installed by the fabfile.py function/command for '''gitbuilder\_foo''' that outputs
 only the branches that gitbuilder should build.  See the branches-local script
 in this repo for an example that outputs the branches to build for the ceph autobuilder.
 
 ### Modify the fabfile.py
 
-First add a role definition called 'gitbuilder_foo' to include a new function with a set of roles.
+First add a role definition called 'gitbuilder\_foo' to include a new function with a set of roles.
 The set of roles should include all the roles where you want to deploy your foo autobuilder.  A
 basic gitbuilder function and role definition looks like this:
 
@@ -93,15 +93,15 @@ basic gitbuilder function and role definition looks like this:
 	_sync_to_gitbuilder('foo', 'deb', 'basic')
 	sudo('start autobuild-ceph || /etc/init.d/autobuild-ceph start')
 
-Note that the flavor you specify to the _gitbuilder() function determines how your build script
-is chosen as the build script to run by the gitbuilder tool.  The extra_packages specify packages
+Note that the flavor you specify to the \_gitbuilder() function determines how your build script
+is chosen as the build script to run by the gitbuilder tool.  The extra\_packages specify packages
 that need to be installed in order to create a deb repository for your autobuilt packages, and
-the _sync_to_gitbuilder() function performs setup to rsync the binary packages created by the build
+the \_sync\_to\_gitbuilder() function performs setup to rsync the binary packages created by the build
 to the repo hosting server.  In order to perform the sync, rsync keys are required.  You can get the
 keys from another user and place them in your checkout directory.
 
 As a final step, define a role that lists the hosts you want to deploy the foo autobuilder onto.  By
-convention, the role shares the same name as the command, i.e. gitbuilder_foo.  See the other env.roledef
+convention, the role shares the same name as the command, i.e. gitbuilder\_foo.  See the other env.roledef
 lists at the top of the fabfile for examples.
 
 ### Deploying your autobuild
@@ -110,6 +110,13 @@ Once you've created your build script and modified the fabfile.py to include you
 and roles, you should be able to deploy your autobuild with:
 
 	fab gitbuilder_foo
+
+### Setting up the Autobuild web server
+
+A command to setup lighttpd and point it at the autobuild results exists in the fabfile.py.  To start the web
+server, you can simply do:
+
+	fab gitbuilder_serve:role=gitbuilder_foo
 
 ### How autobuilder works
 
