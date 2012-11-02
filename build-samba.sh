@@ -2,10 +2,10 @@
 
 set -e
 
-if test -f ./VERSION; then
-   vers=4x
-else
+if test -f ./source3/VERSION; then
    vers=3x
+else
+   vers=4x
 fi
 
 CONFIGOPTS="--enable-selftest --with-ldap --with-ads"
