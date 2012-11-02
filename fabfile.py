@@ -2,6 +2,7 @@ from fabric.context_managers import cd, hide, settings
 from fabric.api import *
 from fabric.contrib.files import exists, append, sed
 import os
+import sys
 
 env.roledefs['gitbuilder_ceph'] = [
 #    'ubuntu@gitbuilder-i386.ceph.newdream.net',
@@ -346,7 +347,6 @@ def _samba_deps():
     _apt_install(
         'libldap2-dev',
         'libkrb5-dev',
-        'heimdal-dev',
         'ruby1.8-dev',
         'rubygems',
         'libcephfs-dev',
@@ -557,7 +557,7 @@ def gitbuilder_doc():
     _gitbuilder_ceph('https://github.com/ceph/ceph.git', 'ceph-docs')
     with cd('/srv/autobuild-ceph'):
         if not exists('rsync-target'):
-            sudo("echo cephdocs@ceph.newdream.net:/home/ceph_site/ceph.com/docs.raw >> rsync-target")
+            sudo("echo cephdocs@ceph.newdream.net:/home/ceph_site/ceph.com/docs.raw > rsync-target")
         if not exists('rsync-key'):
             put("rsync-key")
             put("rsync-key.pub")
@@ -569,6 +569,9 @@ def _sync_to_gitbuilder(package, format, flavor):
         # fugliness
         sudo("echo gitbuilder@gitbuilder.ceph.com:gitbuilder.ceph.com/%s-%s-`lsb_release -s -c`-`uname -m`-%s > rsync-target" % (package,format,flavor))
         if not exists('rsync-key'):
+            if not os.path.exists('rsync-key'):
+                print >> sys.stderr, 'Required rsync keys to gitbuilder.ceph.com missing!'
+                sys.exit(1)
             # for whatever reason, put doesn't seem to honor cd and use_sudo fails
             put("rsync-key")
             put("rsync-key.pub")
@@ -719,6 +722,7 @@ def gitbuilder_serve():
 	    sudo('/etc/init.d/lighttpd start')
 	else:
 	    sudo('rm /tmp/lighttpd.conf')
+	    sudo('/etc/init.d/lighttpd start')
 
 @roles('gitbuilder_ceph',
        'gitbuilder_ceph_gcov',
