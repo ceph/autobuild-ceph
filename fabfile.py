@@ -345,13 +345,28 @@ def gitbuilder_kernel():
 
 def _samba_deps():
     _apt_install(
+        'build-essential',
+        'libacl1-dev',
+        'libattr1-dev',
+        'libblkid-dev',
+        'libgnutls-dev',
+        'libreadline-dev',
+        'python-dev',
+        'python-dnspython',
+        'gdb',
+        'pkg-config',
+        'libpopt-dev',
         'libldap2-dev',
-        'libkrb5-dev',
+        'dnsutils',
+        'libbsd-dev',
+        'attr',
+        'krb5-user',
+
         'ruby1.8-dev',
         'rubygems',
         'libcephfs-dev',
-        'make',
         )
+
     _gem_install('fpm')
 
 @roles('gitbuilder_samba')

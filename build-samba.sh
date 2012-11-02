@@ -43,7 +43,7 @@ OUTDIR_TMP="${OUTDIR}.tmp"
 
 SMBVERS=$(./bin/smbd --version | sed -e "s|Version ||")
 
-fpm -s dir -t deb -n samba -v ${SMBVERS} -C ${DESTDIR_TMP} usr
+fpm -s dir -t deb -n samba -v ${SMBVERS} -C ${DESTDIR_TMP} -d krb5-user -d libcephfs-dev usr
 
 install -d -m0755 -- "$OUTDIR_TMP"
 mv *deb "$OUTDIR_TMP/"
