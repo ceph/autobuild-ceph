@@ -39,11 +39,11 @@ for displaying gitbuilder results.
 
 Fabric uses the fabfile.py file in your current working directory.
 The fabfile.py is essentially a set of roles and commands.  The
-``gitbuilder\_ceph`` command runs the defined gitbuilder\_ceph
+``gitbuilder_ceph`` command runs the defined gitbuilder\_ceph
 function, sending remote commands to each of the hosts defined by
 the role(s) associated with that function.
 A role defines a list of hosts where a command will be run, for example,
-the ``gitbuilder\_ceph`` role (happens to share the same name as the
+the ``gitbuilder_ceph`` role (happens to share the same name as the
 command) runs the gitbuilder\_ceph command on all all the VMs defined
 in that role.
 
@@ -66,13 +66,13 @@ you can add the following echo statements around your build commands:
 	echo --STOP-IGNORE-WARNINGS
 
 To limit which branches are built by gitbuilder, a branches-local script should
-be installed by the fabfile.py function/command for ``gitbuilder\_foo`` that outputs
+be installed by the fabfile.py function/command for ``gitbuilder_foo`` that outputs
 only the branches that gitbuilder should build.  See the branches-local script
 in this repo for an example that outputs the branches to build for the ceph autobuilder.
 
 ### Modify the fabfile.py
 
-First add a role definition called 'gitbuilder\_foo' to include a new function with a set of roles.
+First add a role definition called ``gitbuilder_foo`` to include a new function with a set of roles.
 The set of roles should include all the roles where you want to deploy your foo autobuilder.  A
 basic gitbuilder function and role definition looks like this:
 
