@@ -8,6 +8,10 @@ else
    vers=4x
 fi
 
+SAMBA_ERRORS_IGNORE="\
+grep -v \"Unable to determine origin of type\" | \
+grep -v \"is not a pointer or array, skip client functions\""
+
 CONFIGOPTS="--enable-selftest --with-ldap --with-ads"
 REV="$(git rev-parse HEAD)"
 if test x"${vers}" = x3x; then
@@ -33,7 +37,7 @@ NCPU=$(( 2 * `grep -c processor /proc/cpuinfo` ))
 echo "$0: building..."
 echo --START-IGNORE-WARNINGS
 # filter out idl errors "Unable to determine origin..." to avoid gitbuilder failing
-ionice -c3 nice -n20 make -j$NCPU 2> >(grep -v "Unable to determine origin of type") || exit 4
+ionice -c3 nice -n20 make -j$NCPU 2> >( eval ${SAMBA_ERRORS_IGNORE} ) || exit 4
 
 echo "$0: installing..."
 ionice -c3 nice -n20 make -j$NCPU install DESTDIR=${DESTDIR_TMP} || exit 4
