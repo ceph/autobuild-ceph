@@ -131,7 +131,7 @@ def _rh_gitbuilder(flavor, git_repo, extra_remotes={}, extra_packages=[], ignore
     """
     extra_remotes will be fetch but not autobuilt. useful for tags.
     """
-    gitbuilder_commit='c5108eb9dc115fe18974da6e938f9f270ec6125c'
+    gitbuilder_commit='7110ef374378abd377d03c0757e3dac4fc314d69'
     gitbuilder_origin='git://github.com/ceph/gitbuilder.git'
 
     sudo("initctl list|grep -q '^autobuild-ceph\s' && stop autobuild-ceph || /etc/init.d/autobuild-ceph stop || :")
@@ -220,7 +220,7 @@ def _gitbuilder(flavor, git_repo, extra_remotes={}, extra_packages=[], ignore=[]
     """
     extra_remotes will be fetch but not autobuilt. useful for tags.
     """
-    gitbuilder_commit='c5108eb9dc115fe18974da6e938f9f270ec6125c'
+    gitbuilder_commit='7110ef374378abd377d03c0757e3dac4fc314d69'
     gitbuilder_origin='git://github.com/ceph/gitbuilder.git'
 
     # shut down old instance, it exists
