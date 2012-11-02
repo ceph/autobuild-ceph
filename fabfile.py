@@ -108,6 +108,10 @@ def _rpm_install(*packages):
             + list(packages)))
 
 
+def _apt_add_testing_repo(branch):
+    sudo('wget -q -O- https://raw.github.com/ceph/ceph/master/keys/autobuild.asc | sudo apt-key add -')
+    sudo('echo deb http://gitbuilder.ceph.com/ceph-deb-$(lsb_release -sc)-x86_64-basic/ref/{branch} $(lsb_release -sc) main | sudo tee /etc/apt/sources.list.d/ceph.list'.format(branch=branch))
+
 def _apt_install(*packages):
     
     sudo("apt-get update")
@@ -344,6 +348,7 @@ def gitbuilder_kernel():
     sudo('start autobuild-ceph || /etc/init.d/autobuild-ceph start')
 
 def _samba_deps():
+    _apt_add_testing_repo('master')
     _apt_install(
         'build-essential',
         'libacl1-dev',
