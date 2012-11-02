@@ -10,7 +10,8 @@ fi
 
 SAMBA_ERRORS_IGNORE="\
 grep -v \"Unable to determine origin of type\" | \
-grep -v \"is not a pointer or array, skip client functions\""
+grep -v \"is not a pointer or array, skip client functions\" | \
+grep -v \"is a pointer to type 'string', skip client functions\""
 
 CONFIGOPTS="--enable-selftest --with-ldap --with-ads"
 REV="$(git rev-parse HEAD)"
