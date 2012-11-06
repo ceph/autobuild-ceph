@@ -46,6 +46,7 @@ echo --STOP-IGNORE-WARNINGS
 
 OUTDIR_TMP="${OUTDIR}.tmp"
 
+export LD_LIBRARY_PATH=${DESTDIR_TMP}/usr/local/samba/lib/
 SMBVERS=$(${DESTDIR_TMP}/usr/local/samba/sbin/smbd --version | sed -e "s|Version ||")
 
 fpm -s dir -t deb -n samba -v ${SMBVERS} -C ${DESTDIR_TMP} -d krb5-user -d libcephfs-dev usr
