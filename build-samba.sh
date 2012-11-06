@@ -46,10 +46,15 @@ echo --STOP-IGNORE-WARNINGS
 
 OUTDIR_TMP="${OUTDIR}.tmp"
 
-export LD_LIBRARY_PATH=${DESTDIR_TMP}/usr/local/samba/lib/:${DESTDIR_TMP}/usr/local/samba/lib/private/
-SMBVERS=$(${DESTDIR_TMP}/usr/local/samba/sbin/smbd --version | sed -e "s|Version ||")
+if test x"${vers}" = x3x; then
+	SMBVERS=$(./bin/smbd --version | sed -e "s|Version ||")
+else
+	export LD_LIBRARY_PATH=${DESTDIR_TMP}/usr/local/samba/lib/:${DESTDIR_TMP}/usr/local/samba/lib/private/
+	SMBVERS=$(${DESTDIR_TMP}/usr/local/samba/sbin/smbd --version | sed -e "s|Version ||")
+fi
 
-fpm -s dir -t deb -n samba -v ${SMBVERS} -C ${DESTDIR_TMP} -d krb5-user -d libcephfs-dev usr
+fpm -s dir -t deb -n samba -v ${SMBVERS} -C ${DESTDIR_TMP} -d krb5-user -d libcephfs-dev usr | \
+	 grep -v "already initialized constant COMPRESSION_TYPES"
 
 install -d -m0755 -- "$OUTDIR_TMP"
 mv *deb "$OUTDIR_TMP/"
