@@ -420,6 +420,7 @@ def _gitbuilder_ceph(url, flavor):
             'libaio-dev',
             'libxml2-dev',
             'libnss3-dev',
+            'junit4',
             ],
         )
     sudo('start autobuild-ceph || /etc/init.d/autobuild-ceph start')
@@ -460,6 +461,7 @@ def _deb_builder(git_url, flavor, extra_remotes={}):
             'debhelper',
             'reprepro',
             'fakeroot',
+            'junit4',
             ],
         )
     with cd('/srv'):
@@ -547,6 +549,7 @@ def _gitbuilder_ceph_rpm(url, flavor):
             'nss-devel',
             'gtkmm24',
             'gtkmm24-devel',
+            'junit4',
             ]
         )
     with cd('/srv/autobuild-ceph'):
