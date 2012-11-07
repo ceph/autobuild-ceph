@@ -470,11 +470,13 @@ def _deb_builder(git_url, flavor, extra_remotes={}):
             
         sudo('chown autobuild-ceph:autobuild-ceph gnupg ; chmod 700 gnupg')
         with cd('gnupg'):
-            for file in ['pubring.gpg','secring.gpg']:
-                if not exists(file):
-                    sudo('wget -q -nc http://cephbooter.ceph.dreamhost.com/autobuild-keyring/%s' % (file))
-                    sudo('chown autobuild-ceph:autobuild-ceph %s' % (file))
-                    sudo('chmod 600 %s' % (file))
+            if not exists('pubring.gpg'):
+                # put doesn't honor cd() for some reason
+                put('gnupg/pubring.gpg')
+                put('gnupg/secring.gpg')
+                sudo("mv /home/ubuntu/*.gpg ./")
+                sudo('chown autobuild-ceph:autobuild-ceph pubring.gpg secring.gpg')
+                sudo('chmod 600 pubring.gpg secring.gpg')
         if not exists('ceph-build'):
             sudo('git clone https://github.com/ceph/ceph-build.git')
         with cd('ceph-build'):
