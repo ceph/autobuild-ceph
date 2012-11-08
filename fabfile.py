@@ -10,7 +10,7 @@ env.roledefs['gitbuilder_ceph'] = [
     'ubuntu@gitbuilder-oneiric-amd64.front.sepia.ceph.com',
     'ubuntu@gitbuilder-precise-amd64.front.sepia.ceph.com',
     'ubuntu@gitbuilder-precise-i386.front.sepia.ceph.com',
-    'debian@gitbuilder-squeeze-amd64.front.sepia.ceph.com',
+    'ubuntu@gitbuilder-squeeze-amd64.front.sepia.ceph.com',
     ]
 
 env.roledefs['gitbuilder_ceph_gcov'] = [
