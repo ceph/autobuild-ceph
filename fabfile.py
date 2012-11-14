@@ -63,6 +63,10 @@ env.roledefs['gitbuilder_samba'] = [
     'ubuntu@samba-builder.front.sepia.ceph.com',
     ]
 
+env.roledefs['gitbuilder_hadoop'] = [
+    'ubuntu@gitbuilder-precise-hadoop-amd64.front.sepia.ceph.com',
+    ]
+
 #env.roledefs['gitbuilder_apache2_deb_oneiric'] = [
 #    'ubuntu@10.3.14.92',
 #    ]
@@ -132,7 +136,7 @@ def _apt_install(*packages):
 def _gem_install(*packages):
     sudo('gem install ' + ' '.join(list(packages)))
 
-def _rh_gitbuilder(flavor, git_repo, extra_remotes={}, extra_packages=[], ignore=[]):
+def _rh_gitbuilder(flavor, git_repo, extra_remotes={}, extra_packages=[], ignore=[], branches_local_name='branches-local',branch_to_bundle='master'): 
     """
     extra_remotes will be fetch but not autobuilt. useful for tags.
     """
@@ -170,13 +174,13 @@ def _rh_gitbuilder(flavor, git_repo, extra_remotes={}, extra_packages=[], ignore
             )
 
     sudo('install -d -m0755 --owner=root --group=root /srv/autobuild-ceph')
-    local('git bundle create bundle refs/heads/master')
+    local('git bundle create bundle refs/heads/{branch_to_bundle}'.format(branch_to_bundle=branch_to_bundle))
     put('bundle', 'bundle')
     local('rm -f bundle')
     with cd('/srv/autobuild-ceph'):
         sudo('git init')
         sudo('test -d /home/ubuntu || ln -sf /home/centos /home/ubuntu')
-        sudo('git pull /home/ubuntu/bundle master')
+        sudo('git pull /home/ubuntu/bundle {branch_to_bundle}'.format(branch_to_bundle=branch_to_bundle))
         sudo('ln -sf build-{flavor}.sh build.sh'.format(flavor=flavor))
         if not exists('gitbuilder.git'):
             sudo('rm -rf gitbuilder.git.tmp')
@@ -184,7 +188,7 @@ def _rh_gitbuilder(flavor, git_repo, extra_remotes={}, extra_packages=[], ignore
             with cd('gitbuilder.git.tmp'):
                 sudo('git checkout %s' % gitbuilder_commit)
                 sudo('ln -s ../build.sh ./')
-                sudo('ln -s ../branches-local ./')
+                sudo('ln -s ../{branches_local_name} ./branches-local'.format(branches_local_name=branches_local_name))
                 sudo('git clone {git_repo} build'.format(git_repo=git_repo))
                 sudo('chown -R autobuild-ceph:autobuild-ceph build out')
             sudo('mv gitbuilder.git.tmp gitbuilder.git')
@@ -221,7 +225,7 @@ def _rh_gitbuilder(flavor, git_repo, extra_remotes={}, extra_packages=[], ignore
         sudo('install --owner=root --group=root -m0644 autobuild-ceph.conf /etc/init/autobuild-ceph.conf || install --owner=root --group=root -m0755 autobuild-ceph.init /etc/init.d/autobuild-ceph')
     run('rm bundle')
 
-def _gitbuilder(flavor, git_repo, extra_remotes={}, extra_packages=[], ignore=[]):
+def _gitbuilder(flavor, git_repo, extra_remotes={}, extra_packages=[], ignore=[], branches_local_name='branches-local', branch_to_bundle='master'):
     """
     extra_remotes will be fetch but not autobuilt. useful for tags.
     """
@@ -262,14 +266,14 @@ def _gitbuilder(flavor, git_repo, extra_remotes={}, extra_packages=[], ignore=[]
                 ]),
         )
     sudo('install -d -m0755 --owner=root --group=root /srv/autobuild-ceph')
-    local('git bundle create bundle refs/heads/master')
+    local('git bundle create bundle refs/heads/{branch_to_bundle}'.format(branch_to_bundle=branch_to_bundle))
     put('bundle', 'bundle')
     local('rm -f bundle')
     with cd('/srv/autobuild-ceph'):
         sudo('git init')
         # blarg
         sudo('test -d /home/ubuntu || ln -sf /home/debian /home/ubuntu')
-        sudo('git pull /home/ubuntu/bundle master')
+        sudo('git pull /home/ubuntu/bundle {branch_to_bundle}'.format(branch_to_bundle=branch_to_bundle))
         sudo('ln -sf build-{flavor}.sh build.sh'.format(flavor=flavor))
         if not exists('gitbuilder.git'):
             sudo('rm -rf gitbuilder.git.tmp')
@@ -277,7 +281,7 @@ def _gitbuilder(flavor, git_repo, extra_remotes={}, extra_packages=[], ignore=[]
             with cd('gitbuilder.git.tmp'):
                 sudo('git checkout %s' % gitbuilder_commit)
                 sudo('ln -s ../build.sh ./')
-                sudo('ln -s ../branches-local ./')
+                sudo('ln -s ../{branches_local_name} ./branches-local'.format(branches_local_name=branches_local_name))
                 sudo('git clone {git_repo} build'.format(git_repo=git_repo))
                 sudo('chown -R autobuild-ceph:autobuild-ceph build out')
             sudo('mv gitbuilder.git.tmp gitbuilder.git')
@@ -352,6 +356,15 @@ def gitbuilder_kernel():
     _sync_to_gitbuilder('kernel', 'deb', 'basic')
     sudo('start autobuild-ceph || /etc/init.d/autobuild-ceph start')
 
+def _hadoop_deps():
+    #_apt_add_testing_repo('master')
+    _apt_install(
+		'openjdk-6-jdk',
+        'ant',
+        'automake',
+        'libtool',
+        )
+
 def _samba_deps():
     _apt_add_testing_repo('master')
     _apt_install(
@@ -371,7 +384,6 @@ def _samba_deps():
         'libbsd-dev',
         'attr',
         'krb5-user',
-
         'ruby1.8-dev',
         'rubygems',
         'libcephfs-dev',
@@ -391,6 +403,21 @@ def gitbuilder_samba():
             ],
         )
     _sync_to_gitbuilder('samba', 'deb', 'basic')
+    sudo('start autobuild-ceph || /etc/init.d/autobuild-ceph start')
+
+@roles('gitbuilder_hadoop')
+def gitbuilder_hadoop():
+    _hadoop_deps()
+    _gitbuilder(
+        flavor='hadoop',
+        git_repo='https://github.com/ceph/hadoop-common.git',
+        extra_packages=[
+            'fakeroot',
+            'reprepro',
+            ],
+        branches_local_name='branches-local-hadoop',
+        )
+    _sync_to_gitbuilder('hadoop', 'jar', 'basic')
     sudo('start autobuild-ceph || /etc/init.d/autobuild-ceph start')
 
 @roles('gitbuilder_ceph')
@@ -731,7 +758,8 @@ def gitbuilder_kernel_ndn():
        'gitbuilder_modfastcgi_deb_ndn',
        'gitbuilder_collectd_deb_ndn',
        'gitbuilder_kernel_ndn',
-       'gitbuilder_samba'
+       'gitbuilder_samba',
+       'gitbuilder_hadoop'
        )
 def gitbuilder_serve():
     # kill any remaining thttpd's in favor of lighttpd.  Do this before
@@ -768,6 +796,7 @@ def gitbuilder_serve():
        'gitbuilder_ceph_deb_precise_ndn',
        'gitbuilder_doc',
        'gitbuilder_samba',
+       'gitbuilder_hadoop',
        )
 def authorize_ssh_keys():
     keyfile = '.ssh/authorized_keys'
