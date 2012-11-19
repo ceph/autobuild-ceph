@@ -83,12 +83,9 @@ def strip_prefix(refs, prefix):
         ref = ref[len(prefix):]
         yield obj, ref
 
-NUM_OF_TAGS = 5
-
 def doit(output, verbose):
     refs = get_refs()
     tags, branches = separate_tags_and_branches(refs)
-    del tags[NUM_OF_TAGS:]
     tags = strip_prefix(tags, 'refs/tags/')
 
     branches = strip_prefix(branches, 'refs/remotes/')
