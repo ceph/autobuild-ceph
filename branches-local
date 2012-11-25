@@ -163,14 +163,14 @@ def doit(output, verbose):
     branches = strip_prefix(branches, 'refs/remotes/')
     priority, normal = separate_priority_branches(branches)
 
-    tags = separate_priority_branches(tags)
+    ptags, normaltags = separate_priority_branches(tags)
 
     if verbose:
         fmt = '{0} {1}'
     else:
         fmt = '{1}'
 
-    for l in [priority, normal, tags]:
+    for l in [priority, normal, ptags, normaltags]:
         for (obj, ref) in l:
             print >>output, fmt.format(obj, ref)
 
