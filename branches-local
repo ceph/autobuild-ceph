@@ -45,6 +45,13 @@ PRIORITIZE = [
 
 IGNORE = [
     'HEAD',
+    ]
+
+IGNORE_PREFIX = [
+    'historic/',
+    ]
+
+IGNORE_TAGS = [
     'ceph-v0.20.1',
     'v0.1',
     'v0.2',
@@ -119,10 +126,6 @@ IGNORE = [
     'v0.44.2',
     ]
 
-IGNORE_PREFIX = [
-    'historic/',
-    ]
-
 def separate_priority_branches(branches):
     prioritize = ['origin/{0}'.format(b) for b in PRIORITIZE]
     ignore = ['origin/{0}'.format(b) for b in IGNORE]
@@ -155,6 +158,14 @@ def strip_prefix(refs, prefix):
         ref = ref[len(prefix):]
         yield obj, ref
 
+def filter_tags(ls):
+    r = []
+    for x in ls:
+        (sha1, tag) = x
+        if tag not in IGNORE_TAGS:
+            r.append(x)
+    return r
+
 def doit(output, verbose):
     refs = get_refs()
     tags, branches = separate_tags_and_branches(refs)
@@ -163,14 +174,14 @@ def doit(output, verbose):
     branches = strip_prefix(branches, 'refs/remotes/')
     priority, normal = separate_priority_branches(branches)
 
-    ptags, normaltags = separate_priority_branches(tags)
+    filtered_tags = filter_tags(tags)
 
     if verbose:
         fmt = '{0} {1}'
     else:
         fmt = '{1}'
 
-    for l in [priority, normal, ptags, normaltags]:
+    for l in [priority, normal, filtered_tags]:
         for (obj, ref) in l:
             print >>output, fmt.format(obj, ref)
 
