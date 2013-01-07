@@ -40,17 +40,11 @@ echo --START-IGNORE-WARNINGS
 # filter out idl errors "Unable to determine origin..." to avoid gitbuilder failing
 ionice -c3 nice -n20 make -j$NCPU 2> >( eval ${SAMBA_ERRORS_IGNORE} ) || exit 4
 
-REV="$(git rev-parse HEAD)"
-OUTDIR="../out/output/sha1/$REV"
-OUTDIR_TMP="${OUTDIR}.tmp"
-install -d -m0755 -- "$OUTDIR_TMP"
-printf '%s\n' "$REV" >"$OUTDIR_TMP/sha1"
-MACH="$(uname -m)"
-INSTDIR="inst.tmp"
-[ ! -e "$INSTDIR" ]
 echo "$0: installing..."
-ionice -c3 nice -n20 make -j$NCPU install DESTDIR=${PWD}/${INSTDIR} || exit 4
+ionice -c3 nice -n20 make -j$NCPU install DESTDIR=${DESTDIR_TMP} || exit 4
 echo --STOP-IGNORE-WARNINGS
+
+OUTDIR_TMP="${OUTDIR}.tmp"
 
 if test x"${vers}" = x3x; then
 	SMBVERS=$(./bin/smbd --version | sed -e "s|Version ||")
@@ -59,25 +53,34 @@ else
 	SMBVERS=$(${DESTDIR_TMP}/usr/local/samba/sbin/smbd --version | sed -e "s|Version ||")
 fi
 
-tar czf "$OUTDIR_TMP/samba-${SMBVERS}.tgz" -C "${INSTDIR}" .
-rm -rf -- "${INSTDIR}"
+fpm -s dir -t deb -n samba -v ${SMBVERS} -C ${DESTDIR_TMP} -d krb5-user usr | \
+	 grep -v "already initialized constant COMPRESSION_TYPES"
 
-# put our temp files inside .git/ so ls-files doesn't see them
-git ls-files --modified >.git/modified-files
-if [ -s .git/modified-files ]; then
-    rm -rf "$OUTDIR_TMP"
-    echo "error: Modified files:" 1>&2
-    cat .git/modified-files 1>&2
-    exit 6
-fi
+install -d -m0755 -- "$OUTDIR_TMP"
+mv *deb "$OUTDIR_TMP/"
+printf '%s\n' "$REV" >"$OUTDIR_TMP/sha1"
 
-git ls-files --exclude-standard --others >.git/added-files
-if [ -s .git/added-files ]; then
-    rm -rf "$OUTDIR_TMP"
-    echo "error: Added files:" 1>&2
-    cat .git/added-files 1>&2
-    exit 7
-fi
+DIST="squeeze"
+(
+    cd $OUTDIR_TMP
+
+    install -d -m0755 -- "conf"
+    cat > conf/distributions <<EOF
+Codename: $DIST
+Suite: stable
+Components: main
+Architectures: i386 amd64 source
+Origin: New Dream Network
+Description: samba autobuilds
+DebIndices: Packages Release . .gz .bz2
+DscIndices: Sources Release .gz .bz2
+EOF
+
+    for f in *.deb;
+    do
+	reprepro -b . includedeb $DIST $f
+    done
+)
 
 # we're successful, the files are ok to be published; try to be as
 # atomic as possible about replacing potentially existing OUTDIR
