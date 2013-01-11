@@ -322,7 +322,11 @@ def _kernel_deps():
         'libdw-dev',
         'libnewt-dev',
         'xmlto',
-#        'libgtk2-dev',
+        'libgtk2.0-dev',
+	'libunwind-setjmp0-dev',
+	'libunwind7-dev',
+	'libaudit-dev',
+	'binutils-dev',
         )
 
 @roles('gitbuilder_kernel')
