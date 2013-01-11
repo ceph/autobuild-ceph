@@ -464,6 +464,7 @@ def _deb_builder(git_url, flavor, extra_remotes={}):
             'reprepro',
             'fakeroot',
             'junit4',
+            'sharutils',
             ],
         )
     with cd('/srv'):
@@ -552,6 +553,7 @@ def _gitbuilder_ceph_rpm(url, flavor):
             'gtkmm24',
             'gtkmm24-devel',
             'junit4',
+            'sharutils',
             ]
         )
     with cd('/srv/autobuild-ceph'):
