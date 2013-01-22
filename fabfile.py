@@ -42,6 +42,7 @@ env.roledefs['gitbuilder_ceph_deb_native'] = [
     'ubuntu@gitbuilder-precise-deb-amd64.front.sepia.ceph.com',
     'ubuntu@gitbuilder-natty-deb-amd64.front.sepia.ceph.com',
     'ubuntu@wheezy-deb-amd64.front.sepia.ceph.com',
+    'ubuntu@gitbuilder-squeeze-deb-amd64.front.sepia.ceph.com',
     ]
 
 #env.roledefs['gitbuilder_ceph_deb_ndn'] = [
