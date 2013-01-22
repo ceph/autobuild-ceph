@@ -35,7 +35,7 @@ install -d -m0755 -- "$REF_OUTDIR"
     SHA=`cd build && git rev-parse $REF`
     echo "ref $SAFE_REF $SHA"
 
-    if [ -e "$REF_OUTDIR/$SAFE_REF" ]; then
+    if [ -L "$REF_OUTDIR/$SAFE_REF" ]; then
 	# keep symlink fresh
 	touch --no-dereference "$REF_OUTDIR/$SAFE_REF"
     else
@@ -45,9 +45,6 @@ install -d -m0755 -- "$REF_OUTDIR"
 	    # really should have done this!
 	    ln -s -- "../sha1/$SHA" "$REF_OUTDIR/$SAFE_REF.tmp"
 	    mv --no-target-directory -- "$REF_OUTDIR/$SAFE_REF.tmp" "$REF_OUTDIR/$SAFE_REF"
-	else
-	    # current sha1 is not a pass; touch old symlink anyway
-	    touch --no-dereference "$REF_OUTDIR/$SAFE_REF"
   	fi
     fi
 done
