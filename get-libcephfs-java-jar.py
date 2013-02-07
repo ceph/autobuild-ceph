@@ -82,7 +82,7 @@ def main():
             stdin=p4.stdout,stdout=PIPE)
     p5.wait()
 
-    log.info('copying libcephfs.so to lib/')
+    log.info('copying libcephfs*.so to lib/')
 
     p1 = Popen(args=[
             'install', '-d', '-m0755', '--', 'lib'],
@@ -95,7 +95,9 @@ def main():
             'cp', libFile, 'lib/'])
         p1.wait()
 
-    jarFiles = glob.glob('/tmp/hadooptest/binary/usr/local/lib/*.jar')
+    log.info('copying jars to lib/')
+
+    jarFiles = glob.glob('/tmp/hadooptest/binary/usr/local/share/java/*.jar')
     for jarFile in jarFiles:
         #log.info('soFile: %s' % libFile)
         p1 = Popen(args=[
