@@ -469,6 +469,7 @@ def _deb_builder(git_url, flavor, extra_remotes={}):
             'pkg-config',
             'libboost-dev',
             'libboost-thread-dev',
+            'libboost-program-options-dev',
             'libedit-dev',
             'libssl-dev',
             'libcrypto++-dev',
