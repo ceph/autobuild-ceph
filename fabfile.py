@@ -45,6 +45,10 @@ env.roledefs['gitbuilder_ceph_deb_native'] = [
     'ubuntu@gitbuilder-squeeze-deb-amd64.front.sepia.ceph.com',
     ]
 
+env.roledefs['gitbuilder_auto'] = [
+    'ubuntu@gitbuilder-ceph-deb-precise-amd64-notcmalloc.front.sepia.ceph.com',
+    ]
+
 #env.roledefs['gitbuilder_ceph_deb_ndn'] = [
 #    'ubuntu@10.3.14.65',
 #    ]
@@ -541,6 +545,12 @@ def gitbuilder_ceph_deb_native():
     sudo('start autobuild-ceph || /etc/init.d/autobuild-ceph start')
     _sync_to_gitbuilder('ceph', 'deb', 'basic')
 
+@roles('gitbuilder_auto')
+def gitbuilder_ceph_auto():
+    _deb_builder('https://github.com/ceph/ceph.git', 'auto')
+    sudo('start autobuild-ceph || /etc/init.d/autobuild-ceph start')
+    _sync_to_gitbuilder_from_hostname()
+
 @roles('gitbuilder_ceph_rpm')
 def gitbuilder_ceph_rpm():
     _gitbuilder_ceph_rpm('https://github.com/ceph/ceph.git', 'ceph-rpm')
@@ -630,16 +640,24 @@ def _sync_to_gitbuilder(package, format, flavor):
     with cd('/srv/autobuild-ceph'):
         # fugliness
         sudo("echo gitbuilder@gitbuilder.ceph.com:gitbuilder.ceph.com/%s-%s-`lsb_release -s -c`-`uname -m`-%s > rsync-target" % (package,format,flavor))
-        if not exists('rsync-key'):
-            if not os.path.exists('rsync-key'):
-                print >> sys.stderr, 'Required rsync keys to gitbuilder.ceph.com missing!'
-                sys.exit(1)
-            # for whatever reason, put doesn't seem to honor cd and use_sudo fails
-            put("rsync-key")
-            put("rsync-key.pub")
-            sudo("mv /home/ubuntu/rsync-key* ./")
-            sudo("chmod 600 rsync-key* ; chown autobuild-ceph.autobuild-ceph rsync-key*")
+        _sync_rsync_keys()
 
+def _sync_rsync_keys():
+    if not exists('rsync-key'):
+        if not os.path.exists('rsync-key'):
+            print >> sys.stderr, 'Required rsync keys to gitbuilder.ceph.com missing!'
+            sys.exit(1)
+        # for whatever reason, put doesn't seem to honor cd and use_sudo fails
+        put("rsync-key")
+        put("rsync-key.pub")
+        sudo("mv /home/ubuntu/rsync-key* ./")
+        sudo("chmod 600 rsync-key* ; chown autobuild-ceph.autobuild-ceph rsync-key*")
+
+def _sync_to_gitbuilder_from_hostname():
+    with cd('/srv/autobuild-ceph'):
+        # fugliness
+        sudo("echo gitbuilder@gitbuilder.ceph.com:gitbuilder.ceph.com/`hostname | cut --delimiter=- -f 2`-`hostname | cut --delimiter=- -f 3`-`lsb_release -s -c`-`uname -m`-`hostname | cut --delimiter=- -f 6` > rsync-target")
+        _sync_rsync_keys()
 
 #
 # build ndn debs for dho
