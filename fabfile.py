@@ -546,7 +546,7 @@ def gitbuilder_ceph_deb_native():
     _sync_to_gitbuilder('ceph', 'deb', 'basic')
 
 @roles('gitbuilder_auto')
-def gitbuilder_ceph_auto():
+def gitbuilder_auto():
     _deb_builder('https://github.com/ceph/ceph.git', 'auto')
     sudo('start autobuild-ceph || /etc/init.d/autobuild-ceph start')
     _sync_to_gitbuilder_from_hostname()
