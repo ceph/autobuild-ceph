@@ -60,7 +60,7 @@ index acb8650..6ec4ec7 100644
 +	 ln -s "/usr/bin/perf_$debian_tools_version" "$tools_dir/usr/bin/perf_$tools_version"
 +	 mv "$tools_dir/usr/libexec/perf-core" "$tools_dir/usr/share/perf_$debian_tools_version-core"
 +	 rmdir "$tools_dir/usr/libexec"
-+	 
++
 +	 # Documentation can't be built out-of-tree so copy source
 +	 # over to objtree and build man pages there
 +	 mkdir -p $tmp_build_dir/perf
@@ -70,7 +70,7 @@ index acb8650..6ec4ec7 100644
 +	 $MAKE man
 +	 $MAKE DESTDIR="$tools_dir/usr/" install
 +	 for manpage in `find $tools_dir/usr/share/man/ -type f`; do
-+	 	mv $manpage ${manpage/perf/perf_$debian_tools_version}
++		mv $manpage ${manpage/perf/perf_$debian_tools_version}
 +		gzip -9 ${manpage/perf/perf_$debian_tools_version}
 +	 done
 +	)
