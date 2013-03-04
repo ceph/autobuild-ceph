@@ -336,6 +336,7 @@ def _kernel_deps():
 	'libunwind7-dev',
 	'libaudit-dev',
 	'binutils-dev',
+	'python-dev',
         )
 
 @roles('gitbuilder_kernel')
