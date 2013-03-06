@@ -31,7 +31,7 @@ NCPU=$(( 2 * `grep -c processor /proc/cpuinfo` ))
 echo "$0: building..."
 echo --START-IGNORE-WARNINGS
 # filter out idl errors "Unable to determine origin..." to avoid gitbuilder failing
-ionice -c3 nice -n20 ant -Divy.default.ivy.user.dir=$CURRENT_DIR examples 2> >( eval ${HADOOP_ERRORS_IGNORE} ) || exit 4
+ionice -c3 nice -n20 ant -Divy.default.ivy.user.dir=$CURRENT_DIR examples cephfs 2> >( eval ${HADOOP_ERRORS_IGNORE} ) || exit 4
 
 OUTDIR_TMP="${OUTDIR}.tmp"
 
