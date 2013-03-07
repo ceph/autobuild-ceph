@@ -71,6 +71,10 @@ env.roledefs['gitbuilder_hadoop'] = [
     'ubuntu@gitbuilder-precise-hadoop-amd64.front.sepia.ceph.com',
     ]
 
+env.roledefs['gitbuilder_apache_hadoop'] = [
+    'ubuntu@gitbuilder-precise-apache-hadoop-amd64.front.sepia.ceph.com',
+    ]
+
 #env.roledefs['gitbuilder_apache2_deb_oneiric'] = [
 #    'ubuntu@10.3.14.92',
 #    ]
@@ -421,6 +425,21 @@ def gitbuilder_hadoop():
             'reprepro',
             ],
         branches_local_name='branches-local-hadoop',
+        )
+    _sync_to_gitbuilder('hadoop', 'jar', 'basic')
+    sudo('start autobuild-ceph || /etc/init.d/autobuild-ceph start')
+
+@roles('gitbuilder_apache_hadoop')
+def gitbuilder_apache_hadoop():
+    _hadoop_deps()
+    _gitbuilder(
+        flavor='apache-hadoop',
+        git_repo='git://git.apache.org/hadoop-common.git',
+        extra_packages=[
+            'fakeroot',
+            'reprepro',
+            ],
+        branches_local_name='branches-local-apache-hadoop',
         )
     _sync_to_gitbuilder('hadoop', 'jar', 'basic')
     sudo('start autobuild-ceph || /etc/init.d/autobuild-ceph start')
