@@ -6,8 +6,7 @@ git submodule foreach 'git clean -fdx && git reset --hard'
 rm -rf ceph-object-corpus
 rm -rf src/leveldb
 rm -rf src/libs3
-git submodule init
-git submodule update
+git submodule update --init
 git clean -fdx
 
 
@@ -58,7 +57,15 @@ cp -a ceph-*.tar.bz2 ${BUILDAREA}/SOURCES/.
 
 # Build RPMs
 BUILDAREA=`readlink -fn ${BUILDAREA}`   ### rpm wants absolute path
-rpmbuild -bb --define "_topdir ${BUILDAREA}" --define "_unpackaged_files_terminate_build 0" ceph.spec
+rpmbuild -ba --define "_topdir ${BUILDAREA}" --define "_unpackaged_files_terminate_build 0" ceph.spec
+
+# Sign RPMS
+export GNUPGHOME=/srv/gnupg
+echo "Signing RPMS ..."
+for file in `find ${BUILDAREA} -name "*.rpm"`
+do
+    /srv/autobuild-ceph/rpm-autosign.exp --define "_gpg_name 03C3951A" $file
+done
 
 REV="$(git rev-parse HEAD)"
 OUTDIR="../out/output/sha1/$REV"
@@ -81,7 +88,7 @@ do
         createrepo $dir
     fi
 done
-cp -a $BUILDAREA/RPMS $OUTDIR_TMP
+cp -a $BUILDAREA/{RPMS,SRPMS} $OUTDIR_TMP
 rm -rf -- "$BUILDAREA"
 
 # put our temp files inside .git/ so ls-files doesn't see them
