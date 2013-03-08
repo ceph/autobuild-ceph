@@ -598,6 +598,8 @@ def _gitbuilder_ceph_rpm(url, flavor):
             'gtkmm24-devel',
             'junit4',
             'sharutils',
+            'gnupg',
+            'expect',
             ]
         )
     with cd('/srv/autobuild-ceph'):
