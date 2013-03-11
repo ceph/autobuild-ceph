@@ -8,11 +8,6 @@ HADOOP_ERRORS_IGNORE=""
 HADOOP_JAVA_HOME="/usr/lib/jvm/java-6-openjdk"
 export JAVA_HOME=$HADOOP_JAVA_HOME
 
-#get the libcephfs jar and so files so the build works
-GETLIBSOUTPUT=`python ../../get-libcephfs-java-jar.py`
-
-echo $GETLIBSOUTPUT
-
 HADOOP_ERRORS_IGNORE="\
 grep -vi \"warning\"" #| \
 #grep -v \"is not a pointer or array, skip client functions\" | \
