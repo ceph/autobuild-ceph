@@ -441,7 +441,7 @@ def gitbuilder_apache_hadoop():
             ],
         branches_local_name='branches-local-apache-hadoop',
         )
-    _sync_to_gitbuilder('hadoop', 'jar', 'basic')
+    _sync_to_gitbuilder('apache-hadoop', 'jar', 'basic')
     sudo('start autobuild-ceph || /etc/init.d/autobuild-ceph start')
 
 @roles('gitbuilder_ceph')
