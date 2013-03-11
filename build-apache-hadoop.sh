@@ -36,7 +36,7 @@ ionice -c3 nice -n20 ant -Divy.default.ivy.user.dir=$CURRENT_DIR examples 2> >( 
 OUTDIR_TMP="${OUTDIR}.tmp"
 
 install -d -m0755 -- "$OUTDIR_TMP"
-tar czf "${OUTDIR_TMP}/hadoop.tgz" -C "${CURRENT_DIR}" .
+tar czf "${OUTDIR_TMP}/apache-hadoop.tgz" -C "${CURRENT_DIR}" .
 printf '%s\n' "$REV" >"$OUTDIR_TMP/sha1"
 
 # we're successful, the files are ok to be published; try to be as
