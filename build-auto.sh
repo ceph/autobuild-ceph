@@ -22,6 +22,9 @@ fi
 if hostname | grep -q -- -rpm- ; then
     exec $mydir/build-ceph-rpm.sh
 fi
+if hostname | grep -q -- -tarball- ; then
+    exec $mydir/build-ceph.sh
+fi
 
 echo "i don't know what to do with hostname "`hostname`
 exit 1
