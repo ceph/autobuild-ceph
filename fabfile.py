@@ -528,6 +528,8 @@ def _deb_builder(git_url, flavor, extra_remotes={}):
             'fakeroot',
             'junit4',
             'sharutils',
+            'libdistro-info-perl',  # needed by raring
+            'libboost-system-dev',
             ],
         )
     with cd('/srv'):
