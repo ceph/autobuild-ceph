@@ -47,6 +47,8 @@ env.roledefs['gitbuilder_ceph_deb_native'] = [
 
 env.roledefs['gitbuilder_auto'] = [
     'ubuntu@gitbuilder-ceph-deb-precise-amd64-notcmalloc.front.sepia.ceph.com',
+    'ubuntu@gitbuilder-ceph-deb-raring-amd64.front.sepia.ceph.com',
+    'ubuntu@gitbuilder-ceph-tarball-raring-amd64.front.sepia.ceph.com',
     ]
 
 #env.roledefs['gitbuilder_ceph_deb_ndn'] = [
