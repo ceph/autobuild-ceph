@@ -286,6 +286,7 @@ def _gitbuilder(flavor, git_repo, extra_remotes={}, extra_packages=[], ignore=[]
         sudo('git pull /home/ubuntu/bundle {branch_to_bundle}'.format(branch_to_bundle=branch_to_bundle))
         sudo('ln -sf build-{flavor}.sh build.sh'.format(flavor=flavor))
         if not exists('gitbuilder.git'):
+            brand_new = True
             sudo('rm -rf gitbuilder.git.tmp')
             sudo('git clone %s gitbuilder.git.tmp' % gitbuilder_origin)
             with cd('gitbuilder.git.tmp'):
@@ -318,6 +319,9 @@ def _gitbuilder(flavor, git_repo, extra_remotes={}, extra_packages=[], ignore=[]
                 sudo('git config remote.{name}.tagopt true'.format(name=name),
                      user='autobuild-ceph')
             sudo('git config remote.origin.tagopt true', user='autobuild-ceph')
+            if brand_new:
+                sudo('/srv/autobuild-ceph/mark_all_as_pass.sh',
+                     user='autobuild-ceph')
         if ignore:
             sudo('install -d -m0755 --owner=autobuild-ceph --group=autobuild-ceph gitbuilder.git/out/ignore')
             for sha in ignore:
