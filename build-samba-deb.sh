@@ -2,6 +2,14 @@
 
 set -e
 
+bindir=`dirname $0`
+
+keyid="03C3951A"
+
+numproc=`cat /proc/cpuinfo |grep -c processor`
+[ -z "$numproc" ] && numproc=1
+#numproc=$(($numproc * 2))
+
 if test -f ./source3/VERSION; then
    vers=3x
 else
@@ -27,6 +35,9 @@ else
 	OUTDIR="../out/output/sha1/$REV"
 fi
 
+OUTDIR_TMP="${OUTDIR}.tmp"
+
+DIST=$(lsb_release -sc)
 
 install -d -m0755 -- "$DESTDIR_TMP"
 
@@ -44,7 +55,6 @@ echo "$0: installing..."
 ionice -c3 nice -n20 make -j$NCPU install DESTDIR=${DESTDIR_TMP} || exit 4
 echo --STOP-IGNORE-WARNINGS
 
-OUTDIR_TMP="${OUTDIR}.tmp"
 
 if test x"${vers}" = x3x; then
 	SMBVERS=$(./bin/smbd --version | sed -e "s|Version ||")
@@ -57,30 +67,14 @@ fpm -s dir -t deb -n samba -v ${SMBVERS} -C ${DESTDIR_TMP} -d krb5-user usr | \
 	 grep -v "already initialized constant COMPRESSION_TYPES"
 
 install -d -m0755 -- "$OUTDIR_TMP"
-mv *deb "$OUTDIR_TMP/"
 printf '%s\n' "$REV" >"$OUTDIR_TMP/sha1"
+printf '%s\n' "$SMBVERS" >"$OUTDIR_TMP/version"
+printf '%s\n' "samba" >"$OUTDIR_TMP/name"
 
-DIST="squeeze"
-(
-    cd $OUTDIR_TMP
+mkdir -p $OUTDIR_TMP/conf
+/srv/ceph-build/gen_reprepro_conf.sh $OUTDIR_TMP 03C3951A
 
-    install -d -m0755 -- "conf"
-    cat > conf/distributions <<EOF
-Codename: $DIST
-Suite: stable
-Components: main
-Architectures: i386 amd64 source
-Origin: New Dream Network
-Description: samba autobuilds
-DebIndices: Packages Release . .gz .bz2
-DscIndices: Sources Release .gz .bz2
-EOF
-
-    for f in *.deb;
-    do
-	reprepro -b . includedeb $DIST $f
-    done
-)
+GNUPGHOME="/srv/gnupg" reprepro --ask-passphrase -b $OUTDIR_TMP -C main --ignore=undefinedtarget --ignore=wrongdistribution includedeb ${DIST} samba_${SMBVERS}_*.deb
 
 # we're successful, the files are ok to be published; try to be as
 # atomic as possible about replacing potentially existing OUTDIR
@@ -90,5 +84,12 @@ if [ -e "$OUTDIR" ]; then
 fi
 mv -- "$OUTDIR_TMP" "$OUTDIR"
 rm -rf -- "$OUTDIR.old"
+
+# rebuild combined debian repo output
+(
+    cd ../out/output
+    rm -rf combined
+    GNUPGHOME="/srv/gnupg" /srv/ceph-build/merge_repos.sh combined sha1/*
+)
 
 exit 0
