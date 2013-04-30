@@ -26,6 +26,12 @@ if hostname | grep -q -- -tarball- ; then
     exec $mydir/build-ceph.sh
 fi
 
+hostname | sed -e "s|gitbuilder-\([^-]*\)-\([^-]*\)-.*$|\1 \2|" | while read -r builder type; do
+    if test -f $mydir/build-${builder}-${type}.sh; then
+        exec $mydir/build-${builder}-${type}.sh
+    fi
+done
+
 echo "i don't know what to do with hostname "`hostname`
 exit 1
 

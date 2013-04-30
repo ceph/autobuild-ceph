@@ -66,7 +66,7 @@ env.roledefs['gitbuilder_doc'] = [
     ]
 
 env.roledefs['gitbuilder_samba'] = [
-    'ubuntu@samba-builder.front.sepia.ceph.com',
+    'ubuntu@gitbuilder-samba-deb-precise-amd64.front.sepia.ceph.com',
     ]
 
 env.roledefs['gitbuilder_hadoop'] = [
@@ -412,14 +412,14 @@ def gitbuilder_samba():
     _samba_deps()
     _gitbuilder(
         flavor='samba',
-        git_repo='https://github.com/ceph/samba.git',
+        git_repo='git://github.com/ceph/samba.git',
         extra_packages=[
             'fakeroot',
             'reprepro',
             ],
         )
-    _sync_to_gitbuilder('samba', 'deb', 'basic')
     sudo('start autobuild-ceph || /etc/init.d/autobuild-ceph start')
+    _sync_to_gitbuilder('samba', 'deb', 'basic')
 
 @roles('gitbuilder_hadoop')
 def gitbuilder_hadoop():
