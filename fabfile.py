@@ -66,7 +66,7 @@ env.roledefs['gitbuilder_doc'] = [
     ]
 
 env.roledefs['gitbuilder_samba'] = [
-    'ubuntu@gitbuilder-samba-deb-precise-amd4.front.sepia.ceph.com',
+    'ubuntu@gitbuilder-samba-deb-precise-amd64.front.sepia.ceph.com',
     ]
 
 env.roledefs['gitbuilder_hadoop'] = [
