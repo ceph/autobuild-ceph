@@ -531,6 +531,7 @@ def _deb_builder(git_url, flavor, extra_remotes={}):
             'sharutils',
             'libdistro-info-perl',  # needed by raring
             'libboost-system-dev',
+            'libleveldb-dev',
             ],
         )
     with cd('/srv'):
