@@ -285,6 +285,7 @@ def _gitbuilder(flavor, git_repo, extra_remotes={}, extra_packages=[], ignore=[]
         sudo('test -d /home/ubuntu || ln -sf /home/debian /home/ubuntu')
         sudo('git pull /home/ubuntu/bundle {branch_to_bundle}'.format(branch_to_bundle=branch_to_bundle))
         sudo('ln -sf build-{flavor}.sh build.sh'.format(flavor=flavor))
+        brand_new = False
         if not exists('gitbuilder.git'):
             brand_new = True
             sudo('rm -rf gitbuilder.git.tmp')
