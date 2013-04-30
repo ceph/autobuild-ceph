@@ -1,6 +1,6 @@
 #!/bin/sh -x
 
-mydir=`dirname $0`
+mydir='/srv/autobuild-ceph'
 
 if ! hostname | grep -q ^gitbuilder- ; then
     echo "hostname "`hostname`"does not make sense to me; i fail"
