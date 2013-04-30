@@ -2,6 +2,8 @@
 
 cd /srv/autobuild-ceph/gitbuilder.git/build
 
+mkdir -p ../out/pass
+
 for b in `git branch -a | grep origin`; do
 	touch ../out/pass/`git rev-parse $b`
 done
