@@ -333,6 +333,35 @@ def _gitbuilder(flavor, git_repo, extra_remotes={}, extra_packages=[], ignore=[]
         sudo('install --owner=root --group=root -m0644 autobuild-ceph.conf /etc/init/autobuild-ceph.conf || install --owner=root --group=root -m0755 autobuild-ceph.init /etc/init.d/autobuild-ceph')
     run('rm bundle')
 
+def _deb_install_extras():
+    with cd('/srv'):
+        if not exists('gnupg'):
+            sudo('mkdir gnupg')
+        if not exists('aptcache'):
+            sudo('mkdir aptcache ; chown autobuild-ceph:autobuild-ceph aptcache')
+
+        sudo('chown autobuild-ceph:autobuild-ceph gnupg ; chmod 700 gnupg')
+        with cd('gnupg'):
+            if not exists('pubring.gpg'):
+                # put doesn't honor cd() for some reason
+                put('gnupg/pubring.gpg')
+                put('gnupg/secring.gpg')
+                sudo("mv /home/ubuntu/*.gpg ./")
+                sudo('chown autobuild-ceph:autobuild-ceph pubring.gpg secring.gpg')
+                sudo('chmod 600 pubring.gpg secring.gpg')
+        if not exists('ceph-build'):
+            sudo('git clone https://github.com/ceph/ceph-build.git')
+        with cd('ceph-build'):
+            sudo('git pull')
+        if not exists('debian-base'):
+            sudo('mkdir debian-base')
+        with cd('debian-base'):
+            for dist in ['squeeze','oneiric']:
+                if not exists('%s.tgz' % (dist)):
+                    sudo('wget -q http://ceph.newdream.net/qa/%s.tgz' % (dist))
+        sudo('grep -q autobuild-ceph /etc/sudoers || echo "autobuild-ceph ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers')
+
+
 def _kernel_deps():
     _apt_install(
         # kernel tools
@@ -418,6 +447,7 @@ def gitbuilder_samba():
             'reprepro',
             ],
         )
+    _deb_install_extras()
     sudo('start autobuild-ceph || /etc/init.d/autobuild-ceph start')
     _sync_to_gitbuilder('samba', 'deb', 'basic')
 
@@ -534,32 +564,7 @@ def _deb_builder(git_url, flavor, extra_remotes={}):
             'libleveldb-dev',
             ],
         )
-    with cd('/srv'):
-        if not exists('gnupg'):
-            sudo('mkdir gnupg')
-        if not exists('aptcache'):
-            sudo('mkdir aptcache ; chown autobuild-ceph:autobuild-ceph aptcache')
-            
-        sudo('chown autobuild-ceph:autobuild-ceph gnupg ; chmod 700 gnupg')
-        with cd('gnupg'):
-            if not exists('pubring.gpg'):
-                # put doesn't honor cd() for some reason
-                put('gnupg/pubring.gpg')
-                put('gnupg/secring.gpg')
-                sudo("mv /home/ubuntu/*.gpg ./")
-                sudo('chown autobuild-ceph:autobuild-ceph pubring.gpg secring.gpg')
-                sudo('chmod 600 pubring.gpg secring.gpg')
-        if not exists('ceph-build'):
-            sudo('git clone https://github.com/ceph/ceph-build.git')
-        with cd('ceph-build'):
-            sudo('git pull')
-        if not exists('debian-base'):
-            sudo('mkdir debian-base')
-        with cd('debian-base'):
-            for dist in ['squeeze','oneiric']:
-                if not exists('%s.tgz' % (dist)):
-                    sudo('wget -q http://ceph.newdream.net/qa/%s.tgz' % (dist))
-        sudo('grep -q autobuild-ceph /etc/sudoers || echo "autobuild-ceph ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers')
+    _deb_install_extras()
 
 @roles('gitbuilder_ceph_deb')
 def gitbuilder_ceph_deb():
