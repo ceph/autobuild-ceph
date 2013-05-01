@@ -21,7 +21,7 @@ grep -v \"Unable to determine origin of type\" | \
 grep -v \"is not a pointer or array, skip client functions\" | \
 grep -v \"is a pointer to type 'string', skip client functions\""
 
-CONFIGOPTS="--enable-selftest --with-ldap --with-ads"
+CONFIGOPTS=
 REV="$(git rev-parse HEAD)"
 if test x"${vers}" = x3x; then
 	# version 3 requires a different setup
@@ -29,7 +29,7 @@ if test x"${vers}" = x3x; then
 	./autogen-waf.sh
 	DESTDIR_TMP="../install.tmp"
 	OUTDIR="../../out/output/sha1/$REV"
-	CONFIGOPTS="${CONFIGOPTS} --with-krb5"
+	CONFIGOPTS="--enable-selftest --with-ldap --with-ads --with-krb5"
 else
 	DESTDIR_TMP="install.tmp"
 	OUTDIR="../out/output/sha1/$REV"
