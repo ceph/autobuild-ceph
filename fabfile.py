@@ -295,6 +295,8 @@ def _gitbuilder(flavor, git_repo, extra_remotes={}, extra_packages=[], ignore=[]
             with cd('gitbuilder.git.tmp'):
                 sudo('git checkout %s' % gitbuilder_commit)
                 sudo('ln -s ../build.sh ./')
+                if branches_local_name != 'branches-local':
+                    sudo('mv ./branches-local ./branches-local-orig')
                 sudo('ln -s ../{branches_local_name} ./branches-local'.format(branches_local_name=branches_local_name))
                 sudo('git clone {git_repo} build'.format(git_repo=git_repo))
                 sudo('chown -R autobuild-ceph:autobuild-ceph build out')
