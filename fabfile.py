@@ -441,7 +441,7 @@ def gitbuilder_samba():
     _samba_deps()
     _gitbuilder(
         flavor='samba',
-        git_repo='git://github.com/ceph/samba.git',
+        git_repo='git://git.samba.org/samba.git',
         extra_packages=[
             'fakeroot',
             'reprepro',
