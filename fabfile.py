@@ -446,6 +446,7 @@ def gitbuilder_samba():
             'fakeroot',
             'reprepro',
             ],
+        branches_local_name='branches-local-samba',
         )
     _deb_install_extras()
     sudo('start autobuild-ceph || /etc/init.d/autobuild-ceph start')
