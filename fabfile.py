@@ -436,6 +436,8 @@ def _samba_deps():
         'ruby1.8-dev',
         'rubygems',
         'libcephfs-dev',
+        'libncurses-dev',
+        'dpkg-sig',
         )
 
     _gem_install('fpm')
