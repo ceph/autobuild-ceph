@@ -7,13 +7,13 @@ if ! hostname | grep -q ^gitbuilder- ; then
     exit 1
 fi
 
-if hostname | grep -q -- -notcmalloc- ; then
-    echo "hostname has -notcmalloc-, will build --without-tcmalloc"
-    export CEPH_EXTRA_CONFIGURE_ARGS+=" --without-tcmalloc"
+if hostname | grep -q -- -notcmalloc ; then
+    echo "hostname has -notcmalloc, will build --without-tcmalloc"
+    export CEPH_EXTRA_CONFIGURE_ARGS="$CEPH_EXTRA_CONFIGURE_ARGS --without-tcmalloc"
 fi
-if hostname | grep -q -- -gcov- ; then
-    echo "hostname has -gcov-, will --enable-coverage"
-    export CEPH_EXTRA_CONFIGURE_ARGS+=" --enable-coverage"
+if hostname | grep -q -- -gcov ; then
+    echo "hostname has -gcov, will --enable-coverage"
+    export CEPH_EXTRA_CONFIGURE_ARGS="$CEPH_EXTRA_CONFIGURE_ARGS --enable-coverage"
 fi
 
 if hostname | grep -q -- -deb- ; then
