@@ -522,6 +522,7 @@ def _gitbuilder_ceph(url, flavor):
             'libxml2-dev',
             'libnss3-dev',
             'junit4',
+            'yasm',
             ],
         )
     sudo('start autobuild-ceph || /etc/init.d/autobuild-ceph start')
@@ -569,6 +570,7 @@ def _deb_builder(git_url, flavor, extra_remotes={}):
             'libdistro-info-perl',  # needed by raring
             'libboost-system-dev',
             'libleveldb-dev',
+            'yasm',
             ],
         )
     _deb_install_extras()
@@ -641,6 +643,7 @@ def _gitbuilder_ceph_rpm(url, flavor):
             'sharutils',
             'gnupg',
             'expect',
+            'yasm',
             ]
         )
     with cd('/srv/autobuild-ceph'):
