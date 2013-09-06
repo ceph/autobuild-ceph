@@ -3,6 +3,7 @@
 # First parameter should be the key such as:
 #   --define "_gpg_name 03C3951A"
 
+set timeout -1
 spawn rpm --addsign {*}$argv
 expect -exact "Enter pass phrase: "
 send -- "\r"
