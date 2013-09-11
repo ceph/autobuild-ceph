@@ -523,6 +523,7 @@ def _gitbuilder_ceph(url, flavor):
             'libnss3-dev',
             'junit4',
             'yasm',
+            'python-nose',
             ],
         )
     sudo('start autobuild-ceph || /etc/init.d/autobuild-ceph start')
@@ -571,6 +572,7 @@ def _deb_builder(git_url, flavor, extra_remotes={}):
             'libboost-system-dev',
             'libleveldb-dev',
             'yasm',
+            'python-nose',
             ],
         )
     _deb_install_extras()
@@ -644,6 +646,7 @@ def _gitbuilder_ceph_rpm(url, flavor):
             'gnupg',
             'expect',
             'yasm',
+            'python-nose',
             ]
         )
     with cd('/srv/autobuild-ceph'):
