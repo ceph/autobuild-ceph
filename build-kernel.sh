@@ -39,8 +39,8 @@ ionice -c3 nice -n20 make O=build~/out listnewconfig "$@" || :
 echo "$0: running make oldconfig..."
 yes '' | ionice -c3 nice -n20 make O=build~/out oldconfig "$@"
 
-echo "$0: applying perf.patch..."
-patch -p1 < ../../perf.patch
+#echo "$0: applying perf.patch..."
+#patch -p1 < ../../perf.patch
 
 echo "$0: building..."
 # build dir has ~ suffix so it gets ignored by git and doesn't make
