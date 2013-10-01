@@ -80,8 +80,8 @@ EOF
 	reprepro -b . includedeb $DIST linux-$f-*.deb
 
 	# make a consistently named symlink
-	dbg=`ls linux-$f-*.deb | head -1`
-	normal=`ls linux-$f-*.deb | tail -1`
+	dbg=`ls linux-$f-*.deb | tail -1`
+	normal=`ls linux-$f-*.deb | head -1`
 	ln -s $normal linux-$f.deb
 	ln -s $dbg linux-$f-dbg.deb
     done
