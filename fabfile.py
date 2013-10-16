@@ -524,6 +524,12 @@ def _gitbuilder_ceph(url, flavor):
             'junit4',
             'yasm',
             'python-nose',
+            # for kernel build, perf etc
+            'flex',
+            'bison',
+            'libdw-dev',
+            'binutils-dev',
+            'libnewt-dev',
             ],
         )
     sudo('start autobuild-ceph || /etc/init.d/autobuild-ceph start')
