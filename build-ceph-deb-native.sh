@@ -64,6 +64,12 @@ do
     GNUPGHOME="/srv/gnupg" reprepro --ask-passphrase -b $OUTDIR_TMP -C main --ignore=undefinedtarget --ignore=wrongdistribution include $DIST $f
 done
 
+if [ "$DIST" = "precise" ]; then
+    echo "$0: trying to include libleveldb1 backport into precise build..."
+    GNUPGHOME="/srv/gnupg" reprepro --ask-passphrase -b $OUTDIR_TMP -C main --ignore=undefinedtarget --ignore=wrongdistribution includedeb $DIST /var/cache/apt/archives/libleveldb1_* || true
+fi
+
+
 rm -rf out~
 
 # we're successful, the files are ok to be published; try to be as
