@@ -23,14 +23,9 @@ else
   echo "$0: no ccache found, compiles will be slower." 1>&2
 fi
 
-flavor=''
-hostname | sed -e "s|gitbuilder-\([^-]*\)-\([^-]*\)-\([^-]*\)-\([^-]*\)-\([^-]*\)$|\5|" | while read -r flavor; do
-    if [ -e ../../kernel-config.$fl ]; then
-	flavor="$fl"
-    fi
-done
+flavor=`hostname | sed -e "s|gitbuilder-\([^-]*\)-\([^-]*\)-\([^-]*\)-\([^-]*\)-\([^-]*\)$|\5|"`
 config="../../kernel-config.$flavor"
-if [ -z "$flavor" ]; then
+if [ ! -e "$config" ]; then
     echo "no $config found for flavor $flavor"
     exit 1
 fi
