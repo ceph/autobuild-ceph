@@ -390,8 +390,6 @@ def gitbuilder_kernel():
         flavor='auto',
         git_repo='https://github.com/ceph/ceph-client.git',
         extra_remotes=dict(
-            # linus='git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git',
-            linus='https://github.com/torvalds/linux.git',
             korg='git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git',
             ),
         extra_packages=[
