@@ -23,10 +23,22 @@ else
   echo "$0: no ccache found, compiles will be slower." 1>&2
 fi
 
+flavor=''
+hostname | sed -e "s|gitbuilder-\([^-]*\)-\([^-]*\)-\([^-]*\)-\([^-]*\)-\([^-]*\)$|\5|" | while read -r flavor; do
+    if [ -e ../../kernel-config.$fl ]; then
+	flavor="$fl"
+    fi
+done
+config="../../kernel-config.$flavor"
+if [ -z "$flavor" ]; then
+    echo "no $config found for flavor $flavor"
+    exit 1
+fi
+
 install -d -m0755 build~/out
 (
     # we really need this to get the packages the way we want them, so just enforce it here
-    grep -v '^CONFIG_LOCALVERSION_AUTO=' ../../kernel-config
+    grep -v '^CONFIG_LOCALVERSION_AUTO=' $config
     echo 'CONFIG_LOCALVERSION_AUTO=y'
     ) >build~/out/.config
 
