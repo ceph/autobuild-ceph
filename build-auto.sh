@@ -16,13 +16,10 @@ if hostname | grep -q -- -gcov ; then
     export CEPH_EXTRA_CONFIGURE_ARGS="$CEPH_EXTRA_CONFIGURE_ARGS --enable-coverage"
 fi
 
-if hostname | grep -q -- -deb- ; then
+if hostname | grep -q -- ceph-deb- ; then
     exec $mydir/build-ceph-deb-native.sh
 fi
-if hostname | grep -q -- -rpm- ; then
-    exec $mydir/build-ceph-rpm.sh
-fi
-if hostname | grep -q -- -tarball- ; then
+if hostname | grep -q -- ceph-tarball- ; then
     exec $mydir/build-ceph.sh
 fi
 
