@@ -87,10 +87,13 @@ EOF
 	reprepro -b . includedeb $DIST linux-$f-*.deb
 
 	# make a consistently named symlink
-	dbg=`ls linux-$f-*.deb | grep -- -dbg`
 	normal=`ls linux-$f-*.deb | grep -v -- -dbg`
 	ln -s $normal linux-$f.deb
-	ln -s $dbg linux-$f-dbg.deb
+
+	dbg=`ls linux-$f-*.deb | grep -- -dbg || true`
+	if [ -n "$dbd" ]; then
+	    ln -s $dbg linux-$f-dbg.deb
+	fi
     done
 )
 
