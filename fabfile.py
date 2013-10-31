@@ -27,7 +27,9 @@ env.roledefs['gitbuilder_ceph_notcmalloc'] = [
 
 env.roledefs['gitbuilder_kernel'] = [
 #    'ubuntu@gitbuilder-kernel-amd64.ceph.newdream.net',
-    'ubuntu@gitbuilder-precise-kernel-amd64.front.sepia.ceph.com',
+#    'ubuntu@gitbuilder-precise-kernel-amd64.front.sepia.ceph.com',
+    'ubuntu@gitbuilder-kernel-deb-precise-amd64-basic.front.sepia.ceph.com',
+    'ubuntu@gitbuilder-kernel-deb-precise-amd64-debug.front.sepia.ceph.com',
     ]
 
 env.roledefs['gitbuilder_ceph_deb'] = [
@@ -387,11 +389,9 @@ def _kernel_deps():
 def gitbuilder_kernel():
     _kernel_deps()
     _gitbuilder(
-        flavor='kernel',
+        flavor='auto',
         git_repo='https://github.com/ceph/ceph-client.git',
         extra_remotes=dict(
-            # linus='git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git',
-            linus='https://github.com/torvalds/linux.git',
             korg='git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git',
             ),
         extra_packages=[
@@ -402,7 +402,7 @@ def gitbuilder_kernel():
             'fbeb94b65cf784ed8bf852131e28c9fb5c4c760f',
             ],
         )
-    _sync_to_gitbuilder('kernel', 'deb', 'basic')
+    _sync_to_gitbuilder_from_hostname()
     sudo('start autobuild-ceph || /etc/init.d/autobuild-ceph start')
 
 def _hadoop_deps():
@@ -523,6 +523,13 @@ def _gitbuilder_ceph(url, flavor):
             'libnss3-dev',
             'junit4',
             'yasm',
+            'python-nose',
+            # for kernel build, perf etc
+            'flex',
+            'bison',
+            'libdw-dev',
+            'binutils-dev',
+            'libnewt-dev',
             ],
         )
     sudo('start autobuild-ceph || /etc/init.d/autobuild-ceph start')
@@ -571,6 +578,7 @@ def _deb_builder(git_url, flavor, extra_remotes={}):
             'libboost-system-dev',
             'libleveldb-dev',
             'yasm',
+            'python-nose',
             ],
         )
     _deb_install_extras()
@@ -644,6 +652,7 @@ def _gitbuilder_ceph_rpm(url, flavor):
             'gnupg',
             'expect',
             'yasm',
+            'python-nose',
             ]
         )
     with cd('/srv/autobuild-ceph'):

@@ -16,21 +16,20 @@ if hostname | grep -q -- -gcov ; then
     export CEPH_EXTRA_CONFIGURE_ARGS="$CEPH_EXTRA_CONFIGURE_ARGS --enable-coverage"
 fi
 
-if hostname | grep -q -- -deb- ; then
+if hostname | grep -q -- ceph-deb- ; then
     exec $mydir/build-ceph-deb-native.sh
 fi
-if hostname | grep -q -- -rpm- ; then
-    exec $mydir/build-ceph-rpm.sh
-fi
-if hostname | grep -q -- -tarball- ; then
+if hostname | grep -q -- ceph-tarball- ; then
     exec $mydir/build-ceph.sh
 fi
 
-hostname | sed -e "s|gitbuilder-\([^-]*\)-\([^-]*\)-.*$|\1 \2|" | while read -r builder type; do
+hostname | sed -e "s|gitbuilder-\([^-]*\)-\([^-]*\)-.*$|\1 \2|" > /tmp/$$
+read -r builder type < /tmp/$$
+if [ -n "$builder" -a -n "$type" ]; then
     if test -f $mydir/build-${builder}-${type}.sh; then
         exec $mydir/build-${builder}-${type}.sh
     fi
-done
+fi
 
 echo "i don't know what to do with hostname "`hostname`
 exit 1
