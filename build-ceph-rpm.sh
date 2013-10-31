@@ -79,6 +79,24 @@ mkdir -p ${BUILDAREA}/RPMS
 mkdir -p ${BUILDAREA}/BUILD
 cp -a ceph-*.tar.bz2 ${BUILDAREA}/SOURCES/.
 
+# If this is a release candidate, identified by having -rc[0-9] appended to
+# the version number, then fix up the generated rpm spec file by moving the
+# the rc tag from the version field to the release field. '-' is an illegal
+# char in the rpm version number.
+rpm_version=`grep ^Version: ceph.spec | awk '{print $2}'`
+if [[ "$rpm_version" =~  .*-rc[1-9]$ ]] ; then
+    rpm_rc=$(echo $rpm_version | cut -d- -f2)
+    rpm_version=$(echo $rpm_version | cut -d- -f1)
+    rpm_release=`grep ^Release: ceph.spec | awk '{print $2}'`
+    # patch ceph.spec
+    sed -i "s/^Version:.*/Version:        $rpm_version/" ceph.spec
+    if [[ ! $rpm_release =~ rc[1-9].* ]] ; then
+        sed -i "s/^Release:.*/Release:        $rpm_rc.$rpm_release/" ceph.spec
+    fi
+    sed -i "s/^Source0:.*/Source0:        http:\/\/ceph.com\/download\/%{name}-%{version}-$rpm_rc.tar.bz2/" ceph.spec
+    sed -i "s/^%setup.*/%setup -q -n %{name}-%{version}-$rpm_rc/" ceph.spec
+fi
+
 # Build RPMs
 BUILDAREA=`readlink -fn ${BUILDAREA}`   ### rpm wants absolute path
 rpmbuild -ba --define "_topdir ${BUILDAREA}" --define "_unpackaged_files_terminate_build 0" ceph.spec
