@@ -531,6 +531,7 @@ def _gitbuilder_ceph(url, flavor):
             'libdw-dev',
             'binutils-dev',
             'libnewt-dev',
+	    'libblkid-dev',
             ],
         )
     sudo('start autobuild-ceph || /etc/init.d/autobuild-ceph start')
