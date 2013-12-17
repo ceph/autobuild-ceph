@@ -517,7 +517,6 @@ def _gitbuilder_ceph(url, flavor):
             'uuid-dev',
             'python-pip',
             'python-virtualenv',
-            'uuid-dev',
             'libaio-dev',
             'libxml2-dev',
             'libnss3-dev',
