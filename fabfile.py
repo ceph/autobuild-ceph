@@ -515,6 +515,7 @@ def _gitbuilder_ceph(url, flavor):
             'libgoogle-perftools-dev',
             'libkeyutils-dev',
             'uuid-dev',
+            'libblkid-dev',
             'python-pip',
             'python-virtualenv',
             'libaio-dev',
@@ -530,7 +531,6 @@ def _gitbuilder_ceph(url, flavor):
             'libdw-dev',
             'binutils-dev',
             'libnewt-dev',
-	    'libblkid-dev',
             ],
         )
     sudo('start autobuild-ceph || /etc/init.d/autobuild-ceph start')
@@ -559,6 +559,7 @@ def _deb_builder(git_url, flavor, extra_remotes={}):
             'libgoogle-perftools-dev',
             'libkeyutils-dev',
             'uuid-dev',
+            'libblkid-dev',
             'libaio-dev',
             'libxml2-dev',
             'libnss3-dev',
@@ -626,6 +627,8 @@ def _gitbuilder_ceph_rpm(url, flavor):
             'libedit-devel',
             'libuuid',
             'libuuid-devel',
+            'libblkid',
+            'libblkid-devel',
             'fcgi',
             'fcgi-devel',
             'fuse',
