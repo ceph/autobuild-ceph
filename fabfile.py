@@ -524,7 +524,6 @@ def _gitbuilder_ceph(url, flavor):
             'junit4',
             'yasm',
             'python-nose',
-            'python-pytest',
             # for kernel build, perf etc
             'flex',
             'bison',
@@ -581,7 +580,6 @@ def _deb_builder(git_url, flavor, extra_remotes={}):
             'libleveldb-dev',
             'yasm',
             'python-nose',
-            'python-pytest',
             ],
         )
     _deb_install_extras()
@@ -658,7 +656,6 @@ def _gitbuilder_ceph_rpm(url, flavor):
             'expect',
             'yasm',
             'python-nose',
-            'python-pytest',
             ]
         )
     with cd('/srv/autobuild-ceph'):
