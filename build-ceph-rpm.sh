@@ -6,6 +6,7 @@ git submodule foreach 'git clean -fdx && git reset --hard'
 rm -rf ceph-object-corpus
 rm -rf src/leveldb
 rm -rf src/libs3
+rm -rf src/mongoose
 git submodule update --init
 git clean -fdx
 
