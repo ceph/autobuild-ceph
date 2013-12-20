@@ -8,8 +8,8 @@ if ! hostname | grep -q ^gitbuilder- ; then
 fi
 
 if hostname | grep -q -- -notcmalloc ; then
-    echo "hostname has -notcmalloc, will build --without-tcmalloc"
-    export CEPH_EXTRA_CONFIGURE_ARGS="$CEPH_EXTRA_CONFIGURE_ARGS --without-tcmalloc"
+    echo "hostname has -notcmalloc, will build --without-tcmalloc --without-cryptopp"
+    export CEPH_EXTRA_CONFIGURE_ARGS="$CEPH_EXTRA_CONFIGURE_ARGS --without-tcmalloc --without-cryptopp"
 fi
 if hostname | grep -q -- -gcov ; then
     echo "hostname has -gcov, will --enable-coverage"
