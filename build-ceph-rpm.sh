@@ -97,6 +97,7 @@ if [[ "$rpm_version" =~  .*-rc[1-9]$ ]] ; then
     sed -i "s/^Source0:.*/Source0:        http:\/\/ceph.com\/download\/%{name}-%{version}-$rpm_rc.tar.bz2/" ceph.spec
     sed -i "s/^%setup.*/%setup -q -n %{name}-%{version}-$rpm_rc/" ceph.spec
 fi
+cp ceph.spec /tmp/ceph.spec
 
 # Build RPMs
 BUILDAREA=`readlink -fn ${BUILDAREA}`   ### rpm wants absolute path
