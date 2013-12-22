@@ -8,6 +8,8 @@ import sys
 env.roledefs['gitbuilder_ceph'] = [
     'ubuntu@gitbuilder-precise-i386.front.sepia.ceph.com',
     'ubuntu@gitbuilder-squeeze-amd64.front.sepia.ceph.com',
+    'ubuntu@gitbuilder-squeeze-deb-amd64.front.sepia.ceph.com',
+#broken    'ubuntu@gitbuilder-sles-11sp2-amd64.front.sepia.ceph.com',
     ]
 env.roledefs['gitbuilder_ceph_deb_native'] = [
     'ubuntu@gitbuilder-squeeze-deb-amd64.front.sepia.ceph.com',
