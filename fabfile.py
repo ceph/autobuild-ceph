@@ -33,6 +33,13 @@ env.roledefs['gitbuilder_auto'] = [
     'ubuntu@gitbuilder-ceph-tarball-saucy-amd64-basic.front.sepia.ceph.com',
     ]
 
+# rpm ones (bleh)
+env.roledefs['gitbuilder_ceph_rpm'] = [
+    'ubuntu@gitbuilder-centos6-amd64.front.sepia.ceph.com',
+    'ubuntu@gitbuilder-fedora18-amd64.front.sepia.ceph.com',
+    ]
+
+
 # kernels
 env.roledefs['gitbuilder_kernel'] = [
     'ubuntu@gitbuilder-kernel-deb-precise-amd64-basic.front.sepia.ceph.com',
@@ -63,7 +70,7 @@ env.roledefs['gitbuilder_apache_hadoop'] = [
 
 def _rpm_install(*packages):
     
-    sudo("lsb_release -d | grep Fedora || rpm -qa | grep epel-release ||rpm -Uvh http://download.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm")
+    sudo("lsb_release -d | egrep '(Fedora|SUSE)' || rpm -qa | grep epel-release ||rpm -Uvh http://download.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm")
     sudo("yum --assumeyes --quiet update")
     sudo(' '.join(
             [
