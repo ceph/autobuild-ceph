@@ -63,7 +63,7 @@ env.roledefs['gitbuilder_apache_hadoop'] = [
 
 def _rpm_install(*packages):
     
-    sudo("rpm -qa | grep epel-release ||rpm -Uvh http://download.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-7.noarch.rpm")
+    sudo("lsb_release -d | grep Fedora || rpm -qa | grep epel-release ||rpm -Uvh http://download.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm")
     sudo("yum --assumeyes --quiet update")
     sudo(' '.join(
             [
