@@ -154,14 +154,16 @@ def _rh_gitbuilder(flavor, git_repo, extra_remotes={}, extra_packages=[], ignore
                 if branches_local_name != 'branches-local':
                     sudo('mv ./branches-local ./branches-local-orig')
                 sudo('ln -s ../{branches_local_name} ./branches-local'.format(branches_local_name=branches_local_name))
-                sudo('git clone {git_repo} build'.format(git_repo=git_repo))
-                sudo('chown -R autobuild-ceph:autobuild-ceph build out')
+                sudo('chown -R autobuild-ceph:autobuild-ceph out')
             sudo('mv gitbuilder.git.tmp gitbuilder.git')
-        else:
-            with cd('gitbuilder.git'):
-                sudo('git remote set-url origin %s' % gitbuilder_origin)
-                sudo('git fetch origin')
-                sudo('git reset --hard %s' % gitbuilder_commit)
+        with cd('gitbuilder.git'):
+            if not exists('build'):
+                sudo('git clone {git_repo} build'.format(git_repo=git_repo))
+                sudo('chown -R autobuild-ceph:autobuild-ceph build')
+            sudo('git remote set-url origin %s' % gitbuilder_origin)
+            sudo('git fetch origin')
+            sudo('git reset --hard %s' % gitbuilder_commit)
+
         with cd('gitbuilder.git/build'):
             sudo(
                 'git remote set-url origin {url}'.format(
@@ -251,14 +253,15 @@ def _gitbuilder(flavor, git_repo, extra_remotes={}, extra_packages=[], ignore=[]
                 if branches_local_name != 'branches-local':
                     sudo('mv ./branches-local ./branches-local-orig')
                 sudo('ln -s ../{branches_local_name} ./branches-local'.format(branches_local_name=branches_local_name))
-                sudo('git clone {git_repo} build'.format(git_repo=git_repo))
-                sudo('chown -R autobuild-ceph:autobuild-ceph build out')
+                sudo('chown -R autobuild-ceph:autobuild-ceph out')
             sudo('mv gitbuilder.git.tmp gitbuilder.git')
-        else:
-            with cd('gitbuilder.git'):
-                sudo('git remote set-url origin %s' % gitbuilder_origin)
-                sudo('git fetch origin')
-                sudo('git reset --hard %s' % gitbuilder_commit)
+        with cd('gitbuilder.git'):
+            if not exists('build'):
+                sudo('git clone {git_repo} build'.format(git_repo=git_repo))
+                sudo('chown -R autobuild-ceph:autobuild-ceph build')
+            sudo('git remote set-url origin %s' % gitbuilder_origin)
+            sudo('git fetch origin')
+            sudo('git reset --hard %s' % gitbuilder_commit)
         with cd('gitbuilder.git/build'):
             sudo(
                 'git remote set-url origin {url}'.format(
