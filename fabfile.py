@@ -33,6 +33,7 @@ env.roledefs['gitbuilder_auto'] = [
 #    'ubuntu@gitbuilder-ceph-tarball-quantal-armv7l-notcmalloc.front.sepia.ceph.com',
     'ubuntu@gitbuilder-ceph-tarball-raring-amd64-basic.front.sepia.ceph.com',
     'ubuntu@gitbuilder-ceph-tarball-saucy-amd64-basic.front.sepia.ceph.com',
+    'ubuntu@gitbuilder-ceph-tarball-saucy-i386-basic.front.sepia.ceph.com',
     ]
 
 # rpm ones (bleh)
