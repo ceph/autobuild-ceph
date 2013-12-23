@@ -7,6 +7,7 @@ rm -rf ceph-object-corpus
 rm -rf src/leveldb
 rm -rf src/libs3
 rm -rf src/mongoose
+rm -rf src/civetweb
 git submodule init
 git submodule update
 git clean -fdx
