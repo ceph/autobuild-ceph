@@ -64,6 +64,8 @@ OUTDIR_TMP="${OUTDIR}.tmp"
 install -d -m0755 -- "$OUTDIR_TMP"
 printf '%s\n' "$REV" >"$OUTDIR_TMP/sha1"
 mv -- build~/*.deb "$OUTDIR_TMP/"
+cp -- build~/out/.config $OUTDIR_TMP/config
+cp -- build~/out/include/config/kernel.release $OUTDIR_TMP/version
 
 # build a simple repro in OUTDIR_TMP too
 DIST="squeeze"    # this could be anything
