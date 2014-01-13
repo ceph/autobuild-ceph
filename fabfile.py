@@ -38,6 +38,8 @@ env.roledefs['gitbuilder_auto'] = [
 env.roledefs['gitbuilder_ceph_rpm'] = [
     'ubuntu@gitbuilder-centos6-amd64.front.sepia.ceph.com',
     'ubuntu@gitbuilder-fedora18-amd64.front.sepia.ceph.com',
+    'ubuntu@gitbuilder-fedora19-amd64.front.sepia.ceph.com',
+    'ubuntu@gitbuilder-fedora20-amd64.front.sepia.ceph.com',
     ]
 
 
