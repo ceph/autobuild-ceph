@@ -653,9 +653,12 @@ def gitbuilder_doc():
             sudo("chmod 600 rsync-key* ; chown autobuild-ceph.autobuild-ceph rsync-key*")
 
 def _sync_to_gitbuilder(package, format, flavor):
+    lsb = '`lsb_release -s -c`'
+    if format =='rpm':
+        lsb = '`lsb_release -s -i -s | tr A-Z a-z``lsb_release -s -r | cut -d. -f1`'
     with cd('/srv/autobuild-ceph'):
         # fugliness
-        sudo("echo gitbuilder@gitbuilder.ceph.com:gitbuilder.ceph.com/%s-%s-`lsb_release -s -c`-`uname -m`-%s > rsync-target" % (package,format,flavor))
+        sudo("echo gitbuilder@gitbuilder.ceph.com:gitbuilder.ceph.com/%s-%s-%s-`uname -m`-%s > rsync-target" % (package,format, lsb, flavor))
         _sync_rsync_keys()
 
 def _sync_rsync_keys():
