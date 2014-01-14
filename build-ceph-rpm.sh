@@ -7,6 +7,7 @@ do
     git config --unset $submodule
 done
 
+git clean -fdx && git reset --hard
 # pull down submodules
 git submodule foreach 'git clean -fdx && git reset --hard'
 rm -rf ceph-object-corpus

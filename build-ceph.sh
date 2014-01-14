@@ -7,6 +7,7 @@ do
     git config --unset $submodule
 done
 
+git clean -fdx && git reset --hard
 # pull down submodules
 rm -rf ceph-object-corpus
 rm -rf src/leveldb
