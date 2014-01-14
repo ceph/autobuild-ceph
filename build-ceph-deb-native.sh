@@ -1,6 +1,12 @@
 #!/bin/sh -x
 set -e
 
+# Remove submodules from .git/config so its re-imported from .gitmodules:
+for submodule in $(git config -l | grep submodule | cut -d'=' -f1)
+do
+    git config --unset $submodule
+done
+
 # pull down submodules
 git submodule foreach 'git clean -fdx && git reset --hard'
 rm -rf ceph-object-corpus
