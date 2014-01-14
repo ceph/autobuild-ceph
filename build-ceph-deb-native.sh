@@ -67,10 +67,8 @@ do
 done
 
 if [ "$DIST" = "precise" ]; then
-    echo "$0: trying to include libleveldb1 backport..."
-    GNUPGHOME="/srv/gnupg" reprepro --ask-passphrase -b $OUTDIR_TMP -C main --ignore=undefinedtarget --ignore=wrongdistribution includedeb $DIST /var/cache/apt/archives/libleveldb1_* || true
-    echo "$0: trying to include libcurl3-gnuls backport..."
-    GNUPGHOME="/srv/gnupg" reprepro --ask-passphrase -b $OUTDIR_TMP -C main --ignore=undefinedtarget --ignore=wrongdistribution includedeb $DIST /var/cache/apt/archives/libcurl3-gnutls_* || true
+    echo "$0: trying to include backports from /srv/extras-backports..."
+    GNUPGHOME="/srv/gnupg" reprepro --ask-passphrase -b $OUTDIR_TMP -C main --ignore=undefinedtarget --ignore=wrongdistribution includedeb $DIST /srv/extras-backports/* || true
 fi
 
 

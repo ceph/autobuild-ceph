@@ -106,6 +106,39 @@ def _apt_install(*packages):
                 ]
             + list(packages)))
 
+def _apt_reinstall_for_backports(*packages):
+
+    sudo("mkdir -p /srv/extras-backports")
+    sudo("rm -f /srv/extras-backports/*")
+    sudo("apt-get clean")
+    sudo(' '.join(
+            [
+                'env DEBIAN_FRONTEND=noninteractive DEBIAN_PRIORITY=critical',
+                'apt-get',
+                '-q',
+                '-o', 'Dpkg::Options::=--force-confnew',
+                'install',
+                '--reinstall',
+                '--no-install-recommends',
+                '--assume-yes',
+                '--',
+            ]
+            + list(packages)))
+    debcache = []
+    for package in (list(packages)):
+        debcache.append('/var/cache/apt/archives/{package}*'.format(package=package))
+
+    sudo(' '.join(
+            [
+                'cp',
+                '-avf'
+            ]
+            + debcache +
+            [
+                '/srv/extras-backports'
+            ]))
+
+
 def _gem_install(*packages):
     sudo('gem install ' + ' '.join(list(packages)))
 
@@ -229,6 +262,13 @@ def _gitbuilder(flavor, git_repo, extra_remotes={}, extra_packages=[], ignore=[]
         'pbuilder',
         *extra_packages
         )
+
+    #  Reinstall for packport deps.
+    _apt_reinstall_for_backports(
+        'libleveldb1',
+        'libcurl3-gnutls'
+        )
+
     sudo(
         ' '.join([
                 'adduser',
