@@ -2,9 +2,9 @@
 set -e
 
 # Remove submodules from .git/config so its re-imported from .gitmodules:
-for submodule in $(git config -l | grep submodule | cut -d'=' -f1)
+for submodule in $(git config -l | grep submodule | cut -d'.' -f1-2)
 do
-    git config --unset $submodule
+    git config --remove-section  $submodule
 done
 
 git clean -fdx && git reset --hard
