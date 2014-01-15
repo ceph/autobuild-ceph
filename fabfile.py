@@ -663,6 +663,10 @@ def _gitbuilder_ceph_rpm(url, flavor):
             'expect',
             'yasm',
             'python-nose',
+            'rpm-sign',
+            'createrepo',
+            'leveldb-devel',
+            'snappy-devel',
             ]
         )
     with cd('/srv/autobuild-ceph'):
