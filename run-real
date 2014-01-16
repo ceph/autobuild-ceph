@@ -75,10 +75,10 @@ if [ -n "$target" ]; then
     rsync -auv --delete -e "ssh -i ../rsync-key -o StrictHostKeyChecking=no" \
 	"$REF_OUTDIR/" $target/ref
 
-    # touch any active sha1 dirs, and remove any older than 2 days.
+    # touch any active sha1 dirs, and remove any older than 4 days.
     echo "removing old builds"
     ssh -i ../rsync-key -o StrictHostKeyChecking=no $target_host \
 	touch $target_dir/ref/\*/. \; \
-	find $target_dir/sha1 -mindepth 1 -maxdepth 1 -mtime +1 \| \
+	find $target_dir/sha1 -mindepth 1 -maxdepth 1 -mtime +3 \| \
 	xargs --no-run-if-empty -- rm -rfv --
 fi

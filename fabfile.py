@@ -38,6 +38,8 @@ env.roledefs['gitbuilder_auto'] = [
 env.roledefs['gitbuilder_ceph_rpm'] = [
     'ubuntu@gitbuilder-centos6-amd64.front.sepia.ceph.com',
     'ubuntu@gitbuilder-fedora18-amd64.front.sepia.ceph.com',
+    'ubuntu@gitbuilder-fedora19-amd64.front.sepia.ceph.com',
+    'ubuntu@gitbuilder-fedora20-amd64.front.sepia.ceph.com',
     ]
 
 
@@ -103,6 +105,39 @@ def _apt_install(*packages):
                 '--',
                 ]
             + list(packages)))
+
+def _apt_reinstall_for_backports(*packages):
+
+    sudo("mkdir -p /srv/extras-backports")
+    sudo("rm -f /srv/extras-backports/*")
+    sudo("apt-get clean")
+    sudo(' '.join(
+            [
+                'env DEBIAN_FRONTEND=noninteractive DEBIAN_PRIORITY=critical',
+                'apt-get',
+                '-q',
+                '-o', 'Dpkg::Options::=--force-confnew',
+                'install',
+                '--reinstall',
+                '--no-install-recommends',
+                '--assume-yes',
+                '--',
+            ]
+            + list(packages)))
+    debcache = []
+    for package in (list(packages)):
+        debcache.append('/var/cache/apt/archives/{package}*'.format(package=package))
+
+    sudo(' '.join(
+            [
+                'cp',
+                '-avf'
+            ]
+            + debcache +
+            [
+                '/srv/extras-backports'
+            ]))
+
 
 def _gem_install(*packages):
     sudo('gem install ' + ' '.join(list(packages)))
@@ -227,6 +262,13 @@ def _gitbuilder(flavor, git_repo, extra_remotes={}, extra_packages=[], ignore=[]
         'pbuilder',
         *extra_packages
         )
+
+    #  Reinstall for packport deps.
+    _apt_reinstall_for_backports(
+        'libleveldb1',
+        'libcurl3-gnutls'
+        )
+
     sudo(
         ' '.join([
                 'adduser',
@@ -621,6 +663,10 @@ def _gitbuilder_ceph_rpm(url, flavor):
             'expect',
             'yasm',
             'python-nose',
+            'rpm-sign',
+            'createrepo',
+            'leveldb-devel',
+            'snappy-devel',
             ]
         )
     with cd('/srv/autobuild-ceph'):
@@ -651,9 +697,16 @@ def gitbuilder_doc():
             sudo("chmod 600 rsync-key* ; chown autobuild-ceph.autobuild-ceph rsync-key*")
 
 def _sync_to_gitbuilder(package, format, flavor):
+    dist_or_codename = '`lsb_release -s -c`'
+    if format == 'rpm':
+        dist_or_codename = '`lsb_release -s -i | tr A-Z a-z``lsb_release -s -r | cut -d. -f1`'
     with cd('/srv/autobuild-ceph'):
         # fugliness
-        sudo("echo gitbuilder@gitbuilder.ceph.com:gitbuilder.ceph.com/%s-%s-`lsb_release -s -c`-`uname -m`-%s > rsync-target" % (package,format,flavor))
+        sudo("echo gitbuilder@gitbuilder.ceph.com:gitbuilder.ceph.com/{package}-{format}-{dist_or_codename}-`uname -m`-{flavor} > rsync-target".format(
+            package=package,
+            format=format,
+            dist_or_codename=dist_or_codename,
+            flavor=flavor))
         _sync_rsync_keys()
 
 def _sync_rsync_keys():

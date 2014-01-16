@@ -1,6 +1,13 @@
 #!/bin/sh -x
 set -e
 
+# Remove submodules from .git/config so its re-imported from .gitmodules:
+for submodule in $(git submodule -q foreach 'echo submodule.$name')
+do
+    git config --remove-section  $submodule
+done
+
+git clean -fdx && git reset --hard
 # pull down submodules
 git submodule foreach 'git clean -fdx && git reset --hard'
 rm -rf ceph-object-corpus
@@ -67,10 +74,8 @@ do
 done
 
 if [ "$DIST" = "precise" ]; then
-    echo "$0: trying to include libleveldb1 backport..."
-    GNUPGHOME="/srv/gnupg" reprepro --ask-passphrase -b $OUTDIR_TMP -C main --ignore=undefinedtarget --ignore=wrongdistribution includedeb $DIST /var/cache/apt/archives/libleveldb1_* || true
-    echo "$0: trying to include libcurl3-gnuls backport..."
-    GNUPGHOME="/srv/gnupg" reprepro --ask-passphrase -b $OUTDIR_TMP -C main --ignore=undefinedtarget --ignore=wrongdistribution includedeb $DIST /var/cache/apt/archives/libcurl3-gnutls_* || true
+    echo "$0: trying to include backports from /srv/extras-backports..."
+    GNUPGHOME="/srv/gnupg" reprepro --ask-passphrase -b $OUTDIR_TMP -C main --ignore=undefinedtarget --ignore=wrongdistribution includedeb $DIST /srv/extras-backports/* || true
 fi
 
 
