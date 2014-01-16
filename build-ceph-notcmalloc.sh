@@ -2,7 +2,7 @@
 set -e
 
 # Remove submodules from .git/config so its re-imported from .gitmodules:
-for submodule in $(git config -l | grep submodule | cut -d'.' -f1-2)
+for submodule in $(git submodule -q foreach 'echo submodule.$name')
 do
     git config --remove-section  $submodule
 done
