@@ -234,6 +234,7 @@ def _rh_gitbuilder(flavor, git_repo, extra_remotes={}, extra_packages=[], ignore
 
         sudo('install --owner=root --group=root -m0644 autobuild-ceph.conf /etc/init/autobuild-ceph.conf || install --owner=root --group=root -m0755 autobuild-ceph.init /etc/init.d/autobuild-ceph')
     run('rm bundle')
+    install_git()
 
 def _gitbuilder(flavor, git_repo, extra_remotes={}, extra_packages=[], ignore=[], branches_local_name='branches-local', branch_to_bundle='master'):
     """
@@ -342,6 +343,7 @@ def _gitbuilder(flavor, git_repo, extra_remotes={}, extra_packages=[], ignore=[]
 
         sudo('install --owner=root --group=root -m0644 autobuild-ceph.conf /etc/init/autobuild-ceph.conf || install --owner=root --group=root -m0755 autobuild-ceph.init /etc/init.d/autobuild-ceph')
     run('rm bundle')
+    install_git()
 
 def _deb_install_extras():
     with cd('/srv'):
@@ -900,3 +902,21 @@ def authorize_ssh_keys():
     with hide('running'):
         for key in keys:
             run('grep -q "%s" %s || echo "%s" >> %s' % (key, keyfile, key, keyfile))
+
+def install_git():
+    # Install newer git from source
+    # for bug fixes.
+
+    git_version = '1.8.5.3'
+    if not exists('/srv/git/bin'):
+        sudo ('mkdir -p /srv/git/src')    
+        with cd('/srv/git/src'):
+            sudo('wget -O /srv/git/src/git-{version}.tar.gz http://ceph.com/qa/git-{version}.tar.gz'.format(version=git_version))
+            sudo('tar xzf /srv/git/src/git-{version}.tar.gz'.format(version=git_version))
+            sudo('rm -f /srv/git/src/git-{version}.tar.gz'.format(version=git_version))
+            with cd('/srv/git/src/git-{version}'.format(version=git_version)):
+                sudo('./configure --prefix=/srv/git/')
+                sudo('make -j8')
+                sudo('make install')
+                sudo('rm -Rf /srv/src/git-{version}'.format(version=git_version))
+
