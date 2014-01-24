@@ -4,7 +4,7 @@ set -e
 
 git clean -fdx && git reset --hard
 # Remove submodules from .git/config so its re-imported from .gitmodules:
-for submodule in $(git submodule -q foreach 'echo submodule.$name')
+for submodule in $(git config -l | grep submodule | cut -d'.' -f1-2)
 do
     git config --remove-section  $submodule
 done
