@@ -2,13 +2,6 @@
 set -e
 
 git clean -fdx && git reset --hard
-# Remove submodules from .git/config so its re-imported from .gitmodules:
-for submodule in $(git config -l | grep submodule | cut -d'.' -f1-2)
-do
-    git config --remove-section  $submodule
-done
-
-# pull down submodules
 git submodule foreach 'git clean -fdx && git reset --hard'
 rm -rf ceph-object-corpus
 rm -rf src/leveldb
@@ -16,6 +9,7 @@ rm -rf src/libs3
 rm -rf src/mongoose
 rm -rf src/civetweb
 git submodule update --init
+git submodule sync
 git clean -fdx
 
 DISTS=`cat ../../dists`
