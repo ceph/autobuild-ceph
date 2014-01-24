@@ -1,13 +1,14 @@
 #!/bin/sh -x
 set -e
 
+
+git clean -fdx && git reset --hard
 # Remove submodules from .git/config so its re-imported from .gitmodules:
 for submodule in $(git submodule -q foreach 'echo submodule.$name')
 do
     git config --remove-section  $submodule
 done
 
-git clean -fdx && git reset --hard
 git submodule foreach 'git clean -fdx && git reset --hard'
 rm -rf ceph-object-corpus
 rm -rf src/leveldb
