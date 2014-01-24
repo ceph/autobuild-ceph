@@ -8,8 +8,9 @@ rm -rf src/leveldb
 rm -rf src/libs3
 rm -rf src/mongoose
 rm -rf src/civetweb
-git submodule update --init
-git submodule sync
+rm -rf .git/modules/
+/srv/git/bin/git submodule sync
+/srv/git/bin/git submodule update --init
 git clean -fdx
 
 DISTS=`cat ../../dists`
