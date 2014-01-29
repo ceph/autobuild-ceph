@@ -49,6 +49,9 @@ yes '' | ionice -c3 nice -n20 make O=build~/out oldconfig "$@"
 echo "$0: seeing if CONFIG_CEPH_FSCACHE can be enabled..."
 sed -i 's/# CONFIG_CEPH_FSCACHE is not set/CONFIG_CEPH_FSCACHE=y/' build~/out/.config
 
+echo "$0: seeing if CONFIG_CEPH_FS_POSIX_ACL can be enabled..."
+sed -i 's/# CONFIG_CEPH_FS_POSIX_ACL is not set/CONFIG_CEPH_FS_POSIX_ACL=y/' build~/out/.config
+
 #echo "$0: applying perf.patch..."
 #patch -p1 < ../../perf.patch
 
