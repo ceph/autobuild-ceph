@@ -189,7 +189,9 @@ def _rh_gitbuilder(flavor, git_repo, extra_remotes={}, extra_packages=[], ignore
         sudo('test -d /home/ubuntu || ln -sf /home/centos /home/ubuntu')
         sudo('git pull /home/ubuntu/bundle {branch_to_bundle}'.format(branch_to_bundle=branch_to_bundle))
         sudo('ln -sf build-{flavor}.sh build.sh'.format(flavor=flavor))
+        brand_new = False
         if not exists('gitbuilder.git'):
+            brand_new = True
             sudo('rm -rf gitbuilder.git.tmp')
             sudo('git clone %s gitbuilder.git.tmp' % gitbuilder_origin)
             with cd('gitbuilder.git.tmp'):
@@ -226,14 +228,31 @@ def _rh_gitbuilder(flavor, git_repo, extra_remotes={}, extra_packages=[], ignore
                 sudo('git config remote.{name}.tagopt true'.format(name=name),
                      user='autobuild-ceph')
             sudo('git config remote.origin.tagopt true', user='autobuild-ceph')
-        if ignore:
-            sudo('install -d -m0755 --owner=autobuild-ceph --group=autobuild-ceph gitbuilder.git/out/ignore')
-            for sha in ignore:
-                sudo('touch gitbuilder.git/out/ignore/{sha}'.format(sha=sha))
-        sudo('install -d -m0755 --owner=autobuild-ceph --group=autobuild-ceph ccache')
-        sudo('install -d -m0755 logs')
+            if brand_new:
+                sudo('/srv/autobuild-ceph/mark_all_as_pass.sh',
+                     user='autobuild-ceph')
+                with cd('/srv'):
+                    if not exists('gnupg'):
+                        sudo('mkdir gnupg')
+                    sudo('chown autobuild-ceph:autobuild-ceph gnupg ; chmod 700 gnupg')
+                    with cd('gnupg'):
+                        if not exists('pubring.gpg'):
+                            # put doesn't honor cd() for some reason
+                            put('gnupg/pubring.gpg')
+                            put('gnupg/secring.gpg')
+                            put('trustdb.gpg')
+                            sudo("mv /home/ubuntu/*.gpg ./")
+                            sudo('chown autobuild-ceph:autobuild-ceph pubring.gpg secring.gpg trustdb.gpg')
+                            sudo('chmod 600 pubring.gpg secring.gpg trustdb.gpg')
+        with cd('/srv/autobuild-ceph'):
+            if ignore:
+                sudo('install -d -m0755 --owner=autobuild-ceph --group=autobuild-ceph gitbuilder.git/out/ignore')
+                for sha in ignore:
+                    sudo('touch gitbuilder.git/out/ignore/{sha}'.format(sha=sha))
+            sudo('install -d -m0755 --owner=autobuild-ceph --group=autobuild-ceph ccache')
+            sudo('install -d -m0755 logs')
 
-        sudo('install --owner=root --group=root -m0644 autobuild-ceph.conf /etc/init/autobuild-ceph.conf || install --owner=root --group=root -m0755 autobuild-ceph.init /etc/init.d/autobuild-ceph')
+            sudo('install --owner=root --group=root -m0755 autobuild-ceph.init /etc/init.d/autobuild-ceph')
     run('rm bundle')
     install_git()
 
