@@ -643,6 +643,7 @@ def _gitbuilder_ceph(url, flavor):
             'libdw-dev',
             'binutils-dev',
             'libnewt-dev',
+            'libsnappy-dev',
             ],
         )
     sudo('start autobuild-ceph || /etc/init.d/autobuild-ceph start')
@@ -775,6 +776,7 @@ def _gitbuilder_ceph_rpm(url, flavor):
             'createrepo',
             'leveldb-devel',
             'snappy-devel',
+            'zlib-devel',
             ]
         )
     with cd('/srv/autobuild-ceph'):
