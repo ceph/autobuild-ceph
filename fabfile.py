@@ -980,6 +980,36 @@ def gitbuilder_serve():
 	    sudo('rm /tmp/lighttpd.conf')
 	    sudo('/etc/init.d/lighttpd start')
 
+def gitbuilder_serve_rpm():
+    # kill any remaining thttpd's in favor of lighttpd.  Do this before
+    # installing lighttpd so that lighttpd can start without errors
+    # (albeit with the default config)
+
+    _rpm_install(
+        'lighttpd',
+        )
+
+    put('lighttpd.conf', '/tmp/lighttpd.conf')
+
+    with settings(hide('warnings'), warn_only = True):
+        same = sudo('diff -q /etc/lighttpd/lighttpd.conf /tmp/lighttpd.conf')
+        if same.succeeded == False:
+            sudo('/etc/init.d/lighttpd stop')
+            sudo('systemctl stop lighttpd')
+            sudo('mv /etc/lighttpd/lighttpd.conf /etc/lighttpd.orig')
+            sudo('mv /tmp/lighttpd.conf /etc/lighttpd/lighttpd.conf')
+            sudo('chown -R autobuild-ceph:autobuild-ceph /var/log/lighttpd')
+            sudo('/etc/init.d/lighttpd start')
+            sudo('systemctl start lighttpd')
+            sudo('systemctl enable lighttpd')
+            sudo('chkconfig --add lighttpd')
+        else:
+            sudo('chown -R autobuild-ceph:autobuild-ceph /var/log/lighttpd')
+            sudo('rm /tmp/lighttpd.conf')
+            sudo('/etc/init.d/lighttpd start')
+            sudo('systemctl start lighttpd')
+
+
 @roles('gitbuilder_ceph',
        'gitbuilder_ceph_gcov',
        'gitbuilder_ceph_notcmalloc',
