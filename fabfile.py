@@ -394,6 +394,19 @@ def _deb_install_extras():
         sudo('grep -q autobuild-ceph /etc/sudoers || echo "autobuild-ceph ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers')
 
 
+def _kmod_deps():
+    _rpm_install(
+        # kernel tools
+        'bison',
+        'flex',
+        'asciidoc',
+        'xmlto',
+        'gtk2-devel',
+        'mock',
+        'binutils-devel',
+        'python-devel',
+        )
+
 def _kernel_deps():
     _apt_install(
         # kernel tools
@@ -431,6 +444,27 @@ def gitbuilder_kernel():
     _sync_to_gitbuilder_from_hostname()
     sudo('start autobuild-ceph || /etc/init.d/autobuild-ceph start')
 
+
+
+@roles('gitbuilder_kmod_rpm')
+def gitbuilder_kmod_rpm():
+    _kmod_deps()
+    _rh_gitbuilder(
+        flavor='kmod',
+        git_repo='https://github.com/ceph/ceph-client.git',
+        extra_remotes=dict(
+            korg='git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git',
+            ),
+        extra_packages=[
+            'fakeroot',
+            'reprepro',
+            ],
+        ignore=[
+            'fbeb94b65cf784ed8bf852131e28c9fb5c4c760f',
+            ],
+        )
+    _sync_to_gitbuilder('kmod','rpm','basic')
+    sudo('start autobuild-ceph || /etc/init.d/autobuild-ceph start')
 def _hadoop_deps():
     #_apt_add_testing_repo('master')
     _apt_install(
