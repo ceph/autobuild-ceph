@@ -210,6 +210,13 @@ EOF
 
 rpmbuild -bb --define "_topdir ${BUILDAREA}" --define "_unpackaged_files_terminate_build 0" ${BUILDAREA}/SPECS/ceph-release.spec
 
+# Add Dependencies.
+
+if [ -d /srv/deps ]
+then
+    cp -avf /srv/deps/* ${BUILDAREA}/RPMS/x86_64/
+fi
+
 # Sign RPMS
 export GNUPGHOME=/srv/gnupg
 echo "Signing RPMS ..."
