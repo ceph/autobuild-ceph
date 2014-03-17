@@ -11,6 +11,7 @@ rm -rf src/mongoose
 rm -rf src/civetweb
 rm -rf .git/modules/
 /srv/git/bin/git submodule sync
+/srv/autobuild-ceph/use-mirror.sh
 /srv/git/bin/git submodule update --init
 git clean -fdx
 
