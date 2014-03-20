@@ -254,6 +254,7 @@ def _rh_gitbuilder(flavor, git_repo, extra_remotes={}, extra_packages=[], ignore
 
             sudo('install --owner=root --group=root -m0755 autobuild-ceph.init /etc/init.d/autobuild-ceph')
     run('rm bundle')
+    sudo('chown -R autobuild-ceph:autobuild-ceph /srv/autobuild-ceph')
     install_git()
 
 def _gitbuilder(flavor, git_repo, extra_remotes={}, extra_packages=[], ignore=[], branches_local_name='branches-local', branch_to_bundle='master'):
@@ -363,6 +364,7 @@ def _gitbuilder(flavor, git_repo, extra_remotes={}, extra_packages=[], ignore=[]
 
         sudo('install --owner=root --group=root -m0644 autobuild-ceph.conf /etc/init/autobuild-ceph.conf || install --owner=root --group=root -m0755 autobuild-ceph.init /etc/init.d/autobuild-ceph')
     run('rm bundle')
+    sudo('chown -R autobuild-ceph:autobuild-ceph /srv/autobuild-ceph')
     install_git()
 
 def _deb_install_extras():
