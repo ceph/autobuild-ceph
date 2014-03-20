@@ -823,7 +823,7 @@ def _sync_to_gitbuilder(package, format, flavor):
             format=format,
             dist_or_codename=dist_or_codename,
             flavor=flavor))
-        sudo('sed -i "s;redhatenterpriseserver;rhelg; rsync-target"')
+        sudo('sed -i "s;redhatenterpriseserver;rhel;g" rsync-target"')
         _sync_rsync_keys()
 
 def _sync_rsync_keys():
