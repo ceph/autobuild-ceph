@@ -1066,4 +1066,6 @@ def install_git():
                 sudo('rm -Rf /srv/src/git-{version}'.format(version=git_version))
 
 def _ceph_extras():
-    sudo('lsb_release -c | grep -q -e precise -e quantal -e raring && echo deb http://ceph.com/packages/ceph-extras/debian $(lsb_release -sc) main | sudo tee /etc/apt/sources.list.d/ceph-extras.list')
+    sudo('lsb_release -c | grep -q -e precise -e quantal -e raring && ' +
+    'echo deb http://ceph.com/packages/ceph-extras/debian $(lsb_release -sc) main ' +
+    '| sudo tee /etc/apt/sources.list.d/ceph-extras.list || echo Ceph-Extras unsupported')
