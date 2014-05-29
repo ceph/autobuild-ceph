@@ -2,6 +2,8 @@
 
 mydir='/srv/autobuild-ceph'
 
+export CEPH_EXTRA_CONFIGURE_ARGS="$CEPH_EXTRA_CONFIGURE_ARGS --without-cryptopp"
+
 if ! hostname | grep -q ^gitbuilder- ; then
     echo "hostname "`hostname`"does not make sense to me; i fail"
     exit 1
@@ -9,7 +11,7 @@ fi
 
 if hostname | grep -q -- -notcmalloc ; then
     echo "hostname has -notcmalloc, will build --without-tcmalloc --without-cryptopp"
-    export CEPH_EXTRA_CONFIGURE_ARGS="$CEPH_EXTRA_CONFIGURE_ARGS --without-tcmalloc --without-cryptopp"
+    export CEPH_EXTRA_CONFIGURE_ARGS="$CEPH_EXTRA_CONFIGURE_ARGS --without-tcmalloc"
 fi
 if hostname | grep -q -- -gcov ; then
     echo "hostname has -gcov, will --enable-coverage"

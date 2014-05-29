@@ -147,7 +147,7 @@ def _rh_gitbuilder(flavor, git_repo, extra_remotes={}, extra_packages=[], ignore
     """
     extra_remotes will be fetch but not autobuilt. useful for tags.
     """
-    gitbuilder_commit='8fb428bb2e3d775b7603373f227b157ac11d686b'
+    gitbuilder_commit='6af02f4a25ee6664efabf349777b9cc0edf5706c'
     gitbuilder_origin='git://github.com/ceph/gitbuilder.git'
 
     sudo("initctl list|grep -q '^autobuild-ceph\s' && stop autobuild-ceph || /etc/init.d/autobuild-ceph stop || :")
@@ -261,7 +261,7 @@ def _gitbuilder(flavor, git_repo, extra_remotes={}, extra_packages=[], ignore=[]
     """
     extra_remotes will be fetch but not autobuilt. useful for tags.
     """
-    gitbuilder_commit='8fb428bb2e3d775b7603373f227b157ac11d686b'
+    gitbuilder_commit='6af02f4a25ee6664efabf349777b9cc0edf5706c'
     gitbuilder_origin='git://github.com/ceph/gitbuilder.git'
 
     # shut down old instance, it exists
@@ -631,6 +631,7 @@ def _gitbuilder_ceph(url, flavor):
             'libkeyutils-dev',
             'uuid-dev',
             'libblkid-dev',
+            'libudev-dev',
             'python-pip',
             'python-virtualenv',
             'python-argparse',
@@ -678,6 +679,7 @@ def _deb_builder(git_url, flavor, extra_remotes={}):
             'uuid-dev',
             'uuid-runtime',
             'libblkid-dev',
+            'libudev-dev',
             'libaio-dev',
             'libxml2-dev',
             'libnss3-dev',
@@ -747,6 +749,8 @@ def _gitbuilder_ceph_rpm(url, flavor):
             'libuuid-devel',
             'libblkid',
             'libblkid-devel',
+            'libudev',
+            'libudev-devel',
             'fcgi',
             'fcgi-devel',
             'xfsprogs',
