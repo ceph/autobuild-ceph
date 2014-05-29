@@ -74,7 +74,8 @@ env.roledefs['gitbuilder_apache_hadoop'] = [
 def _rpm_install(*packages):
     sudo("lsb_release -d | grep '7.0 Beta' | rpm -qa | grep epel-release || rpm -Uvh ftp://fr2.rpmfind.net/linux/epel/beta/7/x86_64/epel-release-7-0.1.noarch.rpm")
     sudo("lsb_release -d | egrep '(Fedora|SUSE)' || rpm -qa | grep epel-release ||rpm -Uvh http://download.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm")
-    sudo("yum --assumeyes --quiet update")
+    # This will update to the newest release of the distro IE centos 6.3 to centos 6.5, etc...
+    # sudo("yum --assumeyes --quiet update")
     sudo(' '.join(
             [
                 'yum',
