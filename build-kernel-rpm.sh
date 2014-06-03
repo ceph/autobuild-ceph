@@ -1,4 +1,4 @@
-#!/bin/sh -x
+1#!/bin/sh -x
 set -e
 
 git clean -fdx && git reset --hard
@@ -123,5 +123,12 @@ if [ -e "$OUTDIR" ]; then
 fi
 mv -- "$OUTDIR_TMP" "$OUTDIR"
 rm -rf -- "$OUTDIR.old"
+
+# Create symlinks for kernel task
+cd $OUTDIR
+ARCH=$(uname -m)
+ln -sv $ARCH/`basename $OUTDIR/$ARCH/kernel-[0-9]*.rpm` $OUTDIR/kernel.$ARCH.rpm
+ln -sv $ARCH/`basename $OUTDIR/$ARCH/kernel-devel-[0-9]*.rpm` $OUTDIR/kernel-devel.$ARCH.rpm
+ln -sv $ARCH/`basename $OUTDIR/$ARCH/kernel-headers-[0-9]*.rpm` $OUTDIR/kernel-headers.$ARCH.rpm
 
 exit 0
