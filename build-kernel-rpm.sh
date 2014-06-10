@@ -127,8 +127,8 @@ rm -rf -- "$OUTDIR.old"
 # Create symlinks for kernel task
 cd $OUTDIR
 ARCH=$(uname -m)
-ln -sv $ARCH/`basename $OUTDIR/$ARCH/kernel-[0-9]*.rpm` $OUTDIR/kernel.$ARCH.rpm
-ln -sv $ARCH/`basename $OUTDIR/$ARCH/kernel-devel-[0-9]*.rpm` $OUTDIR/kernel-devel.$ARCH.rpm
-ln -sv $ARCH/`basename $OUTDIR/$ARCH/kernel-headers-[0-9]*.rpm` $OUTDIR/kernel-headers.$ARCH.rpm
+ln -sv $ARCH/`basename $OUTDIR/$ARCH/kernel-[0-9]*.rpm` kernel.$ARCH.rpm
+ln -sv $ARCH/`basename $OUTDIR/$ARCH/kernel-devel-[0-9]*.rpm` kernel-devel.$ARCH.rpm
+ln -sv $ARCH/`basename $OUTDIR/$ARCH/kernel-headers-[0-9]*.rpm` kernel-headers.$ARCH.rpm
 
 exit 0
