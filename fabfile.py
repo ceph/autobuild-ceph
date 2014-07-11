@@ -99,10 +99,11 @@ def _apt_install(*packages):
                 'env DEBIAN_FRONTEND=noninteractive DEBIAN_PRIORITY=critical',
                 'apt-get',
                 '-q',
+                '-y',
                 '-o', 'Dpkg::Options::=--force-confnew',
                 'install',
-                '--no-install-recommends',
-                '--assume-yes',
+#                '--no-install-recommends',
+#                '--assume-yes',
                 '--',
                 ]
             + list(packages)))
@@ -118,11 +119,12 @@ def _apt_reinstall_for_backports(*packages):
                 'env DEBIAN_FRONTEND=noninteractive DEBIAN_PRIORITY=critical',
                 'apt-get',
                 '-q',
+                '-y',
                 '-o', 'Dpkg::Options::=--force-confnew',
                 'install',
                 '--reinstall',
-                '--no-install-recommends',
-                '--assume-yes',
+#                '--no-install-recommends',
+#                '--assume-yes',
                 '--',
             ]
             + list(packages)))
