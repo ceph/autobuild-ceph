@@ -21,8 +21,8 @@ find "$REF_OUTDIR" -mindepth 1 -maxdepth 1 -name '*.tmp' -print0 \
 # update symlinks that make branch point to the latest successful
 # output dir for that branch
 install -d -m0755 -- "$REF_OUTDIR"
-( ./branches.sh ) \
-| while read REF; do
+( ./branches.sh -v ) \
+| while read SHA REF; do
     # mangle unsafe characters in branch names, just in case (slashes
     # and leading periods); gitbuilder hanging on to "origin/" here
     # makes the typical result a bit ugly
@@ -32,7 +32,6 @@ install -d -m0755 -- "$REF_OUTDIR"
     # collisions, but we're gonna ignore that for now
     SAFE_REF="${SAFE_REF#origin_}"
 
-    SHA=`cd build && git rev-parse $REF`
     echo "ref $SAFE_REF $SHA"
 
     if [ -L "$REF_OUTDIR/$SAFE_REF" ]; then
