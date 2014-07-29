@@ -24,6 +24,9 @@ fi
 if hostname | grep -q -- ceph-tarball- ; then
     exec $mydir/build-ceph.sh
 fi
+if hostname | grep -q -- ceph-rpm- ; then
+    exec $mydir/build-ceph-rpm.sh
+fi
 
 hostname | sed -e "s|gitbuilder-\([^-]*\)-\([^-]*\)-.*$|\1 \2|" > /tmp/$$
 read -r builder type < /tmp/$$

@@ -732,8 +732,10 @@ def gitbuilder_auto():
 
 @roles('gitbuilder_ceph_rpm')
 def gitbuilder_ceph_rpm():
-    _gitbuilder_ceph_rpm('https://github.com/ceph/ceph.git', 'ceph-rpm')
-    _sync_to_gitbuilder('ceph', 'rpm', 'basic')
+    _gitbuilder_ceph_rpm('https://github.com/ceph/ceph.git', 'auto')
+    hostname = run('hostname -s')
+    flavor = hostname.split('-')[-1]
+    _sync_to_gitbuilder('ceph', 'rpm', flavor)
 
 def _gitbuilder_ceph_rpm(url, flavor):
     _rh_gitbuilder(
