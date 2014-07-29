@@ -705,6 +705,7 @@ def _deb_builder(git_url, flavor, extra_remotes={}):
             'libleveldb-dev',
             'yasm',
             'python-nose',
+            'libsnappy-dev',
             ],
         )
     _deb_install_extras()
