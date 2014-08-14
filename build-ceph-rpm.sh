@@ -86,6 +86,7 @@ mkdir -p ${BUILDAREA}/SPECS
 mkdir -p ${BUILDAREA}/RPMS
 mkdir -p ${BUILDAREA}/BUILD
 cp -a ceph-*.tar.bz2 ${BUILDAREA}/SOURCES/.
+cp -a *.patch ${BUILDAREA}/SOURCES || true
 
 # If this is a release candidate, identified by having -rc[0-9] appended to
 # the version number, then fix up the generated rpm spec file by moving the
