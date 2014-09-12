@@ -54,7 +54,7 @@ env.roledefs['gitbuilder_kernel'] = [
 
 # special
 env.roledefs['gitbuilder_doc'] = [
-    'ubuntu@gitbuilder-doc.front.sepia.ceph.com',
+    'ubuntu@ursula.front.sepia.ceph.com',
     ]
 
 env.roledefs['gitbuilder_samba'] = [
@@ -820,7 +820,7 @@ def gitbuilder_doc():
     _gitbuilder_ceph('https://github.com/ceph/ceph.git', 'ceph-docs')
     with cd('/srv/autobuild-ceph'):
         if not exists('rsync-target'):
-            sudo("echo cephdocs@ceph.newdream.net:/home/ceph_site/ceph.com/docs.raw > rsync-target")
+            sudo("echo ubuntu@ursula.front.sepia.ceph.com:/var/docs.raw > rsync-target")
         if not exists('rsync-key'):
             put("rsync-key")
             put("rsync-key.pub")
