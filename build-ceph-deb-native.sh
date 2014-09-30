@@ -4,6 +4,7 @@ set -e
 git clean -fdx && git reset --hard
 git submodule foreach 'git clean -fdx && git reset --hard'
 rm -rf ceph-object-corpus
+rm -rf ceph-erasure-code-corpus
 rm -rf src/leveldb
 rm -rf src/libs3
 rm -rf src/mongoose
