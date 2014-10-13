@@ -1,4 +1,4 @@
-1#!/bin/sh -x
+#!/bin/sh -x
 set -e
 
 git clean -fdx && git reset --hard
@@ -81,13 +81,14 @@ echo "$0: building..."
 
 NCPU=$(grep -c processor /proc/cpuinfo)
 ionice -c3 nice -n20 make LOCALVERSION=-ceph rpm -j$NCPU "$@" || exit 4
+uname_string=$($HOME/rpmbuild/SPECS/kernel.spec  | grep -i ^Provides: | grep kernel-[0-9] | awk -F 'kernel-' '{print $2}')
 
 
 OUTDIR="../out/output/sha1/$REV"
 OUTDIR_TMP="${OUTDIR}.tmp"
 install -d -m0755 -- "$OUTDIR_TMP"
 printf '%s\n' "$REV" >"$OUTDIR_TMP/sha1"
-printf '%s\n' "$VER" >"$OUTDIR_TMP/version"
+printf '%s\n' "$uname_string" >"$OUTDIR_TMP/version"
 printf '%s\n' "ceph" >"$OUTDIR_TMP/name"
 
 
