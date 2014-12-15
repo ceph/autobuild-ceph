@@ -645,6 +645,7 @@ def _gitbuilder_ceph(url, flavor):
             'libxml2-dev',
             'libnss3-dev',
             'junit4',
+            'xmlstarlet',
             'yasm',
             'python-nose',
             # for kernel build, perf etc
@@ -690,6 +691,7 @@ def _deb_builder(git_url, flavor, extra_remotes={}):
             'libaio-dev',
             'libxml2-dev',
             'libnss3-dev',
+            'xmlstarlet',
             'python-pip',
             'python-virtualenv',
             'python-support',
@@ -784,6 +786,7 @@ def _gitbuilder_ceph_rpm(url, flavor):
             'libcurl-devel',
             'rpm-build',
             'libxml2-devel',
+            'xmlstarlet',
             'nss-devel',
             'gtkmm24',
             'gtkmm24-devel',
