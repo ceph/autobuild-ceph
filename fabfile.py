@@ -712,6 +712,7 @@ def _deb_builder(git_url, flavor, extra_remotes={}):
             'yasm',
             'python-nose',
             'libsnappy-dev',
+            'liblttng-ust-dev',
             ],
         )
     _deb_install_extras()
@@ -801,6 +802,7 @@ def _gitbuilder_ceph_rpm(url, flavor):
             'leveldb-devel',
             'snappy-devel',
             'zlib-devel',
+            'lttng-ust-devel',
             ]
         )
     with cd('/srv/autobuild-ceph'):
