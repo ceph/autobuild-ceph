@@ -1,43 +1,33 @@
 #!/bin/bash -x
 
+set -x
 set -e
 
-HADOOP_ERRORS_IGNORE=""
+# maven 3.0.4 on ubuntu 12.04 has some problems. fabfile will install a copy
+# of maven 3.1.1 at /srv/apache-maven-3.1.1. setup the necessary pointers.
+export M2_HOME=/srv/apache-maven-3.1.1
+export M2=$M2_HOME/bin
+export PATH=$M2:$PATH
 
-#using Java6 openjdk for now.
-HADOOP_JAVA_HOME="/usr/lib/jvm/java-6-openjdk"
-export JAVA_HOME=$HADOOP_JAVA_HOME
+# maven3 creates a local repository of downloaded artificats in the current
+# user's home directory. the autobuild-ceph user doesn't have a home
+# directory. use a different location for this repository.
+export LOCAL_MAVEN_REPO=/tmp/autobuild-ceph-m3home
+if [ ! -d "$LOCAL_MAVEN_REPO" ]; then
+  mkdir $LOCAL_MAVEN_REPO
+fi
+export MAVEN_OPTS="-Dmaven.repo.local=$LOCAL_MAVEN_REPO"
 
-#get the libcephfs jar and so files so the build works
-GETLIBSOUTPUT=`python ../../get-libcephfs-java-jar.py`
-
-echo $GETLIBSOUTPUT
-
-HADOOP_ERRORS_IGNORE="\
-grep -vi \"warning\"" #| \
-#grep -v \"is not a pointer or array, skip client functions\" | \
-#grep -v \"is a pointer to type 'string', skip client functions\""
+# skip tests when building; tests need ceph cluster
+mvn package -Dmaven.test.skip=true
 
 REV="$(git rev-parse HEAD)"
-
-DESTDIR_TMP="install.tmp"
 OUTDIR="../out/output/sha1/$REV"
-CURRENT_DIR=`pwd`
-
-install -d -m0766 -- "$DESTDIR_TMP"
-
-NCPU=$(( 2 * `grep -c processor /proc/cpuinfo` ))
-
-echo "$0: building..."
-echo --START-IGNORE-WARNINGS
-# filter out idl errors "Unable to determine origin..." to avoid gitbuilder failing
-ionice -c3 nice -n20 ant -Divy.default.ivy.user.dir=$CURRENT_DIR cephfs cephfs-test 2> >( eval ${HADOOP_ERRORS_IGNORE} ) || exit 4
-
 OUTDIR_TMP="${OUTDIR}.tmp"
-
 install -d -m0755 -- "$OUTDIR_TMP"
-tar czf "${OUTDIR_TMP}/hadoop.tgz" -C "${CURRENT_DIR}" .
+cp target/*.jar $OUTDIR_TMP
 printf '%s\n' "$REV" >"$OUTDIR_TMP/sha1"
+printf '%s\n' "cephfs-hadoop" >"$OUTDIR_TMP/name"
 
 # we're successful, the files are ok to be published; try to be as
 # atomic as possible about replacing potentially existing OUTDIR
@@ -48,6 +38,4 @@ fi
 mv -- "$OUTDIR_TMP" "$OUTDIR"
 rm -rf -- "$OUTDIR.old"
 
-
 exit 0
-
