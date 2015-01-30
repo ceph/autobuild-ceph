@@ -81,8 +81,7 @@ echo "$0: building..."
 
 NCPU=$(grep -c processor /proc/cpuinfo)
 ionice -c3 nice -n20 make LOCALVERSION=-ceph rpm -j$NCPU "$@" || exit 4
-uname_string=$($HOME/rpmbuild/SPECS/kernel.spec  | grep -i ^Provides: | grep kernel-[0-9] | awk -F 'kernel-' '{print $2}')
-
+uname_string=$(cat $HOME/rpmbuild/BUILD/*/kernel.spec  | grep -i ^Provides: | grep kernel-[0-9] | awk -F 'kernel-' '{print $2}')
 
 OUTDIR="../out/output/sha1/$REV"
 OUTDIR_TMP="${OUTDIR}.tmp"
