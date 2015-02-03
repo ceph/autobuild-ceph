@@ -649,6 +649,7 @@ def _gitbuilder_ceph(url, flavor):
             'xmlstarlet',
             'yasm',
             'python-nose',
+            'cryptsetup-bin',
             # for kernel build, perf etc
             'flex',
             'bison',
@@ -797,6 +798,8 @@ def _gitbuilder_ceph_rpm(url, flavor):
             'expect',
             'yasm',
             'python-nose',
+            'python-flask',
+            'hdparm',
             'rpm-sign',
             'createrepo',
             'leveldb-devel',
@@ -806,6 +809,7 @@ def _gitbuilder_ceph_rpm(url, flavor):
             'python-argparse',
             'lttng-ust-devel',
             'libbabeltrace-devel',
+            'cryptsetup',
             ]
         )
     with cd('/srv/autobuild-ceph'):
