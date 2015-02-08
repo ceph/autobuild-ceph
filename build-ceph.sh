@@ -18,6 +18,16 @@ rm -rf .git/modules/
 /srv/git/bin/git submodule update --init
 git clean -fdx
 
+# If CC is not already defined, use gcc.
+if [ "x$CC" = "x" ]; then
+    export CC=gcc
+fi
+
+# If CXX is not already defined, use g++.
+if [ "x$CXX" = "x" ]; then
+    export CXX=g++
+fi
+
 echo --START-IGNORE-WARNINGS
 [ ! -x autogen.sh ] || ./autogen.sh || exit 1
 autoconf || true
@@ -40,7 +50,7 @@ if command -v ccache >/dev/null; then
   if [ ! -e "$CCACHE_DIR" ]; then
     echo "$0: have ccache but cache directory does not exist: $CCACHE_DIR" 1>&2
   else
-    set -- CC='ccache gcc' CXX='ccache g++'
+    set -- CC="ccache $CC" CXX="ccache $CXX"
   fi
 else
   echo "$0: no ccache found, compiles will be slower." 1>&2
