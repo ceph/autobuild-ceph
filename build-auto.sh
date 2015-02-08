@@ -9,6 +9,12 @@ if ! hostname | grep -q ^gitbuilder- ; then
     exit 1
 fi
 
+if hostname | grep -q -- -clang ; then
+    echo "hostname has -clang, will build with CC=clang CXX=clang++"
+    export CC=clang
+    export CXX=clang++
+fi
+
 if hostname | grep -q -- -notcmalloc ; then
     echo "hostname has -notcmalloc, will build --without-tcmalloc --without-cryptopp"
     export CEPH_EXTRA_CONFIGURE_ARGS="$CEPH_EXTRA_CONFIGURE_ARGS --without-tcmalloc"
