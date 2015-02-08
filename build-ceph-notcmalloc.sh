@@ -33,7 +33,7 @@ echo --START-IGNORE-WARNINGS
 [ ! -x autogen.sh ] || ./autogen.sh || exit 1
 autoconf || true
 echo --STOP-IGNORE-WARNINGS
-[ ! -x configure ] || CFLAGS="-fno-omit-frame-pointer -g -O2" CXXFLAGS="-fno-omit-frame-pointer -g" ./configure --with-debug --with-radosgw --with-fuse --without-tcmalloc --with-libatomic-ops --with-gtk2 --with-profiler || exit 2
+[ ! -x configure ] || CFLAGS="-fno-omit-frame-pointer -g -O2 $CFLAGS" CXXFLAGS="-fno-omit-frame-pointer -g $CXXFLAGS" ./configure --with-debug --with-radosgw --with-fuse --without-tcmalloc --with-libatomic-ops --with-gtk2 --with-profiler || exit 2
 
 if [ ! -e Makefile ]; then
     echo "$0: no Makefile, aborting." 1>&2
