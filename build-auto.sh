@@ -14,7 +14,21 @@ if hostname | grep -q -- -clang ; then
     export CC=clang
     export CXX=clang++
 fi
-
+if hostname | grep -q -- -asan; then
+    echo "hostname has -asan, will build with -fsanitize=address"
+    export CFLAGS="-fsanitize=address $CFLAGS"
+    export CXXFLAGS="-fsanitize=address $CXXFLAGS"
+fi
+if hostname | grep -q -- -tsan; then
+    echo "hostname has -tsan, will build with -fsanitize=thread"
+    export CFLAGS="-fsanitize=thread $CFLAGS"
+    export CXXFLAGS="-fsanitize=thread $CXXFLAGS"
+fi
+if hostname | grep -q -- -wall; then
+    echo "hostname has -wall, will build with all possible warnings enabled"
+    export CFLAGS="-Wall -Weverything -Wpedantic $CFLAGS"
+    export CXXFLAGS="-Wall -Weverything -Wpedantic $CXXFLAGS"
+fi
 if hostname | grep -q -- -notcmalloc ; then
     echo "hostname has -notcmalloc, will build --without-tcmalloc --without-cryptopp"
     export CEPH_EXTRA_CONFIGURE_ARGS="$CEPH_EXTRA_CONFIGURE_ARGS --without-tcmalloc"
