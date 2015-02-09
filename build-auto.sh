@@ -18,6 +18,12 @@ if hostname | grep -q -- -clang ; then
     export CFLAGS="-Qunused-arguments $CFLAGS"
     export CXXFLAGS="-Qunused-arguments $CXXFLAXS"
 fi
+if hostname | grep -q -- -analyze ; then
+    echo "hostname has -analyze, will wrap build with scan-build static analyzer"
+    echo "Disabling CCache to ensure complete coverage."
+    export CCACHE_DISABLE=yes
+    export BUILD_WRAPPER="scan-build -o scan-build-report.tmp/"
+fi
 if hostname | grep -q -- -asan; then
     echo "hostname has -asan, will build with -fsanitize=address"
     export CFLAGS="-fsanitize=address $CFLAGS"
