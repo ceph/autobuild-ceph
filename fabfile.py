@@ -164,6 +164,8 @@ def _rh_gitbuilder(flavor, git_repo, extra_remotes={}, extra_packages=[], ignore
     _rpm_install(
         'ntp',
         'ccache',
+        'clang',
+        'clang-analyzer',
         'git',
         'logrotate',
         'rsync',
@@ -282,6 +284,7 @@ def _gitbuilder(flavor, git_repo, extra_remotes={}, extra_packages=[], ignore=[]
         'ntp',
         'build-essential',
         'ccache',
+        'clang',
         'git',
         'logrotate',
 #        'sun-java6-jdk',
