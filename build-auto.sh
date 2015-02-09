@@ -13,6 +13,10 @@ if hostname | grep -q -- -clang ; then
     echo "hostname has -clang, will build with CC=clang CXX=clang++"
     export CC=clang
     export CXX=clang++
+    # Workaround nfortunate interactions between clang and distcc < 3.2.
+    export CCACHE_CPP2=yes
+    export CFLAGS="-Qunused-arguments $CFLAGS"
+    export CXXFLAGS="-Qunused-arguments $CXXFLAXS"
 fi
 if hostname | grep -q -- -asan; then
     echo "hostname has -asan, will build with -fsanitize=address"
