@@ -6,9 +6,15 @@ import sys
 
 # old gitbuilders with non-standard hostnames; kill these off with time
 env.roledefs['gitbuilder_ceph'] = [
-    'ubuntu@gitbuilder-precise-i386.front.sepia.ceph.com',
-    'ubuntu@gitbuilder-squeeze-amd64.front.sepia.ceph.com',
-    'ubuntu@gitbuilder-squeeze-deb-amd64.front.sepia.ceph.com',
+    'ubuntu@gitbuilder-ceph-deb-precise-amd64-basic.front.sepia.ceph.com',
+    'ubuntu@gitbuilder-ceph-deb-precise-amd64-notcmalloc.front.sepia.ceph.com',
+    'ubuntu@gitbuilder-ceph-deb-trusty-amd64-basic.front.sepia.ceph.com',
+    'ubuntu@gitbuilder-ceph-deb-trusty-amd64-notcmalloc.front.sepia.ceph.com',
+    'ubuntu@gitbuilder-ceph-deb-trusty-i386-basic.front.sepia.ceph.com',
+    'ubuntu@gitbuilder-ceph-deb-wheezy-amd64-basic.front.sepia.ceph.com',
+#    'ubuntu@gitbuilder-precise-i386.front.sepia.ceph.com',
+#    'ubuntu@gitbuilder-squeeze-amd64.front.sepia.ceph.com',
+#    'ubuntu@gitbuilder-squeeze-deb-amd64.front.sepia.ceph.com',
 #broken    'ubuntu@gitbuilder-sles-11sp2-amd64.front.sepia.ceph.com',
     ]
 env.roledefs['gitbuilder_ceph_deb_native'] = [
@@ -18,30 +24,30 @@ env.roledefs['gitbuilder_ceph_deb_native'] = [
 # the fancy ones
 env.roledefs['gitbuilder_auto'] = [
     'ubuntu@gitbuilder-ceph-deb-precise-amd64-basic.front.sepia.ceph.com',
-    'ubuntu@gitbuilder-ceph-deb-precise-amd64-gcov.front.sepia.ceph.com',
+#    'ubuntu@gitbuilder-ceph-deb-precise-amd64-gcov.front.sepia.ceph.com',
     'ubuntu@gitbuilder-ceph-deb-precise-amd64-notcmalloc.front.sepia.ceph.com',
-    'ubuntu@gitbuilder-ceph-deb-quantal-amd64-basic.front.sepia.ceph.com',
-    'ubuntu@gitbuilder-ceph-deb-quantal-amd64-notcmalloc.front.sepia.ceph.com',
-    'ubuntu@gitbuilder-ceph-deb-raring-amd64-basic.front.sepia.ceph.com',
-    'ubuntu@gitbuilder-ceph-deb-saucy-amd64-basic.front.sepia.ceph.com',
-    'ubuntu@gitbuilder-ceph-deb-saucy-amd64-notcmalloc.front.sepia.ceph.com',
-    'ubuntu@gitbuilder-ceph-deb-saucy-armv7l-basic.front.sepia.ceph.com',
-    'ubuntu@gitbuilder-ceph-deb-saucy-armv7l-notcmalloc.front.sepia.ceph.com',
-    'ubuntu@gitbuilder-ceph-deb-wheezy-amd64-basic.front.sepia.ceph.com',
+#    'ubuntu@gitbuilder-ceph-deb-quantal-amd64-basic.front.sepia.ceph.com',
+#    'ubuntu@gitbuilder-ceph-deb-quantal-amd64-notcmalloc.front.sepia.ceph.com',
+#    'ubuntu@gitbuilder-ceph-deb-raring-amd64-basic.front.sepia.ceph.com',
+#    'ubuntu@gitbuilder-ceph-deb-saucy-amd64-basic.front.sepia.ceph.com',
+#    'ubuntu@gitbuilder-ceph-deb-saucy-amd64-notcmalloc.front.sepia.ceph.com',
+#    'ubuntu@gitbuilder-ceph-deb-saucy-armv7l-basic.front.sepia.ceph.com',
+#    'ubuntu@gitbuilder-ceph-deb-saucy-armv7l-notcmalloc.front.sepia.ceph.com',
+#    'ubuntu@gitbuilder-ceph-deb-wheezy-amd64-basic.front.sepia.ceph.com',
     'ubuntu@gitbuilder-ceph-tarball-precise-amd64-basic.front.sepia.ceph.com',
-    'ubuntu@gitbuilder-ceph-tarball-raring-amd64-basic.front.sepia.ceph.com',
-    'ubuntu@gitbuilder-ceph-tarball-saucy-amd64-basic.front.sepia.ceph.com',
-    'ubuntu@gitbuilder-ceph-tarball-saucy-i386-basic.front.sepia.ceph.com',
+#    'ubuntu@gitbuilder-ceph-tarball-raring-amd64-basic.front.sepia.ceph.com',
+#    'ubuntu@gitbuilder-ceph-tarball-saucy-amd64-basic.front.sepia.ceph.com',
+#    'ubuntu@gitbuilder-ceph-tarball-saucy-i386-basic.front.sepia.ceph.com',
     ]
 
-# rpm ones (bleh)
 env.roledefs['gitbuilder_ceph_rpm'] = [
     'ubuntu@gitbuilder-ceph-rpm-centos6-5-amd64-basic.front.sepia.ceph.com',
+    'ubuntu@gitbuilder-ceph-rpm-centos7-amd64-basic.front.sepia.ceph.com',
+    'ubuntu@gitbuilder-ceph-rpm-fedora20-amd64-basic.front.sepia.ceph.com',
     'ubuntu@gitbuilder-ceph-rpm-rhel6-5-amd64-basic.front.sepia.ceph.com',
     'ubuntu@gitbuilder-ceph-rpm-rhel6-5-amd64-notcmalloc.front.sepia.ceph.com',
-    'ubuntu@gitbuilder-ceph-rpm-rhel7beta-amd64-basic.front.sepia.ceph.com',
+    'ubuntu@gitbuilder-ceph-rpm-rhel7-amd64-basic.front.sepia.ceph.com',
     'ubuntu@gitbuilder-ceph-rpm-rhel7-amd64-notcmalloc.front.sepia.ceph.com',
-    'ubuntu@gitbuilder-ceph-rpm-fedora20-amd64-basic.front.sepia.ceph.com',
     ]
 
 
