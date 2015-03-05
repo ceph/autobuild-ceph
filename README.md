@@ -15,7 +15,8 @@ and start a ceph autobuild on a given host:
 	> fab gitbuilder_ceph:host=<username>@<hostname>
 
 That performs the appropriate setup on the host to run ceph builds
-continuously.
+continuously. There must be a password-less ssh access to the hostname
+and the <username> must have a password-less sudo.
 
 An upstart service named autobuild-ceph gets created on the host that runs
 the autobuilder. Use ``sudo stop autobuild-ceph``, ``sudo start
