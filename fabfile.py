@@ -750,6 +750,7 @@ def gitbuilder_ceph_rpm():
     hostname = run('hostname -s')
     flavor = hostname.split('-')[-1]
     _sync_to_gitbuilder('ceph', 'rpm', flavor)
+    sudo('start autobuild-ceph || /etc/init.d/autobuild-ceph start')
 
 def _gitbuilder_ceph_rpm(url, flavor):
     _rh_gitbuilder(
