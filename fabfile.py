@@ -374,7 +374,7 @@ def _gitbuilder(flavor, git_repo, extra_remotes={}, extra_packages=[], ignore=[]
         sudo('install -d -m0755 --owner=autobuild-ceph --group=autobuild-ceph ccache')
         sudo('install -d -m0755 logs')
 
-        sudo('install --owner=root --group=root -m0644 autobuild-ceph.conf /etc/init/autobuild-ceph.conf || install --owner=root --group=root -m0755 autobuild-ceph.init /etc/init.d/autobuild-ceph')
+        sudo('install --owner=root --group=root -m0644 autobuild-ceph.conf /etc/init/autobuild-ceph.conf ; install --owner=root --group=root -m0755 autobuild-ceph.init /etc/init.d/autobuild-ceph ; exit 0')
     run('rm bundle')
     sudo('chown -R autobuild-ceph:autobuild-ceph /srv/autobuild-ceph')
     install_git()
