@@ -19,8 +19,14 @@ continuously. There must be a password-less ssh access to the hostname
 and the <username> must have a password-less sudo.
 
 An upstart service named autobuild-ceph gets created on the host that runs
-the autobuilder. Use ``sudo stop autobuild-ceph``, ``sudo start
+the autobuilder. 
+
+If available, use ``sudo stop autobuild-ceph``, ``sudo start
 autobuild-ceph`` on the autobuilder host to manage the autobuilder.
+
+If stop/start do not work, ``/etc/init.d/autobuild-ceph stop``,
+``/etc/init.d/autobuild-ceph start`` will start the daemon: it is a
+simple shell script.
 
 To get a list of other available commands, run ``fab -l``.  Note
 that fabric expects to be able to ssh to the host you specify, so you 
