@@ -50,13 +50,8 @@ fi
 NCPU=$(( 2 * `grep -c processor /proc/cpuinfo` ))
 ionice -c3 nice -n20 make -j$NCPU "$@" || exit 4
 
-# The "make -q check" probe in build.sh.example is faulty in that
-# screwups in Makefiles make it think there are no unit tests to
-# run. That's unacceptable; use a dumber probe.
-if [ -e src/gtest ]; then
-    # run "make check", but give it a time limit in case a test gets stuck
-    ../maxtime 1800 ionice -c3 nice -n20 make check "$@" || exit 5
-fi
+# run "make check", but give it a time limit in case a test gets stuck
+../maxtime 1800 ionice -c3 nice -n20 make check "$@" || exit 5
 
 REV="$(git rev-parse HEAD)"
 OUTDIR="../out/output/sha1/$REV"
