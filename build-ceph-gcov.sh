@@ -20,6 +20,16 @@ git clean -fdx && git reset --hard
 /srv/git/bin/git submodule update --init
 git clean -fdx
 
+# If CC is not already defined, use gcc.
+if [ "x$CC" = "x" ]; then
+    export CC=gcc
+fi
+
+# If CXX is not already defined, use g++.
+if [ "x$CXX" = "x" ]; then
+    export CXX=g++
+fi
+
 echo --START-IGNORE-WARNINGS
 [ ! -x autogen.sh ] || ./autogen.sh || exit 1
 autoconf || true
@@ -42,14 +52,14 @@ if command -v ccache >/dev/null; then
   if [ ! -e "$CCACHE_DIR" ]; then
     echo "$0: have ccache but cache directory does not exist: $CCACHE_DIR" 1>&2
   else
-    set -- CC='ccache gcc' CXX='ccache g++'
+    set -- CC="ccache $CC" CXX="ccache $CXX"
   fi
 else
   echo "$0: no ccache found, compiles will be slower." 1>&2
 fi
 
 NCPU=$(( 2 * `grep -c processor /proc/cpuinfo` ))
-ionice -c3 nice -n20 make -j$NCPU "$@" || exit 4
+ionice -c3 nice -n20 $BUILD_WRAPPER make -j$NCPU "$@" || exit 4
 
 # The "make -q check" probe in build.sh.example is faulty in that
 # screwups in Makefiles make it think there are no unit tests to

@@ -19,11 +19,21 @@ git clean -fdx && git reset --hard
 /srv/git/bin/git submodule update --init
 git clean -fdx
 
+# If CC is not already defined, use gcc.
+if [ "x$CC" = "x" ]; then
+    export CC=gcc
+fi
+
+# If CXX is not already defined, use g++.
+if [ "x$CXX" = "x" ]; then
+    export CXX=g++
+fi
+
 echo --START-IGNORE-WARNINGS
 [ ! -x autogen.sh ] || ./autogen.sh || exit 1
 autoconf || true
 echo --STOP-IGNORE-WARNINGS
-[ ! -x configure ] || CFLAGS="-fno-omit-frame-pointer -g -O2" CXXFLAGS="-fno-omit-frame-pointer -g" ./configure --with-debug --with-radosgw --with-fuse --with-tcmalloc --with-libatomic-ops --with-gtk2 --with-hadoop --with-profiler --enable-cephfs-java --with-librocksdb-static=check || exit 2
+[ ! -x configure ] || CFLAGS="-fno-omit-frame-pointer -g -O2 $CFLAGS" CXXFLAGS="-fno-omit-frame-pointer -g $CXXFLAGS" ./configure --with-debug --with-radosgw --with-fuse --with-tcmalloc --with-libatomic-ops --with-gtk2 --with-hadoop --with-profiler --enable-cephfs-java --with-librocksdb-static=check || exit 2
 
 if [ ! -e Makefile ]; then
     echo "$0: no Makefile, aborting." 1>&2
@@ -41,14 +51,14 @@ if command -v ccache >/dev/null; then
   if [ ! -e "$CCACHE_DIR" ]; then
     echo "$0: have ccache but cache directory does not exist: $CCACHE_DIR" 1>&2
   else
-    set -- CC='ccache gcc' CXX='ccache g++'
+    set -- CC="ccache $CC" CXX="ccache $CXX"
   fi
 else
   echo "$0: no ccache found, compiles will be slower." 1>&2
 fi
 
 NCPU=$(( 2 * `grep -c processor /proc/cpuinfo` ))
-ionice -c3 nice -n20 make -j$NCPU "$@" || exit 4
+ionice -c3 nice -n20 $BUILD_WRAPPER make -j$NCPU "$@" || exit 4
 
 # run "make check", but give it a time limit in case a test gets stuck
 ../maxtime 1800 ionice -c3 nice -n20 make check "$@" || exit 5
