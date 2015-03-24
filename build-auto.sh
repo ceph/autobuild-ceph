@@ -12,6 +12,8 @@ fi
 if hostname | grep -q -- -notcmalloc ; then
     echo "hostname has -notcmalloc, will build --without-tcmalloc --without-cryptopp"
     export CEPH_EXTRA_CONFIGURE_ARGS="$CEPH_EXTRA_CONFIGURE_ARGS --without-tcmalloc"
+else
+    export CEPH_EXTRA_CONFIGURE_ARGS="$CEPH_EXTRA_CONFIGURE_ARGS --with-tcmalloc"
 fi
 if hostname | grep -q -- -gcov ; then
     echo "hostname has -gcov, will --enable-coverage"
