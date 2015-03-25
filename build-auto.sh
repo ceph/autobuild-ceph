@@ -20,6 +20,11 @@ if hostname | grep -q -- -gcov ; then
     export CEPH_EXTRA_CONFIGURE_ARGS="$CEPH_EXTRA_CONFIGURE_ARGS --enable-coverage"
 fi
 
+if hostname | grep -q -- -blkin ; then
+    echo "hostname has -blkin, will --with-blkin"
+    export CEPH_EXTRA_CONFIGURE_ARGS="$CEPH_EXTRA_CONFIGURE_ARGS --with-blkin"
+fi
+
 if hostname | grep -q -- ceph-deb- ; then
     exec $mydir/build-ceph-deb-native.sh
 fi
