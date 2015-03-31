@@ -23,6 +23,7 @@ env.roledefs['gitbuilder_ceph_deb_native'] = [
 
 # the fancy ones
 env.roledefs['gitbuilder_auto'] = [
+    'ubuntu@gitbuilder-ceph-deb-trusty-amd64-blkin.front.sepia.ceph.com',
     'ubuntu@gitbuilder-ceph-deb-precise-amd64-basic.front.sepia.ceph.com',
 #    'ubuntu@gitbuilder-ceph-deb-precise-amd64-gcov.front.sepia.ceph.com',
     'ubuntu@gitbuilder-ceph-deb-precise-amd64-notcmalloc.front.sepia.ceph.com',
