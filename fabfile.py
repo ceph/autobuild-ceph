@@ -383,12 +383,6 @@ def _deb_install_extras():
             sudo('git clone https://github.com/ceph/ceph-build.git')
         with cd('ceph-build'):
             sudo('git pull')
-        if not exists('debian-base'):
-            sudo('mkdir debian-base')
-        with cd('debian-base'):
-            for dist in ['squeeze','oneiric']:
-                if not exists('%s.tgz' % (dist)):
-                    sudo('wget -q http://ceph.newdream.net/qa/%s.tgz' % (dist))
         sudo('grep -q autobuild-ceph /etc/sudoers || echo "autobuild-ceph ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers')
 
 
@@ -818,6 +812,7 @@ def gitbuilder_doc():
         'python-dev',
         'python-pip',
         'python-virtualenv',
+        'python-sphinx',
         'doxygen',
         'ditaa',
         'graphviz',
