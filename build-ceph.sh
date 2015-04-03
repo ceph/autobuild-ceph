@@ -59,13 +59,13 @@ function maybe_parallel_make_check() {
     fi
 }
 #
-# Return MIN(8, MAX(1, (number of processors / 2)))
-# Do not try to use more than 8 because it will stress
+# Return MIN(4, MAX(1, (number of processors / 2)))
+# Do not try to use more than 4 because it will stress
 # IO too much
 #
 function get_processors() {
     if test $(nproc) -ge 16 ; then
-        echo 8
+        echo 4
     elif test $(nproc) -ge 2 ; then
         expr $(nproc) / 2
     else
@@ -73,10 +73,23 @@ function get_processors() {
     fi
 }
 
+
+function display_failures() {
+    local dir=$1
+    find $dir -name '*.trs' | xargs grep -l FAIL | while read file ; do
+        log=$(dirname $file)/$(basename $file .trs).log
+        echo FAIL: $log
+        cat $log
+    done
+}
+
 make -j$(get_processors) "$@" || exit 4
 
-# run "make check", but give it a time limit in case a test gets stuck
-../maxtime 3600 make $(maybe_parallel_make_check) check "$@" || exit 5
+# run "make check", but give it a time limit in case a test gets stuck                                                           
+if ! ../maxtime 3600 make $(maybe_parallel_make_check) check "$@" ; then
+    display_failures .
+    exit 5
+fi
 
 REV="$(git rev-parse HEAD)"
 OUTDIR="../out/output/sha1/$REV"
