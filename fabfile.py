@@ -383,12 +383,6 @@ def _deb_install_extras():
             sudo('git clone https://github.com/ceph/ceph-build.git')
         with cd('ceph-build'):
             sudo('git pull')
-        if not exists('debian-base'):
-            sudo('mkdir debian-base')
-        with cd('debian-base'):
-            for dist in ['squeeze','oneiric']:
-                if not exists('%s.tgz' % (dist)):
-                    sudo('wget -q http://ceph.newdream.net/qa/%s.tgz' % (dist))
         sudo('grep -q autobuild-ceph /etc/sudoers || echo "autobuild-ceph ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers')
 
 
@@ -739,6 +733,10 @@ def gitbuilder_ceph_rpm():
     _sync_to_gitbuilder('ceph', 'rpm', flavor)
 
 def _gitbuilder_ceph_rpm(url, flavor):
+    if '6-' in run('hostname -s'):
+        sphinx = 'python-sphinx10'
+    else:
+        sphinx = 'python-sphinx'
     _rh_gitbuilder(
         flavor=flavor,
         git_repo=url,
@@ -800,7 +798,7 @@ def _gitbuilder_ceph_rpm(url, flavor):
             'python-requests',
             'python-virtualenv',
             'python-argparse',
-            'python-sphinx',
+            sphinx,
             'lttng-ust-devel',
             'libbabeltrace-devel',
             'cryptsetup',
@@ -818,6 +816,7 @@ def gitbuilder_doc():
         'python-dev',
         'python-pip',
         'python-virtualenv',
+        'python-sphinx',
         'doxygen',
         'ditaa',
         'graphviz',
