@@ -1,4 +1,4 @@
-#!/bin/sh -x
+#!/bin/bash -x
 set -e
 
 git submodule foreach 'git clean -fdx && git reset --hard'
@@ -48,11 +48,35 @@ else
   echo "$0: no ccache found, compiles will be slower." 1>&2
 fi
 
-NCPU=$(( 2 * `grep -c processor /proc/cpuinfo` ))
-ionice -c3 nice -n20 make -j$NCPU "$@" || exit 4
+function can_parallel_make_check() {
+    local commit=$(git rev-parse tags/v0.88^{})
+    git rev-list HEAD | grep --quiet $commit
+}
+
+function maybe_parallel_make_check() {
+    if can_parallel_make_check ; then
+        echo -j$(get_processors)
+    fi
+}
+#
+# Return MIN(8, MAX(1, (number of processors / 2)))
+# Do not try to use more than 8 because it will stress
+# IO too much
+#
+function get_processors() {
+    if test $(nproc) -ge 16 ; then
+        echo 8
+    elif test $(nproc) -ge 2 ; then
+        expr $(nproc) / 2
+    else
+        echo 1
+    fi
+}
+
+make -j$(get_processors) "$@" || exit 4
 
 # run "make check", but give it a time limit in case a test gets stuck
-../maxtime 1800 ionice -c3 nice -n20 make check "$@" || exit 5
+../maxtime 3600 make $(maybe_parallel_make_check) check "$@" || exit 5
 
 REV="$(git rev-parse HEAD)"
 OUTDIR="../out/output/sha1/$REV"
