@@ -733,6 +733,10 @@ def gitbuilder_ceph_rpm():
     _sync_to_gitbuilder('ceph', 'rpm', flavor)
 
 def _gitbuilder_ceph_rpm(url, flavor):
+    if '6-' in run('hostname -s'):
+        sphinx = 'python-sphinx10'
+    else:
+        sphinx = 'python-sphinx'
     _rh_gitbuilder(
         flavor=flavor,
         git_repo=url,
@@ -794,7 +798,7 @@ def _gitbuilder_ceph_rpm(url, flavor):
             'python-requests',
             'python-virtualenv',
             'python-argparse',
-            'python-sphinx',
+            sphinx,
             'lttng-ust-devel',
             'libbabeltrace-devel',
             'cryptsetup',
