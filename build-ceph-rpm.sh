@@ -113,7 +113,7 @@ cp ceph.spec /tmp/ceph.spec
 
 # Build RPMs
 BUILDAREA=`readlink -fn ${BUILDAREA}`   ### rpm wants absolute path
-rpmbuild -ba --define "_topdir ${BUILDAREA}" --define "_unpackaged_files_terminate_build 0" ceph.spec
+rpmbuild -ba --define "_topdir ${BUILDAREA}" ceph.spec
 
 # Create and build an RPM for the repository
 
@@ -217,7 +217,7 @@ gpgkey=https://ceph.com/git/?p=ceph.git;a=blob_plain;f=keys/autobuild.asc
 EOF
 # End of ceph.repo file
 
-rpmbuild -bb --define "_topdir ${BUILDAREA}" --define "_unpackaged_files_terminate_build 0" ${BUILDAREA}/SPECS/ceph-release.spec
+rpmbuild -bb --define "_topdir ${BUILDAREA}" --define ${BUILDAREA}/SPECS/ceph-release.spec
 
 # Add Dependencies.
 
