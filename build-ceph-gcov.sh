@@ -34,6 +34,9 @@ fi
 
 # Actually build the project
 
+# Install build-time dependencies
+./install-deps.sh
+
 # clear out any $@ potentially passed in
 set --
 
