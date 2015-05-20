@@ -23,6 +23,7 @@ git clean -fdx
 DISTS=`cat ../../dists`
 
 echo --START-IGNORE-WARNINGS
+[ ! -x install-deps.sh ] || ./install-deps.sh
 [ ! -x autogen.sh ] || ./autogen.sh || exit 1
 autoconf || true
 echo --STOP-IGNORE-WARNINGS
@@ -35,9 +36,6 @@ if [ ! -e Makefile ]; then
 fi
 
 # Actually build the project
-
-# Install build-time dependencies
-./install-deps.sh
 
 # clear out any $@ potentially passed in
 set --
