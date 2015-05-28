@@ -603,6 +603,9 @@ def _gitbuilder_ceph(flavor):
     _gitbuilder(
         flavor=flavor,
         git_repo='https://github.com/ceph/ceph.git',
+        extra_remotes=dict(
+            ci='https://github.com/ceph/ceph-ci.git',
+        ),
         extra_packages=[
             'automake',
             'libtool',
