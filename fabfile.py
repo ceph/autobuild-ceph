@@ -596,13 +596,13 @@ def gitbuilder_apache_hadoop():
 
 @roles('gitbuilder_ceph')
 def gitbuilder_ceph():
-    _gitbuilder_ceph('https://github.com/ceph/ceph.git','ceph')
+    _gitbuilder_ceph('ceph')
     _sync_to_gitbuilder('ceph', 'tarball', 'basic')
 
-def _gitbuilder_ceph(url, flavor):
+def _gitbuilder_ceph(flavor):
     _gitbuilder(
         flavor=flavor,
-        git_repo=url,
+        git_repo='https://github.com/ceph/ceph.git',
         extra_packages=[
             'automake',
             'libtool',
@@ -824,7 +824,7 @@ def gitbuilder_doc():
         'graphviz',
         'ant',
         )
-    _gitbuilder_ceph('https://github.com/ceph/ceph.git', 'ceph-docs')
+    _gitbuilder_ceph('ceph-docs')
     with cd('/srv/autobuild-ceph'):
         if not exists('rsync-target'):
             sudo("echo ubuntu@ursula.front.sepia.ceph.com:/var/docs.raw > rsync-target")
