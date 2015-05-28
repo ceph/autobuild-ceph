@@ -24,8 +24,8 @@ env.roledefs['gitbuilder_ceph_rpm'] = [
     'ubuntu@gitbuilder-ceph-rpm-fedora20-amd64-basic.front.sepia.ceph.com',
     'ubuntu@gitbuilder-ceph-rpm-rhel6-5-amd64-basic.front.sepia.ceph.com',
     'ubuntu@gitbuilder-ceph-rpm-rhel6-5-amd64-notcmalloc.front.sepia.ceph.com',
-    'ubuntu@gitbuilder-ceph-rpm-rhel7-amd64-basic.front.sepia.ceph.com',
-    'ubuntu@gitbuilder-ceph-rpm-rhel7-amd64-notcmalloc.front.sepia.ceph.com',
+#    'ubuntu@gitbuilder-ceph-rpm-rhel7-amd64-basic.front.sepia.ceph.com',
+#    'ubuntu@gitbuilder-ceph-rpm-rhel7-amd64-notcmalloc.front.sepia.ceph.com',
     ]
 
 # kernels
