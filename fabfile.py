@@ -710,14 +710,6 @@ def _deb_builder(git_url, flavor, extra_remotes={}):
         )
     _deb_install_extras()
 
-@roles('gitbuilder_ceph_deb')
-def gitbuilder_ceph_deb():
-    _deb_builder('https://github.com/ceph/ceph.git', 'ceph-deb')
-    with cd('/srv/autobuild-ceph'):
-        sudo('echo squeeze natty > dists')
-    _sync_to_gitbuilder('ceph', 'deb', 'basic')
-    sudo('start autobuild-ceph || /etc/init.d/autobuild-ceph start')
-
 @roles('gitbuilder_ceph_deb_native')
 def gitbuilder_ceph_deb_native():
     _deb_builder('https://github.com/ceph/ceph.git', 'ceph-deb-native')
