@@ -884,14 +884,6 @@ def _sync_out_to_dho(package, notify):
             sudo("chmod 600 rsync-key* ; chown autobuild-ceph.autobuild-ceph rsync-key*")
         sudo("echo emerging@hq.newdream.net > notify-email")
 
-def _ndn_deb_gitbuilder(package, flavor, extra_remotes={}):
-    _deb_builder('git://deploy.benjamin.dhobjects.net/%s.git' % package, flavor,
-                 extra_remotes=extra_remotes)
-    with cd('/srv/autobuild-ceph'):
-        sudo('echo squeeze > dists')
-        sudo('echo %s > pkgname' % package)
-    sudo('start autobuild-ceph || /etc/init.d/autobuild-ceph start')
-
 @roles('gitbuilder_ceph_deb_ndn')
 def gitbuilder_ceph_deb_ndn():
     _ndn_deb_gitbuilder('ceph', 'ceph-deb',
@@ -1051,7 +1043,6 @@ def gitbuilder_serve_rpm():
        'gitbuilder_ceph_deb',
        'gitbuilder_ceph_rpm',
        'gitbuilder_ceph_deb_native',
-       'gitbuilder_ceph_deb_precise_ndn',
        'gitbuilder_doc',
        'gitbuilder_samba',
        'gitbuilder_hadoop',
