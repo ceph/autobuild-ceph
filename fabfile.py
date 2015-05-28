@@ -4,13 +4,6 @@ from fabric.contrib.files import exists, append, sed
 import os
 import sys
 
-# old gitbuilders with non-standard hostnames; kill these off with time
-env.roledefs['gitbuilder_ceph'] = [ ]
-
-env.roledefs['gitbuilder_ceph_deb_native'] = [
-    'ubuntu@gitbuilder-squeeze-deb-amd64.front.sepia.ceph.com',
-    ]
-
 env.roledefs['gitbuilder_auto'] = [
     'ubuntu@gitbuilder-ceph-deb-trusty-amd64-blkin.front.sepia.ceph.com',
     'ubuntu@gitbuilder-ceph-deb-precise-amd64-basic.front.sepia.ceph.com',
@@ -710,12 +703,6 @@ def _deb_builder(git_url, flavor, extra_remotes={}):
         )
     _deb_install_extras()
 
-@roles('gitbuilder_ceph_deb_native')
-def gitbuilder_ceph_deb_native():
-    _deb_builder('https://github.com/ceph/ceph.git', 'ceph-deb-native')
-    sudo('start autobuild-ceph || /etc/init.d/autobuild-ceph start')
-    _sync_to_gitbuilder('ceph', 'deb', 'basic')
-
 @roles('gitbuilder_auto')
 def gitbuilder_auto():
     _deb_builder('https://github.com/ceph/ceph.git', 'auto')
@@ -959,9 +946,7 @@ def gitbuilder_kernel_ndn():
     _sync_out_to_dho('kernel', 'emerging@hq.newdream.net')
     sudo('start autobuild-ceph || /etc/init.d/autobuild-ceph start')
 
-@roles('gitbuilder_ceph',
-       'gitbuilder_ceph_deb',
-       'gitbuilder_ceph_deb_native',
+@roles('gitbuilder_ceph_deb',
        'gitbuilder_ceph_gcov',
        'gitbuilder_kernel',
        # dhodeploy
@@ -1034,7 +1019,6 @@ def gitbuilder_serve_rpm():
        'gitbuilder_kernel',
        'gitbuilder_ceph_deb',
        'gitbuilder_ceph_rpm',
-       'gitbuilder_ceph_deb_native',
        'gitbuilder_doc',
        'gitbuilder_samba',
        'gitbuilder_hadoop',
