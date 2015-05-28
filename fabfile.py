@@ -34,6 +34,12 @@ env.roledefs['gitbuilder_kernel'] = [
     'ubuntu@gitbuilder-kernel-deb-precise-amd64-debug.front.sepia.ceph.com',
 #    'ubuntu@gitbuilder-kernel-deb-quantal-armv7l-basic.front.sepia.ceph.com',
     ]
+env.roledefs['gitbuilder_kernel_rpm'] = [
+    'ubuntu@gitbuilder-kernel-rpm-centos6-amd64-basic.front.sepia.ceph.com',
+    'ubuntu@gitbuilder-kernel-rpm-fedora20-amd64-basic.front.sepia.ceph.com',
+    'ubuntu@gitbuilder-kernel-rpm-rhel6-amd64-basic.front.sepia.ceph.com',
+    'ubuntu@gitbuilder-kernel-rpm-rhel7-amd64-basic.front.sepia.ceph.com',
+    ]
 
 # special
 env.roledefs['gitbuilder_doc'] = [
