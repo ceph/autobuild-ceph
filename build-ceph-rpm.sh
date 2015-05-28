@@ -217,7 +217,7 @@ gpgkey=https://ceph.com/git/?p=ceph.git;a=blob_plain;f=keys/autobuild.asc
 EOF
 # End of ceph.repo file
 
-rpmbuild -bb --define "_topdir ${BUILDAREA}" --define ${BUILDAREA}/SPECS/ceph-release.spec
+rpmbuild -bb --define "_topdir ${BUILDAREA}" ${BUILDAREA}/SPECS/ceph-release.spec
 
 # Add Dependencies.
 
