@@ -29,7 +29,7 @@ env.roledefs['gitbuilder_ceph_rpm'] = [
     ]
 
 # kernels
-env.roledefs['gitbuilder_kernel'] = [
+env.roledefs['gitbuilder_kernel_deb'] = [
     'ubuntu@gitbuilder-kernel-deb-precise-amd64-basic.front.sepia.ceph.com',
     'ubuntu@gitbuilder-kernel-deb-precise-amd64-debug.front.sepia.ceph.com',
 #    'ubuntu@gitbuilder-kernel-deb-quantal-armv7l-basic.front.sepia.ceph.com',
@@ -434,8 +434,8 @@ def _kernel_rpm_deps():
         'zlib-devel'
         )
 
-@roles('gitbuilder_kernel')
-def gitbuilder_kernel():
+@roles('gitbuilder_kernel_deb')
+def gitbuilder_kernel_deb():
     _kernel_deps()
     _gitbuilder(
         flavor='auto',
@@ -830,7 +830,8 @@ def gitbuilder_modfastcgi_deb_precise():
 
 @roles('gitbuilder_ceph_deb',
        'gitbuilder_ceph_gcov',
-       'gitbuilder_kernel',
+       'gitbuilder_kernel_deb',
+       'gitbuilder_kernel_rpm',
        'gitbuilder_samba',
        'gitbuilder_hadoop'
        )
@@ -892,7 +893,8 @@ def gitbuilder_serve_rpm():
 @roles('gitbuilder_ceph',
        'gitbuilder_ceph_gcov',
        'gitbuilder_ceph_notcmalloc',
-       'gitbuilder_kernel',
+       'gitbuilder_kernel_deb',
+       'gitbuilder_kernel_rpm',
        'gitbuilder_ceph_deb',
        'gitbuilder_ceph_rpm',
        'gitbuilder_doc',
