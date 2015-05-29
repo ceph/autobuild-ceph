@@ -22,6 +22,7 @@ git clean -fdx
 
 
 echo --START-IGNORE-WARNINGS
+[ ! -x install-deps.sh ] || ./install-deps.sh
 [ ! -x autogen.sh ] || ./autogen.sh || exit 1
 autoconf || true
 echo --STOP-IGNORE-WARNINGS
