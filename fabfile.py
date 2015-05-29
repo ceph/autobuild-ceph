@@ -22,22 +22,16 @@ env.roledefs['gitbuilder_ceph_rpm'] = [
     'ubuntu@gitbuilder-ceph-rpm-centos6-5-amd64-basic.front.sepia.ceph.com',
     'ubuntu@gitbuilder-ceph-rpm-centos7-amd64-basic.front.sepia.ceph.com',
     'ubuntu@gitbuilder-ceph-rpm-fedora20-amd64-basic.front.sepia.ceph.com',
-    'ubuntu@gitbuilder-ceph-rpm-rhel6-5-amd64-basic.front.sepia.ceph.com',
-    'ubuntu@gitbuilder-ceph-rpm-rhel6-5-amd64-notcmalloc.front.sepia.ceph.com',
-#    'ubuntu@gitbuilder-ceph-rpm-rhel7-amd64-basic.front.sepia.ceph.com',
-#    'ubuntu@gitbuilder-ceph-rpm-rhel7-amd64-notcmalloc.front.sepia.ceph.com',
     ]
 
 # kernels
 env.roledefs['gitbuilder_kernel_deb'] = [
     'ubuntu@gitbuilder-kernel-deb-precise-amd64-basic.front.sepia.ceph.com',
     'ubuntu@gitbuilder-kernel-deb-precise-amd64-debug.front.sepia.ceph.com',
-#    'ubuntu@gitbuilder-kernel-deb-quantal-armv7l-basic.front.sepia.ceph.com',
     ]
 env.roledefs['gitbuilder_kernel_rpm'] = [
     'ubuntu@gitbuilder-kernel-rpm-centos6-amd64-basic.front.sepia.ceph.com',
     'ubuntu@gitbuilder-kernel-rpm-fedora20-amd64-basic.front.sepia.ceph.com',
-    'ubuntu@gitbuilder-kernel-rpm-rhel6-amd64-basic.front.sepia.ceph.com',
     'ubuntu@gitbuilder-kernel-rpm-rhel7-amd64-basic.front.sepia.ceph.com',
     ]
 
