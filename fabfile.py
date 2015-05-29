@@ -820,14 +820,6 @@ def _sync_to_gitbuilder_from_hostname():
         sudo("echo gitbuilder@gitbuilder.ceph.com:gitbuilder.ceph.com/`hostname | cut --delimiter=- -f 2`-`hostname | cut --delimiter=- -f 3`-`lsb_release -s -c`-`uname -m`-`hostname | cut --delimiter=- -f 6` > rsync-target")
         _sync_rsync_keys()
 
-@roles('gitbuilder_modfastcgi_deb_oneiric')
-def gitbuilder_modfastcgi_deb_oneiric():
-    _deb_builder('git://ceph.newdream.net/git/libapache-mod-fastcgi-2.4.7.git', 'deb')
-    with cd('/srv/autobuild-ceph'):
-        sudo('echo oneiric > dists')
-        sudo('echo libapache-mod-fastcgi > pkgname')
-    _sync_to_gitbuilder('libapache-mod-fastcgi','deb','basic')
-
 @roles('gitbuilder_modfastcgi_deb_precise')
 def gitbuilder_modfastcgi_deb_precise():
     _deb_builder('git://ceph.newdream.net/git/libapache-mod-fastcgi-2.4.7-0910052141.git', 'deb')
