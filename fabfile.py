@@ -820,40 +820,6 @@ def _sync_to_gitbuilder_from_hostname():
         sudo("echo gitbuilder@gitbuilder.ceph.com:gitbuilder.ceph.com/`hostname | cut --delimiter=- -f 2`-`hostname | cut --delimiter=- -f 3`-`lsb_release -s -c`-`uname -m`-`hostname | cut --delimiter=- -f 6` > rsync-target")
         _sync_rsync_keys()
 
-#
-# build ndn debs for dho
-#
-def _sync_out_to_dho(package, notify):
-    with cd('/srv/autobuild-ceph'):
-        if not exists('rsync-target'):
-            sudo("echo dhodeploy@deploy.benjamin.dhobjects.net:out/%s > rsync-target" % package)
-        if not exists('rsync-notify'):
-            sudo("echo %s > rsync-notify" % notify)
-        if not exists('rsync-key'):
-            put("rsync-key")
-            put("rsync-key.pub")
-            sudo("mv /home/ubuntu/rsync-key* ./")
-            sudo("chmod 600 rsync-key* ; chown autobuild-ceph.autobuild-ceph rsync-key*")
-        sudo("echo emerging@hq.newdream.net > notify-email")
-
-@roles('gitbuilder_ceph_deb_ndn')
-def gitbuilder_ceph_deb_ndn():
-    _ndn_deb_gitbuilder('ceph', 'ceph-deb',
-                        extra_remotes={'gh': 'git://github.com/ceph/ceph.git'})
-    _sync_out_to_dho('ceph', 'emerging@hq.newdream.net')
-
-@roles('gitbuilder_ceph_deb_oneiric_ndn')
-def gitbuilder_ceph_deb_oneiric_ndn():
-    _ndn_deb_gitbuilder('ceph', 'ceph-deb-native',
-                        extra_remotes={'gh': 'git://github.com/ceph/ceph.git'})
-    _sync_out_to_dho('ceph-oneiric', 'emerging@hq.newdream.net')
-
-@roles('gitbuilder_ceph_deb_precise_ndn')
-def gitbuilder_ceph_deb_precise_ndn():
-    _ndn_deb_gitbuilder('ceph', 'ceph-deb-native',
-                        extra_remotes={'gh': 'git://github.com/ceph/ceph.git'})
-    _sync_out_to_dho('ceph-precise', 'emerging@hq.newdream.net')
-
 @roles('gitbuilder_modfastcgi_deb_oneiric')
 def gitbuilder_modfastcgi_deb_oneiric():
     _deb_builder('git://ceph.newdream.net/git/libapache-mod-fastcgi-2.4.7.git', 'deb')
@@ -870,43 +836,9 @@ def gitbuilder_modfastcgi_deb_precise():
         sudo('echo libapache-mod-fastcgi > pkgname')
     _sync_to_gitbuilder('libapache-mod-fastcgi','deb','basic')
 
-@roles('gitbuilder_modfastcgi_deb_ndn')
-def gitbuilder_modfastcgi_deb_ndn():
-    _ndn_deb_gitbuilder('libapache-mod-fastcgi', 'deb')
-
-@roles('gitbuilder_collectd_deb_ndn')
-def gitbuilder_collectd_deb_ndn():
-    _ndn_deb_gitbuilder('collectd', 'deb')
-
-@roles('gitbuilder_kernel_ndn')
-def gitbuilder_kernel_ndn():
-    _kernel_deps()
-    _gitbuilder(
-        flavor='kernel-raw',
-        git_repo='git://deploy.benjamin.dhobjects.net/kernel.git',
-        extra_remotes=dict(
-            # linus='git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git',
-            linus='https://github.com/torvalds/linux.git',
-            korg='git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git',
-            ),
-        extra_packages=[
-            'fakeroot',
-            ],
-        ignore=[
-            'fbeb94b65cf784ed8bf852131e28c9fb5c4c760f',
-            ],
-        )
-    _sync_out_to_dho('kernel', 'emerging@hq.newdream.net')
-    sudo('start autobuild-ceph || /etc/init.d/autobuild-ceph start')
-
 @roles('gitbuilder_ceph_deb',
        'gitbuilder_ceph_gcov',
        'gitbuilder_kernel',
-       # dhodeploy
-       'gitbuilder_ceph_deb_ndn',
-       'gitbuilder_modfastcgi_deb_ndn',
-       'gitbuilder_collectd_deb_ndn',
-       'gitbuilder_kernel_ndn',
        'gitbuilder_samba',
        'gitbuilder_hadoop'
        )
