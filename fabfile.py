@@ -32,7 +32,7 @@ env.roledefs['gitbuilder_kernel_deb'] = [
 env.roledefs['gitbuilder_kernel_rpm'] = [
     'ubuntu@gitbuilder-kernel-rpm-centos6-amd64-basic.front.sepia.ceph.com',
     'ubuntu@gitbuilder-kernel-rpm-fedora20-amd64-basic.front.sepia.ceph.com',
-    'ubuntu@gitbuilder-kernel-rpm-rhel7-amd64-basic.front.sepia.ceph.com',
+    'ubuntu@gitbuilder-kernel-rpm-centos7-x86_64-basic.front.sepia.ceph.com',
     ]
 
 # special
@@ -861,6 +861,9 @@ def gitbuilder_serve():
 	    sudo('rm /tmp/lighttpd.conf')
 	    sudo('/etc/init.d/lighttpd start')
 
+@roles('gitbuilder_ceph_rpm',
+       'gitbuilder_kernel_rpm'
+       )
 def gitbuilder_serve_rpm():
     # kill any remaining thttpd's in favor of lighttpd.  Do this before
     # installing lighttpd so that lighttpd can start without errors
