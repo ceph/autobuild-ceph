@@ -672,18 +672,24 @@ def _deb_builder(git_url, flavor, extra_remotes={}):
 
 @roles('gitbuilder_auto')
 def gitbuilder_auto():
-    _deb_builder('https://github.com/ceph/ceph.git', 'auto')
+    _deb_builder('https://github.com/ceph/ceph.git', 'auto',
+                 extra_remotes=dict(
+                     ci='https://github.com/ceph/ceph-ci.git'
+                 ))
     sudo('start autobuild-ceph || /etc/init.d/autobuild-ceph start')
     _sync_to_gitbuilder_from_hostname()
 
 @roles('gitbuilder_ceph_rpm')
 def gitbuilder_ceph_rpm():
-    _gitbuilder_ceph_rpm('https://github.com/ceph/ceph.git', 'auto')
+    _gitbuilder_ceph_rpm('https://github.com/ceph/ceph.git', 'auto',
+                         extra_remotes=dict(
+                             ci='https://github.com/ceph/ceph-ci.git'
+                         ))
     hostname = run('hostname -s')
     flavor = hostname.split('-')[-1]
     _sync_to_gitbuilder('ceph', 'rpm', flavor)
 
-def _gitbuilder_ceph_rpm(url, flavor):
+def _gitbuilder_ceph_rpm(url, flavor, extra_remotes={}):
     if '6-' in run('hostname -s'):
         sphinx = 'python-sphinx10'
     else:
@@ -691,6 +697,7 @@ def _gitbuilder_ceph_rpm(url, flavor):
     _rh_gitbuilder(
         flavor=flavor,
         git_repo=url,
+        extra_remotes=extra_remotes,
         extra_packages=[
             'pkgconfig',
             'automake',
