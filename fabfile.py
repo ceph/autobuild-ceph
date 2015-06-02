@@ -4,13 +4,6 @@ from fabric.contrib.files import exists, append, sed
 import os
 import sys
 
-# old gitbuilders with non-standard hostnames; kill these off with time
-env.roledefs['gitbuilder_ceph'] = [ ]
-
-env.roledefs['gitbuilder_ceph_deb_native'] = [
-    'ubuntu@gitbuilder-squeeze-deb-amd64.front.sepia.ceph.com',
-    ]
-
 env.roledefs['gitbuilder_auto'] = [
     'ubuntu@gitbuilder-ceph-deb-trusty-amd64-blkin.front.sepia.ceph.com',
     'ubuntu@gitbuilder-ceph-deb-precise-amd64-basic.front.sepia.ceph.com',
@@ -29,17 +22,17 @@ env.roledefs['gitbuilder_ceph_rpm'] = [
     'ubuntu@gitbuilder-ceph-rpm-centos6-5-amd64-basic.front.sepia.ceph.com',
     'ubuntu@gitbuilder-ceph-rpm-centos7-amd64-basic.front.sepia.ceph.com',
     'ubuntu@gitbuilder-ceph-rpm-fedora20-amd64-basic.front.sepia.ceph.com',
-    'ubuntu@gitbuilder-ceph-rpm-rhel6-5-amd64-basic.front.sepia.ceph.com',
-    'ubuntu@gitbuilder-ceph-rpm-rhel6-5-amd64-notcmalloc.front.sepia.ceph.com',
-    'ubuntu@gitbuilder-ceph-rpm-rhel7-amd64-basic.front.sepia.ceph.com',
-    'ubuntu@gitbuilder-ceph-rpm-rhel7-amd64-notcmalloc.front.sepia.ceph.com',
     ]
 
 # kernels
-env.roledefs['gitbuilder_kernel'] = [
+env.roledefs['gitbuilder_kernel_deb'] = [
     'ubuntu@gitbuilder-kernel-deb-precise-amd64-basic.front.sepia.ceph.com',
     'ubuntu@gitbuilder-kernel-deb-precise-amd64-debug.front.sepia.ceph.com',
-#    'ubuntu@gitbuilder-kernel-deb-quantal-armv7l-basic.front.sepia.ceph.com',
+    ]
+env.roledefs['gitbuilder_kernel_rpm'] = [
+    'ubuntu@gitbuilder-kernel-rpm-centos6-amd64-basic.front.sepia.ceph.com',
+    'ubuntu@gitbuilder-kernel-rpm-fedora20-amd64-basic.front.sepia.ceph.com',
+    'ubuntu@gitbuilder-kernel-rpm-centos7-x86_64-basic.front.sepia.ceph.com',
     ]
 
 # special
@@ -388,19 +381,6 @@ def _deb_install_extras():
         sudo('grep -q autobuild-ceph /etc/sudoers || echo "autobuild-ceph ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers')
 
 
-def _kmod_deps():
-    _rpm_install(
-        # kernel tools
-        'bison',
-        'flex',
-        'asciidoc',
-        'xmlto',
-        'gtk2-devel',
-        'mock',
-        'binutils-devel',
-        'python-devel',
-        )
-
 def _kernel_deps():
     _apt_install(
         # kernel tools
@@ -448,8 +428,8 @@ def _kernel_rpm_deps():
         'zlib-devel'
         )
 
-@roles('gitbuilder_kernel')
-def gitbuilder_kernel():
+@roles('gitbuilder_kernel_deb')
+def gitbuilder_kernel_deb():
     _kernel_deps()
     _gitbuilder(
         flavor='auto',
@@ -469,26 +449,6 @@ def gitbuilder_kernel():
     sudo('start autobuild-ceph || /etc/init.d/autobuild-ceph start')
 
 
-
-@roles('gitbuilder_kmod_rpm')
-def gitbuilder_kmod_rpm():
-    _kmod_deps()
-    _rh_gitbuilder(
-        flavor='kmod',
-        git_repo='https://github.com/ceph/ceph-client.git',
-        extra_remotes=dict(
-            korg='git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git',
-            ),
-        extra_packages=[
-            'fakeroot',
-            'reprepro',
-            ],
-        ignore=[
-            'fbeb94b65cf784ed8bf852131e28c9fb5c4c760f',
-            ],
-        )
-    _sync_to_gitbuilder('kmod','rpm','basic')
-    sudo('start autobuild-ceph || /etc/init.d/autobuild-ceph start')
 
 @roles('gitbuilder_kernel_rpm')
 def gitbuilder_kernel_rpm():
@@ -596,13 +556,16 @@ def gitbuilder_apache_hadoop():
 
 @roles('gitbuilder_ceph')
 def gitbuilder_ceph():
-    _gitbuilder_ceph('https://github.com/ceph/ceph.git','ceph')
+    _gitbuilder_ceph('ceph')
     _sync_to_gitbuilder('ceph', 'tarball', 'basic')
 
-def _gitbuilder_ceph(url, flavor):
+def _gitbuilder_ceph(flavor):
     _gitbuilder(
         flavor=flavor,
-        git_repo=url,
+        git_repo='https://github.com/ceph/ceph.git',
+        extra_remotes=dict(
+            ci='https://github.com/ceph/ceph-ci.git',
+        ),
         extra_packages=[
             'automake',
             'libtool',
@@ -707,34 +670,26 @@ def _deb_builder(git_url, flavor, extra_remotes={}):
         )
     _deb_install_extras()
 
-@roles('gitbuilder_ceph_deb')
-def gitbuilder_ceph_deb():
-    _deb_builder('https://github.com/ceph/ceph.git', 'ceph-deb')
-    with cd('/srv/autobuild-ceph'):
-        sudo('echo squeeze natty > dists')
-    _sync_to_gitbuilder('ceph', 'deb', 'basic')
-    sudo('start autobuild-ceph || /etc/init.d/autobuild-ceph start')
-
-@roles('gitbuilder_ceph_deb_native')
-def gitbuilder_ceph_deb_native():
-    _deb_builder('https://github.com/ceph/ceph.git', 'ceph-deb-native')
-    sudo('start autobuild-ceph || /etc/init.d/autobuild-ceph start')
-    _sync_to_gitbuilder('ceph', 'deb', 'basic')
-
 @roles('gitbuilder_auto')
 def gitbuilder_auto():
-    _deb_builder('https://github.com/ceph/ceph.git', 'auto')
+    _deb_builder('https://github.com/ceph/ceph.git', 'auto',
+                 extra_remotes=dict(
+                     ci='https://github.com/ceph/ceph-ci.git'
+                 ))
     sudo('start autobuild-ceph || /etc/init.d/autobuild-ceph start')
     _sync_to_gitbuilder_from_hostname()
 
 @roles('gitbuilder_ceph_rpm')
 def gitbuilder_ceph_rpm():
-    _gitbuilder_ceph_rpm('https://github.com/ceph/ceph.git', 'auto')
+    _gitbuilder_ceph_rpm('https://github.com/ceph/ceph.git', 'auto',
+                         extra_remotes=dict(
+                             ci='https://github.com/ceph/ceph-ci.git'
+                         ))
     hostname = run('hostname -s')
     flavor = hostname.split('-')[-1]
     _sync_to_gitbuilder('ceph', 'rpm', flavor)
 
-def _gitbuilder_ceph_rpm(url, flavor):
+def _gitbuilder_ceph_rpm(url, flavor, extra_remotes={}):
     if '6-' in run('hostname -s'):
         sphinx = 'python-sphinx10'
     else:
@@ -742,6 +697,7 @@ def _gitbuilder_ceph_rpm(url, flavor):
     _rh_gitbuilder(
         flavor=flavor,
         git_repo=url,
+        extra_remotes=extra_remotes,
         extra_packages=[
             'pkgconfig',
             'automake',
@@ -824,7 +780,7 @@ def gitbuilder_doc():
         'graphviz',
         'ant',
         )
-    _gitbuilder_ceph('https://github.com/ceph/ceph.git', 'ceph-docs')
+    _gitbuilder_ceph('ceph-docs')
     with cd('/srv/autobuild-ceph'):
         if not exists('rsync-target'):
             sudo("echo ubuntu@ursula.front.sepia.ceph.com:/var/docs.raw > rsync-target")
@@ -865,72 +821,6 @@ def _sync_to_gitbuilder_from_hostname():
         sudo("echo gitbuilder@gitbuilder.ceph.com:gitbuilder.ceph.com/`hostname | cut --delimiter=- -f 2`-`hostname | cut --delimiter=- -f 3`-`lsb_release -s -c`-`uname -m`-`hostname | cut --delimiter=- -f 6` > rsync-target")
         _sync_rsync_keys()
 
-#
-# build ndn debs for dho
-#
-def _sync_out_to_dho(package, notify):
-    with cd('/srv/autobuild-ceph'):
-        if not exists('rsync-target'):
-            sudo("echo dhodeploy@deploy.benjamin.dhobjects.net:out/%s > rsync-target" % package)
-        if not exists('rsync-notify'):
-            sudo("echo %s > rsync-notify" % notify)
-        if not exists('rsync-key'):
-            put("rsync-key")
-            put("rsync-key.pub")
-            sudo("mv /home/ubuntu/rsync-key* ./")
-            sudo("chmod 600 rsync-key* ; chown autobuild-ceph.autobuild-ceph rsync-key*")
-        sudo("echo emerging@hq.newdream.net > notify-email")
-
-def _ndn_deb_gitbuilder(package, flavor, extra_remotes={}):
-    _deb_builder('git://deploy.benjamin.dhobjects.net/%s.git' % package, flavor,
-                 extra_remotes=extra_remotes)
-    with cd('/srv/autobuild-ceph'):
-        sudo('echo squeeze > dists')
-        sudo('echo %s > pkgname' % package)
-    sudo('start autobuild-ceph || /etc/init.d/autobuild-ceph start')
-
-@roles('gitbuilder_ceph_deb_ndn')
-def gitbuilder_ceph_deb_ndn():
-    _ndn_deb_gitbuilder('ceph', 'ceph-deb',
-                        extra_remotes={'gh': 'git://github.com/ceph/ceph.git'})
-    _sync_out_to_dho('ceph', 'emerging@hq.newdream.net')
-
-@roles('gitbuilder_ceph_deb_oneiric_ndn')
-def gitbuilder_ceph_deb_oneiric_ndn():
-    _ndn_deb_gitbuilder('ceph', 'ceph-deb-native',
-                        extra_remotes={'gh': 'git://github.com/ceph/ceph.git'})
-    _sync_out_to_dho('ceph-oneiric', 'emerging@hq.newdream.net')
-
-@roles('gitbuilder_ceph_deb_precise_ndn')
-def gitbuilder_ceph_deb_precise_ndn():
-    _ndn_deb_gitbuilder('ceph', 'ceph-deb-native',
-                        extra_remotes={'gh': 'git://github.com/ceph/ceph.git'})
-    _sync_out_to_dho('ceph-precise', 'emerging@hq.newdream.net')
-
-@roles('gitbuilder_apache2_deb_oneiric')
-def gitbuilder_apache2_deb_oneiric():
-    _deb_builder('git://ceph.newdream.net/git/apache2-2.2.20.git', 'deb')
-    with cd('/srv/autobuild-ceph'):
-        sudo('echo oneiric > dists')
-        sudo('echo apache2 > pkgname')
-    _sync_to_gitbuilder('apache2','deb','basic')
-
-@roles('gitbuilder_modfastcgi_deb_oneiric')
-def gitbuilder_modfastcgi_deb_oneiric():
-    _deb_builder('git://ceph.newdream.net/git/libapache-mod-fastcgi-2.4.7.git', 'deb')
-    with cd('/srv/autobuild-ceph'):
-        sudo('echo oneiric > dists')
-        sudo('echo libapache-mod-fastcgi > pkgname')
-    _sync_to_gitbuilder('libapache-mod-fastcgi','deb','basic')
-
-@roles('gitbuilder_apache2_deb_precise')
-def gitbuilder_apache2_deb_precise():
-    _deb_builder('git://ceph.newdream.net/git/apache2-2.2.22.git', 'deb')
-    with cd('/srv/autobuild-ceph'):
-        sudo('echo precise > dists')
-        sudo('echo apache2 > pkgname')
-    _sync_to_gitbuilder('apache2','deb','basic')
-
 @roles('gitbuilder_modfastcgi_deb_precise')
 def gitbuilder_modfastcgi_deb_precise():
     _deb_builder('git://ceph.newdream.net/git/libapache-mod-fastcgi-2.4.7-0910052141.git', 'deb')
@@ -939,50 +829,10 @@ def gitbuilder_modfastcgi_deb_precise():
         sudo('echo libapache-mod-fastcgi > pkgname')
     _sync_to_gitbuilder('libapache-mod-fastcgi','deb','basic')
 
-@roles('gitbuilder_apache2_deb_ndn')
-def gitbuilder_apache2_deb_ndn():
-    _ndn_deb_gitbuilder('apache2', 'deb')
-
-@roles('gitbuilder_modfastcgi_deb_ndn')
-def gitbuilder_modfastcgi_deb_ndn():
-    _ndn_deb_gitbuilder('libapache-mod-fastcgi', 'deb')
-
-@roles('gitbuilder_collectd_deb_ndn')
-def gitbuilder_collectd_deb_ndn():
-    _ndn_deb_gitbuilder('collectd', 'deb')
-
-@roles('gitbuilder_kernel_ndn')
-def gitbuilder_kernel_ndn():
-    _kernel_deps()
-    _gitbuilder(
-        flavor='kernel-raw',
-        git_repo='git://deploy.benjamin.dhobjects.net/kernel.git',
-        extra_remotes=dict(
-            # linus='git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git',
-            linus='https://github.com/torvalds/linux.git',
-            korg='git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git',
-            ),
-        extra_packages=[
-            'fakeroot',
-            ],
-        ignore=[
-            'fbeb94b65cf784ed8bf852131e28c9fb5c4c760f',
-            ],
-        )
-    _sync_out_to_dho('kernel', 'emerging@hq.newdream.net')
-    sudo('start autobuild-ceph || /etc/init.d/autobuild-ceph start')
-
-@roles('gitbuilder_ceph',
-       'gitbuilder_ceph_deb',
-       'gitbuilder_ceph_deb_native',
+@roles('gitbuilder_ceph_deb',
        'gitbuilder_ceph_gcov',
-       'gitbuilder_kernel',
-       # dhodeploy
-       'gitbuilder_ceph_deb_ndn',
-       'gitbuilder_apache2_deb_ndn',
-       'gitbuilder_modfastcgi_deb_ndn',
-       'gitbuilder_collectd_deb_ndn',
-       'gitbuilder_kernel_ndn',
+       'gitbuilder_kernel_deb',
+       'gitbuilder_kernel_rpm',
        'gitbuilder_samba',
        'gitbuilder_hadoop'
        )
@@ -1011,6 +861,9 @@ def gitbuilder_serve():
 	    sudo('rm /tmp/lighttpd.conf')
 	    sudo('/etc/init.d/lighttpd start')
 
+@roles('gitbuilder_ceph_rpm',
+       'gitbuilder_kernel_rpm'
+       )
 def gitbuilder_serve_rpm():
     # kill any remaining thttpd's in favor of lighttpd.  Do this before
     # installing lighttpd so that lighttpd can start without errors
@@ -1044,11 +897,10 @@ def gitbuilder_serve_rpm():
 @roles('gitbuilder_ceph',
        'gitbuilder_ceph_gcov',
        'gitbuilder_ceph_notcmalloc',
-       'gitbuilder_kernel',
+       'gitbuilder_kernel_deb',
+       'gitbuilder_kernel_rpm',
        'gitbuilder_ceph_deb',
        'gitbuilder_ceph_rpm',
-       'gitbuilder_ceph_deb_native',
-       'gitbuilder_ceph_deb_precise_ndn',
        'gitbuilder_doc',
        'gitbuilder_samba',
        'gitbuilder_hadoop',
