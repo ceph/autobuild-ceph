@@ -793,7 +793,7 @@ def gitbuilder_doc():
 def _sync_to_gitbuilder(package, format, flavor):
     dist_or_codename = '`lsb_release -s -c`'
     if format == 'rpm':
-        dist_or_codename = '`lsb_release -s -i | tr A-Z a-z``lsb_release -s -r | sed -s "s;\.;_;g"`'
+        dist_or_codename = '`lsb_release -s -i | tr A-Z a-z``lsb_release -s -r | sed -s "s;\..*;;g"`'
     with cd('/srv/autobuild-ceph'):
         # fugliness
         sudo("echo gitbuilder@gitbuilder.ceph.com:gitbuilder.ceph.com/{package}-{format}-{dist_or_codename}-`uname -m`-{flavor} > rsync-target".format(
