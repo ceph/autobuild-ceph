@@ -11,7 +11,8 @@ if [ -n "$missing" ]; then
     aptdcon --install $missing
 fi
 
-pip -E virtualenv install -q -r requirements.txt
+virtualenv virtualenv
+virtualenv/bin/pip install -q -r requirements.txt
 
 if [ ! -e bin ]; then
     ln -s virtualenv/bin bin
