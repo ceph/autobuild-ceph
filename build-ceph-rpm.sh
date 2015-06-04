@@ -52,7 +52,7 @@ echo --START-IGNORE-WARNINGS
 autoconf || true
 echo --STOP-IGNORE-WARNINGS
 
-[ -z "$CEPH_EXTRA_CONFIGURE_ARGS" ] && CEPH_EXTRA_CONFIGURE_ARGS=--with-tcmalloc
+[ -z "$CEPH_EXTRA_CONFIGURE_ARGS" ] && CEPH_EXTRA_CONFIGURE_ARGS="--with-tcmalloc --with-librocksdb"
 [ ! -x configure ] || ./configure --with-debug --with-radosgw --with-fuse --with-libatomic-ops --with-gtk2 --with-nss $CEPH_EXTRA_CONFIGURE_ARGS || exit 2
 
 if [ ! -e Makefile ]; then
