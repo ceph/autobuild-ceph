@@ -753,6 +753,8 @@ def _gitbuilder_ceph_rpm(url, flavor, extra_remotes={}):
             'createrepo',
             'leveldb-devel',
             'snappy-devel',
+            'wget',
+            'lighttpd'
             'zlib-devel',
             'python-requests',
             'python-virtualenv',
