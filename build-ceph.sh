@@ -86,7 +86,10 @@ function display_failures() {
 
 make -j$(get_processors) "$@" || exit 4
 
-# run "make check", but give it a time limit in case a test gets stuck                                                           
+# run "make check", but give it a time limit in case a test gets stuck
+
+trap "pkill ceph-osd ; pkill ceph-mon" EXIT
+
 if ! ../maxtime 3600 make $(maybe_parallel_make_check) check "$@" ; then
     display_failures .
     exit 5
