@@ -88,7 +88,7 @@ make -j$(get_processors) "$@" || exit 4
 
 # run "make check", but give it a time limit in case a test gets stuck
 
-trap "pkill -9 ceph-osd ; pkill -9 ceph-mon" EXIT
+trap "pkill -9 ceph-osd || true ; pkill -9 ceph-mon || true" EXIT
 
 if ! ../maxtime 3600 make $(maybe_parallel_make_check) check "$@" ; then
     display_failures .
