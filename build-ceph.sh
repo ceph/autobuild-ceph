@@ -90,7 +90,7 @@ make -j$(get_processors) "$@" || exit 4
 
 trap "pkill -9 ceph-osd || true ; pkill -9 ceph-mon || true" EXIT
 
-if ! ../maxtime 3600 make $(maybe_parallel_make_check) check "$@" ; then
+if ! ../maxtime 5400 make $(maybe_parallel_make_check) check "$@" ; then
     display_failures .
     exit 5
 fi
