@@ -77,11 +77,12 @@ function get_processors() {
 
 function display_failures() {
     local dir=$1
-    find $dir -name '*.trs' | xargs grep -l FAIL | while read file ; do
-        log=$(dirname $file)/$(basename $file .trs).log
-        echo FAIL: $log
-        cat $log
-    done
+    # can be removed after hammer is retired
+    # or https://github.com/ceph/ceph/pull/4923
+    # is backported to all branches.
+    if ! test -f src/Makefile-env.am || ! grep -q VERBOSE src/Makefile-env.am ; then
+        cat src/test-suite.log
+    fi
 }
 
 make -j$(get_processors) "$@" || exit 4
