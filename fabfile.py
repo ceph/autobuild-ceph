@@ -72,7 +72,6 @@ def _rpm_install(*packages):
                 '--quiet',
                 '--assumeyes',
                 'install',
-                '--',
                 ]
             + list(packages)))
 
