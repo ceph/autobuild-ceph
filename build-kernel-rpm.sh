@@ -47,7 +47,7 @@ else
 fi
 
 flavor=`hostname -s | sed -e "s|gitbuilder-\([^-]*\)-\([^-]*\)-\([^-]*\)-\([^-]*\)-\([^-]*\)$|\5|"`
-config="../../kernel-config.$flavor"
+config="../../kernel-config-rpm.$flavor"
 if [ ! -e "$config" ]; then
     echo "no $config found for flavor $flavor"
     exit 1
