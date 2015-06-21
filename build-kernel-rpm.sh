@@ -87,6 +87,7 @@ OUTDIR="../out/output/sha1/$REV"
 OUTDIR_TMP="${OUTDIR}.tmp"
 install -d -m0755 -- "$OUTDIR_TMP"
 printf '%s\n' "$REV" >"$OUTDIR_TMP/sha1"
+cp -- .config "$OUTDIR_TMP/config"
 printf '%s\n' "$uname_string" >"$OUTDIR_TMP/version"
 printf '%s\n' "ceph" >"$OUTDIR_TMP/name"
 
