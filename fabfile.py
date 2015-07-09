@@ -12,6 +12,7 @@ env.roledefs['gitbuilder_auto'] = [
     'ubuntu@gitbuilder-ceph-deb-trusty-amd64-notcmalloc.front.sepia.ceph.com',
     'ubuntu@gitbuilder-ceph-deb-trusty-i386-basic.front.sepia.ceph.com',
     'ubuntu@gitbuilder-ceph-deb-wheezy-amd64-basic.front.sepia.ceph.com',
+    'ubuntu@gitbuilder-ceph-deb-jessie-amd64-basic.front.sepia.ceph.com',
     'ubuntu@gitbuilder-ceph-tarball-precise-amd64-basic.front.sepia.ceph.com',
     'ubuntu@gitbuilder-ceph-tarball-precise-i386-basic.front.sepia.ceph.com',
     'ubuntu@gitbuilder-ceph-tarball-trusty-amd64-basic.front.sepia.ceph.com',
