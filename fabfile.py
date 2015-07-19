@@ -47,11 +47,7 @@ env.roledefs['gitbuilder_samba'] = [
     ]
 
 env.roledefs['gitbuilder_hadoop'] = [
-    'ubuntu@gitbuilder-precise-hadoop-amd64.front.sepia.ceph.com',
-    ]
-
-env.roledefs['gitbuilder_apache_hadoop'] = [
-    'ubuntu@gitbuilder-precise-apache-hadoop-amd64.front.sepia.ceph.com',
+    'ubuntu@gitbuilder-hadoop-jar-precise-amd64-basic.front.sepia.ceph.com',
     ]
 
 
@@ -472,16 +468,6 @@ def gitbuilder_kernel_rpm():
     _sync_to_gitbuilder('kernel','rpm','basic')
     sudo('start autobuild-ceph || /etc/init.d/autobuild-ceph start')
 
-
-def _hadoop_deps():
-    #_apt_add_testing_repo('master')
-    _apt_install(
-		'openjdk-6-jdk',
-        'ant',
-        'automake',
-        'libtool',
-        )
-
 def _samba_deps():
     _apt_add_testing_repo('master')
     _apt_install(
@@ -528,33 +514,25 @@ def gitbuilder_samba():
 
 @roles('gitbuilder_hadoop')
 def gitbuilder_hadoop():
-    _hadoop_deps()
+    _apt_install(
+		'openjdk-6-jdk',
+        'zlib1g-dev',
+        )
+    if not exists('/srv/apache-maven-3.1.1'):
+        with cd('/srv'):
+            sudo('wget http://apache.osuosl.org/maven/maven-3/3.1.1/binaries/apache-maven-3.1.1-bin.tar.gz')
+            sudo('tar xzf apache-maven-3.1.1-bin.tar.gz')
+            sudo('rm -f apache-maven-3.1.1-bin.tar.gz')
     _gitbuilder(
         flavor='hadoop',
-        git_repo='https://github.com/ceph/hadoop-common.git',
+        git_repo='https://github.com/ceph/cephfs-hadoop.git',
         extra_packages=[
             'fakeroot',
             'reprepro',
             ],
-        branches_local_name='branches-local-hadoop',
         )
+    sudo('start autobuild-ceph || /etc/init.d/autobuild-ceph start')
     _sync_to_gitbuilder('hadoop', 'jar', 'basic')
-    sudo('start autobuild-ceph || /etc/init.d/autobuild-ceph start')
-
-@roles('gitbuilder_apache_hadoop')
-def gitbuilder_apache_hadoop():
-    _hadoop_deps()
-    _gitbuilder(
-        flavor='apache-hadoop',
-        git_repo='git://git.apache.org/hadoop-common.git',
-        extra_packages=[
-            'fakeroot',
-            'reprepro',
-            ],
-        branches_local_name='branches-local-apache-hadoop',
-        )
-    _sync_to_gitbuilder('apache-hadoop', 'jar', 'basic')
-    sudo('start autobuild-ceph || /etc/init.d/autobuild-ceph start')
 
 @roles('gitbuilder_ceph')
 def gitbuilder_ceph():
