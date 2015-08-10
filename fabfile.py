@@ -4,6 +4,12 @@ from fabric.contrib.files import exists, append, sed
 import os
 import sys
 
+env.roledefs['pre_cxx11'] = [
+    'ubuntu@gitbuilder-ceph-deb-precise-amd64-basic.front.sepia.ceph.com',
+    'ubuntu@gitbuilder-ceph-deb-precise-amd64-notcmalloc.front.sepia.ceph.com',
+    'ubuntu@gitbuilder-ceph-rpm-centos6-5-amd64-basic.front.sepia.ceph.com',
+]
+
 env.roledefs['gitbuilder_auto'] = [
     'ubuntu@gitbuilder-ceph-deb-trusty-amd64-blkin.front.sepia.ceph.com',
     'ubuntu@gitbuilder-ceph-deb-precise-amd64-basic.front.sepia.ceph.com',
@@ -925,6 +931,23 @@ def authorize_ssh_keys():
     with hide('running'):
         for key in keys:
             run('grep -q "%s" %s || echo "%s" >> %s' % (key, keyfile, key, keyfile))
+
+@roles('pre_cxx11')
+def install_filter_branches():
+    """install a filter-branches file so old builders will only look at branches before Infernalis
+    """
+    filter_branches_path = '/srv/autobuild-ceph/filter-branches'
+    # only keep the branches with following keywords in it.
+    pre_cxx11_branches = ['hammer',
+                          'giant',
+                          'firefly',
+                          'emperor',
+                          'dumpling']
+    sudo('touch {filter}'.format(filter=filter_branches_path))
+    append(filter_branches_path,
+           '\n'.join(pre_cxx11_branches),
+           use_sudo=True)
+
 
 def install_git():
     # Install newer git from source
