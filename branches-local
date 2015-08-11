@@ -437,10 +437,20 @@ def separate_priority_branches(branches):
     ignore = ['origin/{0}'.format(b) for b in IGNORE]
     ignore_prefix = ['origin/{0}'.format(b) for b in IGNORE_PREFIX]
 
+    require = []
+    try:
+        f = open('/srv/autobuild-ceph/filter-branches')
+        require = f.read().splitlines()
+    except:
+        pass
+
     priority = []
     normal = []
 
     for obj, ref in branches:
+        if require and not any(str in ref for str in require):
+            continue
+
         if ref in prioritize:
             priority.append((obj, ref))
             continue
