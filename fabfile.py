@@ -8,6 +8,7 @@ env.roledefs['pre_cxx11'] = [
     'ubuntu@gitbuilder-ceph-deb-precise-amd64-basic.front.sepia.ceph.com',
     'ubuntu@gitbuilder-ceph-deb-precise-amd64-notcmalloc.front.sepia.ceph.com',
     'ubuntu@gitbuilder-ceph-rpm-centos6-5-amd64-basic.front.sepia.ceph.com',
+    'ubuntu@gitbuilder-ceph-deb-wheezy-amd64-basic.front.sepia.ceph.com',
 ]
 
 env.roledefs['gitbuilder_auto'] = [
