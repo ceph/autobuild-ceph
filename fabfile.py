@@ -20,8 +20,6 @@ env.roledefs['gitbuilder_auto'] = [
     'ubuntu@gitbuilder-ceph-deb-trusty-i386-basic.front.sepia.ceph.com',
     'ubuntu@gitbuilder-ceph-deb-wheezy-amd64-basic.front.sepia.ceph.com',
     'ubuntu@gitbuilder-ceph-deb-jessie-amd64-basic.front.sepia.ceph.com',
-    'ubuntu@gitbuilder-ceph-tarball-precise-amd64-basic.front.sepia.ceph.com',
-    'ubuntu@gitbuilder-ceph-tarball-precise-i386-basic.front.sepia.ceph.com',
     'ubuntu@gitbuilder-ceph-tarball-trusty-amd64-basic.front.sepia.ceph.com',
     'ubuntu@gitbuilder-ceph-tarball-trusty-i386-basic.front.sepia.ceph.com',
     ]
@@ -935,16 +933,14 @@ def authorize_ssh_keys():
 def install_filter_branches():
     """install a filter-branches file so old builders will only look at branches before Infernalis
     """
-    filter_branches_path = '/srv/autobuild-ceph/filter-branches'
     # only keep the branches with following keywords in it.
     pre_cxx11_branches = ['hammer',
                           'giant',
                           'firefly',
                           'emperor',
                           'dumpling']
-    sudo('touch {filter}'.format(filter=filter_branches_path))
-    append(filter_branches_path,
-           '\n'.join(pre_cxx11_branches),
+    append('/srv/autobuild-ceph/filter-branches',
+           pre_cxx11_branches,
            use_sudo=True)
 
 
