@@ -24,6 +24,7 @@ env.roledefs['gitbuilder_auto'] = [
     'ubuntu@gitbuilder-ceph-tarball-precise-i386-basic.front.sepia.ceph.com',
     'ubuntu@gitbuilder-ceph-tarball-trusty-amd64-basic.front.sepia.ceph.com',
     'ubuntu@gitbuilder-ceph-tarball-trusty-i386-basic.front.sepia.ceph.com',
+    'ubuntu@gitbuilder-ceph-tarball-trusty-amd64-cmake.ovh.sepia.ceph.com',
     ]
 
 env.roledefs['gitbuilder_ceph_rpm'] = [
