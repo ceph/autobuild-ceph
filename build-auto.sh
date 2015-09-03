@@ -29,6 +29,9 @@ if hostname | grep -q -- ceph-deb- ; then
     exec $mydir/build-ceph-deb-native.sh
 fi
 if hostname | grep -q -- ceph-tarball- ; then
+    if hostname | grep -q -- -cmake ; then
+	exec $mydir/build-ceph-cmake.sh
+    fi
     exec $mydir/build-ceph.sh
 fi
 if hostname | grep -q -- ceph-rpm- ; then
