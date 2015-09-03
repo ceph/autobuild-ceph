@@ -1,5 +1,6 @@
-
 #!/bin/sh -x
+
+[ -e /srv/autobuild-ceph/no-mirror ] && exit 0
 
 # Change URL's of submodules.
 

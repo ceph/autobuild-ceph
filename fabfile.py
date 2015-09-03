@@ -19,7 +19,7 @@ env.roledefs['gitbuilder_auto'] = [
     'ubuntu@gitbuilder-ceph-deb-trusty-amd64-notcmalloc.front.sepia.ceph.com',
     'ubuntu@gitbuilder-ceph-deb-trusty-i386-basic.front.sepia.ceph.com',
     'ubuntu@gitbuilder-ceph-deb-wheezy-amd64-basic.front.sepia.ceph.com',
-    'ubuntu@gitbuilder-ceph-deb-jessie-amd64-basic.front.sepia.ceph.com',
+    'ubuntu@gitbuilder-ceph-deb-jessie-amd64-basic.ovh.sepia.ceph.com',
     'ubuntu@gitbuilder-ceph-tarball-precise-amd64-basic.front.sepia.ceph.com',
     'ubuntu@gitbuilder-ceph-tarball-precise-i386-basic.front.sepia.ceph.com',
     'ubuntu@gitbuilder-ceph-tarball-trusty-amd64-basic.front.sepia.ceph.com',
@@ -28,8 +28,8 @@ env.roledefs['gitbuilder_auto'] = [
 
 env.roledefs['gitbuilder_ceph_rpm'] = [
     'ubuntu@gitbuilder-ceph-rpm-centos6-5-amd64-basic.front.sepia.ceph.com',
-    'ubuntu@gitbuilder-ceph-rpm-centos7-amd64-basic.front.sepia.ceph.com',
-    'ubuntu@gitbuilder-ceph-rpm-centos7-amd64-notcmalloc.front.sepia.ceph.com',
+    'ubuntu@gitbuilder-ceph-rpm-centos7-amd64-basic.ovh.sepia.ceph.com',
+    'ubuntu@gitbuilder-ceph-rpm-centos7-amd64-notcmalloc.ovh.sepia.ceph.com',
     'ubuntu@gitbuilder-ceph-rpm-fedora20-amd64-basic.front.sepia.ceph.com',
     'ubuntu@gitbuilder-ceph-rpm-fedora22-amd64-basic.front.sepia.ceph.com',
     ]
@@ -69,7 +69,7 @@ env.roledefs['gitbuilder_apache_hadoop'] = [
 def _rpm_install(*packages):
     lsb = sudo("lsb_release -d")
     if '7.' in lsb:
-        sudo("rpm -qa | grep epel-release || rpm -Uvh http://apt-mirror.front.sepia.ceph.com/non-repo-rpms/epel-release-7-0.2.noarch.rpm")
+        sudo("rpm -qa | grep epel-release || rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm")
     if '6.' in lsb:
         sudo("rpm -qa | grep epel-release || rpm -Uvh http://download.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm")
     # This will update to the newest release of the distro IE centos 6.3 to centos 6.5, etc...
