@@ -21,6 +21,7 @@ git clean -fdx
 
 echo --START-IGNORE-WARNINGS
 [ ! -x install-deps.sh ] || ./install-deps.sh
+echo --STOP-IGNORE-WARNINGS
 
 mkdir build
 cd build
