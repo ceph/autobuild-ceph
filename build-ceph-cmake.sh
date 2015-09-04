@@ -26,22 +26,7 @@ mkdir build
 cd build
 cmake ..
 
-#
-# Return MIN(4, MAX(1, (number of processors / 2)))
-# Do not try to use more than 4 because it will stress
-# IO too much
-#
-function get_processors() {
-    if test $(nproc) -ge 16 ; then
-        echo 4
-    elif test $(nproc) -ge 2 ; then
-        expr $(nproc) / 2
-    else
-        echo 1
-    fi
-}
-
-make -j$(get_processors) "$@" || exit 4
+make -j$(nproc) "$@" || exit 4
 
 # run "make check", but give it a time limit in case a test gets stuck
 #trap "pkill -9 ceph-osd || true ; pkill -9 ceph-mon || true" EXIT
