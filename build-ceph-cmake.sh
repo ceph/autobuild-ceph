@@ -62,6 +62,7 @@ tar czf "$OUTDIR_TMP/ceph.$MACH.tgz" -C "$INSTDIR" .
 rm -rf -- "$INSTDIR"
 
 # put our temp files inside .git/ so ls-files doesn't see them
+cd ..
 git ls-files --modified >.git/modified-files
 if [ -s .git/modified-files ]; then
     rm -rf "$OUTDIR_TMP"
