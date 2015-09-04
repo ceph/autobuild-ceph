@@ -181,7 +181,8 @@ def _rh_gitbuilder(flavor, git_repo, extra_remotes={}, extra_packages=[], ignore
             )
         sudo('mkdir -p /home/autobuild-ceph && chown autobuild-ceph /home/autobuild-ceph')
         with cd('/home/autobuild-ceph'):
-            sudo('lsb_release -d -s | grep CentOS | grep -q release\ 7 && echo "%dist .el7" > .rpmmacros')
+            sudo('echo "%_find_debuginfo_dwz_opts %{nil}" > .rpmmacros')
+            sudo('lsb_release -d -s | grep CentOS | grep -q release\ 7 && echo "%dist .el7" >> .rpmmacros')
 
     sudo('install -d -m0755 --owner=root --group=root /srv/autobuild-ceph')
     local('git bundle create bundle refs/heads/{branch_to_bundle}'.format(branch_to_bundle=branch_to_bundle))
