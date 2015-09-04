@@ -179,6 +179,7 @@ def _rh_gitbuilder(flavor, git_repo, extra_remotes={}, extra_packages=[], ignore
                 'autobuild-ceph',
                 ]),
             )
+        sudo('mkdir -p /home/autobuild-ceph && chown autobuild-ceph /home/autobuild-ceph')
         with cd('/home/autobuild-ceph'):
             sudo('lsb_release -d -s | grep CentOS | grep -q release\ 7 && echo "%dist .el7" > .rpmmacros')
 
