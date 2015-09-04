@@ -37,13 +37,13 @@ make -j$(nproc) "$@" || exit 4
 REV="$(git rev-parse HEAD)"
 OUTDIR="../out/output/sha1/$REV"
 OUTDIR_TMP="${OUTDIR}.tmp"
-install -d -m0755 -- "$OUTDIR_TMP"
-printf '%s\n' "$REV" >"$OUTDIR_TMP/sha1"
+install -d -m0755 -- "../$OUTDIR_TMP"
+printf '%s\n' "$REV" >"../$OUTDIR_TMP/sha1"
 MACH="$(uname -m)"
 INSTDIR="inst.tmp"
 [ ! -e "$INSTDIR" ]
 ../../maxtime 1800 ionice -c3 nice -n20 make install DESTDIR="$PWD/$INSTDIR"
-tar czf "$OUTDIR_TMP/ceph.$MACH.tgz" -C "$INSTDIR" .
+tar czf "../$OUTDIR_TMP/ceph.$MACH.tgz" -C "$INSTDIR" .
 rm -rf -- "$INSTDIR"
 
 # put our temp files inside .git/ so ls-files doesn't see them
