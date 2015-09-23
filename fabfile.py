@@ -458,7 +458,7 @@ def gitbuilder_kernel_deb():
             ],
         )
     _sync_to_gitbuilder_from_hostname()
-    sudo('start autobuild-ceph || /etc/init.d/autobuild-ceph start ; systemctl enable autobuild-ceph ; systemctl start autobuild-ceph')
+    sudo('start autobuild-ceph || /etc/init.d/autobuild-ceph start ; systemctl enable autobuild-ceph || true ; systemctl start autobuild-ceph || true')
 
 
 
@@ -480,7 +480,7 @@ def gitbuilder_kernel_rpm():
             ],
         )
     _sync_to_gitbuilder('kernel','rpm','basic')
-    sudo('start autobuild-ceph || /etc/init.d/autobuild-ceph start ; systemctl enable autobuild-ceph ; systemctl start autobuild-ceph')
+    sudo('start autobuild-ceph || /etc/init.d/autobuild-ceph start ; systemctl enable autobuild-ceph || true ; systemctl start autobuild-ceph || true')
 
 
 def _hadoop_deps():
@@ -533,7 +533,7 @@ def gitbuilder_samba():
         branches_local_name='branches-local-samba',
         )
     _deb_install_extras()
-    sudo('start autobuild-ceph || /etc/init.d/autobuild-ceph start ; systemctl enable autobuild-ceph ; systemctl start autobuild-ceph')
+    sudo('start autobuild-ceph || /etc/init.d/autobuild-ceph start ; systemctl enable autobuild-ceph || true ; systemctl start autobuild-ceph || true')
     _sync_to_gitbuilder('samba', 'deb', 'basic')
 
 @roles('gitbuilder_hadoop')
@@ -549,7 +549,7 @@ def gitbuilder_hadoop():
         branches_local_name='branches-local-hadoop',
         )
     _sync_to_gitbuilder('hadoop', 'jar', 'basic')
-    sudo('start autobuild-ceph || /etc/init.d/autobuild-ceph start ; systemctl enable autobuild-ceph ; systemctl start autobuild-ceph')
+    sudo('start autobuild-ceph || /etc/init.d/autobuild-ceph start ; systemctl enable autobuild-ceph || true ; systemctl start autobuild-ceph || true')
 
 @roles('gitbuilder_apache_hadoop')
 def gitbuilder_apache_hadoop():
@@ -564,7 +564,7 @@ def gitbuilder_apache_hadoop():
         branches_local_name='branches-local-apache-hadoop',
         )
     _sync_to_gitbuilder('apache-hadoop', 'jar', 'basic')
-    sudo('start autobuild-ceph || /etc/init.d/autobuild-ceph start ; systemctl enable autobuild-ceph ; systemctl start autobuild-ceph')
+    sudo('start autobuild-ceph || /etc/init.d/autobuild-ceph start ; systemctl enable autobuild-ceph || true ; systemctl start autobuild-ceph || true')
 
 @roles('gitbuilder_ceph')
 def gitbuilder_ceph():
@@ -621,7 +621,7 @@ def _gitbuilder_ceph(flavor):
             'libsnappy-dev',
             ],
         )
-    sudo('start autobuild-ceph || /etc/init.d/autobuild-ceph start ; systemctl enable autobuild-ceph ; systemctl start autobuild-ceph')
+    sudo('start autobuild-ceph || /etc/init.d/autobuild-ceph start ; systemctl enable autobuild-ceph || true ; systemctl start autobuild-ceph || true')
 
 def _deb_builder(git_url, flavor, extra_remotes={}):
     _gitbuilder(
@@ -688,7 +688,7 @@ def gitbuilder_auto():
                  extra_remotes=dict(
                      ci='https://github.com/ceph/ceph-ci.git'
                  ))
-    sudo('start autobuild-ceph || /etc/init.d/autobuild-ceph start ; systemctl enable autobuild-ceph ; systemctl start autobuild-ceph')
+    sudo('start autobuild-ceph || /etc/init.d/autobuild-ceph start ; systemctl enable autobuild-ceph || true ; systemctl start autobuild-ceph || true')
     _sync_to_gitbuilder_from_hostname()
 
 @roles('gitbuilder_ceph_rpm')
@@ -776,7 +776,7 @@ def _gitbuilder_ceph_rpm(url, flavor, extra_remotes={}):
         )
     with cd('/srv/autobuild-ceph'):
         sudo('echo centos6 > dists')
-    sudo('start autobuild-ceph || /etc/init.d/autobuild-ceph start ; systemctl enable autobuild-ceph ; systemctl start autobuild-ceph')
+    sudo('start autobuild-ceph || /etc/init.d/autobuild-ceph start ; systemctl enable autobuild-ceph || true ; systemctl start autobuild-ceph || true')
 
 @roles('gitbuilder_doc')
 def gitbuilder_doc():
