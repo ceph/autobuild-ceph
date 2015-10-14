@@ -1,24 +1,25 @@
 #!/bin/sh -x
 set -e
 
-git submodule foreach 'git clean -fdx && git reset --hard'
-rm -rf ceph-object-corpus
-rm -rf ceph-erasure-code-corpus
-rm -rf src/gmock
-rm -rf src/leveldb
-rm -rf src/libs3
-rm -rf src/mongoose
-rm -rf src/civetweb
-rm -rf src/rocksdb
-rm -rf src/erasure-code/jerasure/gf-complete
-rm -rf src/erasure-code/jerasure/jerasure
-rm -rf .git/modules/
-git clean -fdx && git reset --hard
+#
+# remove everything but .git. It's the same as rm -fr * only less
+# scary. gitbuilder requires the build directory to be present, we're
+# adding a new harcoded constraint, just taking advantage of any existing
+# one. 
+# 
+# Although it should be possible to git clean -ffdx, there are complicated
+# corner cases (involving submodules in particular but not only) that makes
+# it complicated when switching from one branch to another.
+#
+rm -fr ../build/*
+git reset --hard
+#
+# This is properly taken care of by autogen.sh post firefly but we
+# need this for branches before firefly.
+#
 /srv/git/bin/git submodule sync
 /srv/autobuild-ceph/use-mirror.sh
 /srv/git/bin/git submodule update --init
-git clean -fdx
-
 
 DISTS=`cat ../../dists`
 
