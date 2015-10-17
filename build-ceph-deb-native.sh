@@ -54,7 +54,7 @@ fi
 # build the debs
 mkdir -p out~
 rm -rf out~/* || true
-GNUPGHOME="/srv/gnupg" ionice -c3 nice -n20 /srv/ceph-build/build_snapshot_native.sh out~ $DIST
+GNUPGHOME="/srv/gnupg" ionice -c3 nice -n20 /srv/ceph-build/build_snapshot_native.sh out~ $DIST || ( rm -rf out~ && exit 1 )
 
 VER=`cat out~/version`
 echo "VER is $VER"

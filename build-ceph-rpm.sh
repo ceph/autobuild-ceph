@@ -114,7 +114,7 @@ cp ceph.spec /tmp/ceph.spec
 
 # Build RPMs
 BUILDAREA=`readlink -fn ${BUILDAREA}`   ### rpm wants absolute path
-rpmbuild -ba --define "_topdir ${BUILDAREA}" ceph.spec
+rpmbuild -ba --define "_topdir ${BUILDAREA}" ceph.spec || ( rm -rf ${BUILDAREA} && exit 1 )
 
 # Create and build an RPM for the repository
 
