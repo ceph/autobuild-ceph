@@ -1,6 +1,7 @@
 #!/bin/sh -x
 set -e
 
+rm -rf rpmbuild
 git submodule foreach 'git clean -fdx && git reset --hard'
 rm -rf ceph-object-corpus
 rm -rf ceph-erasure-code-corpus
