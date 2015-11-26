@@ -199,7 +199,7 @@ baseurl=http://gitbuilder.ceph.com/${TARGET}/ref/${BRANCH}/\$basearch
 enabled=1
 gpgcheck=1
 type=rpm-md
-gpgkey=http://ceph.com/git/?p=ceph.git;a=blob_plain;f=keys/autobuild.asc
+gpgkey=https://download.ceph.com/keys/autobuild.asc
 
 [Ceph-noarch]
 name=Ceph noarch packages
@@ -207,7 +207,7 @@ baseurl=http://gitbuilder.ceph.com/${TARGET}/ref/${BRANCH}/noarch
 enabled=1
 gpgcheck=1
 type=rpm-md
-gpgkey=http://ceph.com/git/?p=ceph.git;a=blob_plain;f=keys/autobuild.asc
+gpgkey=https://download.ceph.com/keys/autobuild.asc
 
 [ceph-source]
 name=Ceph source packages
@@ -215,7 +215,7 @@ baseurl=http://gitbuilder.ceph.com/${TARGET}/ref/${BRANCH}/SRPMS
 enabled=1
 gpgcheck=1
 type=rpm-md
-gpgkey=https://ceph.com/git/?p=ceph.git;a=blob_plain;f=keys/autobuild.asc
+gpgkey=https://download.ceph.com/keys/autobuild.asc
 EOF
 # End of ceph.repo file
 
