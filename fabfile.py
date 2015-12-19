@@ -47,10 +47,6 @@ env.roledefs['gitbuilder_kernel_rpm'] = [
     ]
 
 # special
-env.roledefs['gitbuilder_doc'] = [
-    'ubuntu@ursula.front.sepia.ceph.com',
-    ]
-
 env.roledefs['gitbuilder_samba'] = [
     'ubuntu@gitbuilder-samba-deb-precise-amd64.front.sepia.ceph.com',
     ]
@@ -778,29 +774,6 @@ def _gitbuilder_ceph_rpm(url, flavor, extra_remotes={}):
         sudo('echo centos6 > dists')
     sudo('start autobuild-ceph || /etc/init.d/autobuild-ceph start ; systemctl enable autobuild-ceph || true ; systemctl start autobuild-ceph || true')
 
-@roles('gitbuilder_doc')
-def gitbuilder_doc():
-    _apt_install(
-        'libxml2-dev',
-        'libxslt-dev',
-        'python-dev',
-        'python-pip',
-        'python-virtualenv',
-        'python-sphinx',
-        'doxygen',
-        'ditaa',
-        'graphviz',
-        'ant',
-        )
-    _gitbuilder_ceph('ceph-docs')
-    with cd('/srv/autobuild-ceph'):
-        if not exists('rsync-target'):
-            sudo("echo ubuntu@ursula.front.sepia.ceph.com:/var/docs.raw > rsync-target")
-        if not exists('rsync-key'):
-            put("rsync-key")
-            put("rsync-key.pub")
-            sudo("mv /home/ubuntu/rsync-key* ./")
-            sudo("chmod 600 rsync-key* ; chown autobuild-ceph.autobuild-ceph rsync-key*")
 
 def _sync_to_gitbuilder(package, format, flavor):
     dist_or_codename = '`lsb_release -s -c`'
@@ -913,7 +886,6 @@ def gitbuilder_serve_rpm():
        'gitbuilder_kernel_rpm',
        'gitbuilder_ceph_deb',
        'gitbuilder_ceph_rpm',
-       'gitbuilder_doc',
        'gitbuilder_samba',
        'gitbuilder_hadoop',
        )
