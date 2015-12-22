@@ -25,7 +25,7 @@ echo --START-IGNORE-WARNINGS
 [ ! -x autogen.sh ] || ./autogen.sh || exit 1
 autoconf || true
 echo --STOP-IGNORE-WARNINGS
-[ -z "$CEPH_EXTRA_CONFIGURE_ARGS" ] && CEPH_EXTRA_CONFIGURE_ARGS="--with-tcmalloc --enable-coverage"
+[ -z "$CEPH_EXTRA_CONFIGURE_ARGS" ] && CEPH_EXTRA_CONFIGURE_ARGS="--with-tcmalloc --enable-coverage --with-librocksdb"
 [ ! -x configure ] || ./configure --with-debug --with-radosgw --with-fuse --with-tcmalloc --with-libatomic-ops --with-gtk2 --with-profiler --enable-cephfs-java $CEPH_EXTRA_CONFIGURE_ARGS || exit 2
 
 if [ ! -e Makefile ]; then
