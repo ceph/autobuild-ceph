@@ -16,12 +16,9 @@ env.roledefs['gitbuilder_auto'] = [
     'ubuntu@gitbuilder-ceph-deb-precise-amd64-basic.front.sepia.ceph.com',
     'ubuntu@gitbuilder-ceph-deb-precise-amd64-notcmalloc.front.sepia.ceph.com',
     'ubuntu@gitbuilder-ceph-deb-trusty-amd64-basic.front.sepia.ceph.com',
-    'ubuntu@gitbuilder-ceph-deb-trusty-amd64-blkin.front.sepia.ceph.com',
     'ubuntu@gitbuilder-ceph-deb-trusty-amd64-notcmalloc.front.sepia.ceph.com',
     'ubuntu@gitbuilder-ceph-deb-trusty-i386-basic.front.sepia.ceph.com',
     'ubuntu@gitbuilder-ceph-deb-wheezy-amd64-basic.front.sepia.ceph.com',
-    'ubuntu@gitbuilder-ceph-tarball-precise-amd64-basic.front.sepia.ceph.com',
-    'ubuntu@gitbuilder-ceph-tarball-precise-i386-basic.front.sepia.ceph.com',
     'ubuntu@gitbuilder-ceph-tarball-trusty-amd64-basic.front.sepia.ceph.com',
     'ubuntu@gitbuilder-ceph-tarball-trusty-amd64-cmake.ovh.sepia.ceph.com',
     'ubuntu@gitbuilder-ceph-tarball-trusty-i386-basic.front.sepia.ceph.com',
@@ -31,7 +28,6 @@ env.roledefs['gitbuilder_ceph_rpm'] = [
     'ubuntu@gitbuilder-ceph-rpm-centos6-5-amd64-basic.front.sepia.ceph.com',
     'ubuntu@gitbuilder-ceph-rpm-centos7-amd64-basic.ovh.sepia.ceph.com',
     'ubuntu@gitbuilder-ceph-rpm-centos7-amd64-notcmalloc.ovh.sepia.ceph.com',
-    'ubuntu@gitbuilder-ceph-rpm-fedora20-amd64-basic.front.sepia.ceph.com',
     'ubuntu@gitbuilder-ceph-rpm-fedora22-amd64-basic.front.sepia.ceph.com',
     ]
 
