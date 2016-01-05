@@ -371,10 +371,10 @@ def _deb_install_extras():
 
         sudo('chown autobuild-ceph:autobuild-ceph gnupg ; chmod 700 gnupg')
         with cd('gnupg'):
-            if not exists('pubring.gpg'):
+            if not exists('pubring.gpg', use_sudo=True):
                 # put doesn't honor cd() for some reason
-                put('gnupg/pubring.gpg')
-                put('gnupg/secring.gpg')
+                put('gnupg/pubring.gpg', use_sudo=True)
+                put('gnupg/secring.gpg', use_sudo=True)
                 sudo("mv /home/ubuntu/*.gpg ./")
                 sudo('chown autobuild-ceph:autobuild-ceph pubring.gpg secring.gpg')
                 sudo('chmod 600 pubring.gpg secring.gpg')
