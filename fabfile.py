@@ -82,7 +82,6 @@ def _apt_add_testing_repo(branch):
     sudo('echo deb http://gitbuilder.ceph.com/ceph-deb-$(lsb_release -sc)-x86_64-basic/ref/{branch} $(lsb_release -sc) main | sudo tee /etc/apt/sources.list.d/ceph.list'.format(branch=branch))
 
 def _apt_install(*packages):
-    _ceph_extras()
     sudo("apt-get update")
     sudo(' '.join(
             [
@@ -935,8 +934,3 @@ def install_git():
                 sudo('make -j8')
                 sudo('make install')
                 sudo('rm -Rf /srv/src/git-{version}'.format(version=git_version))
-
-def _ceph_extras():
-    sudo('lsb_release -c | grep -q -e precise -e quantal -e raring && ' +
-    'echo deb http://ceph.com/packages/ceph-extras/debian $(lsb_release -sc) main ' +
-    '| sudo tee /etc/apt/sources.list.d/ceph-extras.list || echo Ceph-Extras unsupported')
