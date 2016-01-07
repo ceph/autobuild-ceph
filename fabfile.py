@@ -38,7 +38,7 @@ env.roledefs['gitbuilder_kernel_deb'] = [
     ]
 env.roledefs['gitbuilder_kernel_rpm'] = [
     'ubuntu@gitbuilder-kernel-rpm-centos6-amd64-basic.front.sepia.ceph.com',
-    'ubuntu@gitbuilder-kernel-rpm-centos7-x86_64-basic.front.sepia.ceph.com',
+    'ubuntu@gitbuilder-kernel-rpm-centos7-amd64-basic.front.sepia.ceph.com',
     'ubuntu@gitbuilder-kernel-rpm-fedora20-amd64-basic.front.sepia.ceph.com',
     ]
 
