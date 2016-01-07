@@ -25,7 +25,7 @@ echo --START-IGNORE-WARNINGS
 autoconf || true
 echo --STOP-IGNORE-WARNINGS
 [ -z "$CEPH_EXTRA_CONFIGURE_ARGS" ] && CEPH_EXTRA_CONFIGURE_ARGS=--with-tcmalloc
-[ ! -x configure ] || CFLAGS="-fno-omit-frame-pointer -g -O2" CXXFLAGS="-fno-omit-frame-pointer -g" ./configure --with-debug --with-radosgw --with-libatomic-ops --without-lttng --disable-static $CEPH_EXTRA_CONFIGURE_ARGS || exit 2
+[ ! -x configure ] || CFLAGS="-fno-omit-frame-pointer -g -O2" CXXFLAGS="-fno-omit-frame-pointer -g" ./configure --with-debug --with-radosgw --with-libatomic-ops --without-lttng --disable-static --with-librocksdb-static=check $CEPH_EXTRA_CONFIGURE_ARGS || exit 2
 
 if [ ! -e Makefile ]; then
     echo "$0: no Makefile, aborting." 1>&2
