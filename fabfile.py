@@ -7,31 +7,27 @@ import sys
 env.roledefs['pre_cxx11'] = [
     'ubuntu@gitbuilder-ceph-deb-precise-amd64-basic.front.sepia.ceph.com',
     'ubuntu@gitbuilder-ceph-deb-precise-amd64-notcmalloc.front.sepia.ceph.com',
-    'ubuntu@gitbuilder-ceph-rpm-centos6-5-amd64-basic.front.sepia.ceph.com',
     'ubuntu@gitbuilder-ceph-deb-wheezy-amd64-basic.front.sepia.ceph.com',
+    'ubuntu@gitbuilder-ceph-rpm-centos6-5-amd64-basic.front.sepia.ceph.com',
 ]
 
 env.roledefs['gitbuilder_auto'] = [
-    'ubuntu@gitbuilder-ceph-deb-trusty-amd64-blkin.front.sepia.ceph.com',
+    'ubuntu@gitbuilder-ceph-deb-jessie-amd64-basic.ovh.sepia.ceph.com',
     'ubuntu@gitbuilder-ceph-deb-precise-amd64-basic.front.sepia.ceph.com',
     'ubuntu@gitbuilder-ceph-deb-precise-amd64-notcmalloc.front.sepia.ceph.com',
     'ubuntu@gitbuilder-ceph-deb-trusty-amd64-basic.front.sepia.ceph.com',
     'ubuntu@gitbuilder-ceph-deb-trusty-amd64-notcmalloc.front.sepia.ceph.com',
     'ubuntu@gitbuilder-ceph-deb-trusty-i386-basic.front.sepia.ceph.com',
     'ubuntu@gitbuilder-ceph-deb-wheezy-amd64-basic.front.sepia.ceph.com',
-    'ubuntu@gitbuilder-ceph-deb-jessie-amd64-basic.ovh.sepia.ceph.com',
-    'ubuntu@gitbuilder-ceph-tarball-precise-amd64-basic.front.sepia.ceph.com',
-    'ubuntu@gitbuilder-ceph-tarball-precise-i386-basic.front.sepia.ceph.com',
     'ubuntu@gitbuilder-ceph-tarball-trusty-amd64-basic.front.sepia.ceph.com',
-    'ubuntu@gitbuilder-ceph-tarball-trusty-i386-basic.front.sepia.ceph.com',
     'ubuntu@gitbuilder-ceph-tarball-trusty-amd64-cmake.ovh.sepia.ceph.com',
+    'ubuntu@gitbuilder-ceph-tarball-trusty-i386-basic.front.sepia.ceph.com',
     ]
 
 env.roledefs['gitbuilder_ceph_rpm'] = [
     'ubuntu@gitbuilder-ceph-rpm-centos6-5-amd64-basic.front.sepia.ceph.com',
     'ubuntu@gitbuilder-ceph-rpm-centos7-amd64-basic.ovh.sepia.ceph.com',
     'ubuntu@gitbuilder-ceph-rpm-centos7-amd64-notcmalloc.ovh.sepia.ceph.com',
-    'ubuntu@gitbuilder-ceph-rpm-fedora20-amd64-basic.front.sepia.ceph.com',
     'ubuntu@gitbuilder-ceph-rpm-fedora22-amd64-basic.front.sepia.ceph.com',
     ]
 
@@ -42,15 +38,11 @@ env.roledefs['gitbuilder_kernel_deb'] = [
     ]
 env.roledefs['gitbuilder_kernel_rpm'] = [
     'ubuntu@gitbuilder-kernel-rpm-centos6-amd64-basic.front.sepia.ceph.com',
+    'ubuntu@gitbuilder-kernel-rpm-centos7-amd64-basic.front.sepia.ceph.com',
     'ubuntu@gitbuilder-kernel-rpm-fedora20-amd64-basic.front.sepia.ceph.com',
-    'ubuntu@gitbuilder-kernel-rpm-centos7-x86_64-basic.front.sepia.ceph.com',
     ]
 
 # special
-env.roledefs['gitbuilder_doc'] = [
-    'ubuntu@ursula.front.sepia.ceph.com',
-    ]
-
 env.roledefs['gitbuilder_samba'] = [
     'ubuntu@gitbuilder-samba-deb-precise-amd64.front.sepia.ceph.com',
     ]
@@ -90,7 +82,6 @@ def _apt_add_testing_repo(branch):
     sudo('echo deb http://gitbuilder.ceph.com/ceph-deb-$(lsb_release -sc)-x86_64-basic/ref/{branch} $(lsb_release -sc) main | sudo tee /etc/apt/sources.list.d/ceph.list'.format(branch=branch))
 
 def _apt_install(*packages):
-    _ceph_extras()
     sudo("apt-get update")
     sudo(' '.join(
             [
@@ -379,10 +370,10 @@ def _deb_install_extras():
 
         sudo('chown autobuild-ceph:autobuild-ceph gnupg ; chmod 700 gnupg')
         with cd('gnupg'):
-            if not exists('pubring.gpg'):
+            if not exists('pubring.gpg', use_sudo=True):
                 # put doesn't honor cd() for some reason
-                put('gnupg/pubring.gpg')
-                put('gnupg/secring.gpg')
+                put('gnupg/pubring.gpg', use_sudo=True)
+                put('gnupg/secring.gpg', use_sudo=True)
                 sudo("mv /home/ubuntu/*.gpg ./")
                 sudo('chown autobuild-ceph:autobuild-ceph pubring.gpg secring.gpg')
                 sudo('chmod 600 pubring.gpg secring.gpg')
@@ -778,29 +769,6 @@ def _gitbuilder_ceph_rpm(url, flavor, extra_remotes={}):
         sudo('echo centos6 > dists')
     sudo('start autobuild-ceph || /etc/init.d/autobuild-ceph start ; systemctl enable autobuild-ceph || true ; systemctl start autobuild-ceph || true')
 
-@roles('gitbuilder_doc')
-def gitbuilder_doc():
-    _apt_install(
-        'libxml2-dev',
-        'libxslt-dev',
-        'python-dev',
-        'python-pip',
-        'python-virtualenv',
-        'python-sphinx',
-        'doxygen',
-        'ditaa',
-        'graphviz',
-        'ant',
-        )
-    _gitbuilder_ceph('ceph-docs')
-    with cd('/srv/autobuild-ceph'):
-        if not exists('rsync-target'):
-            sudo("echo ubuntu@ursula.front.sepia.ceph.com:/var/docs.raw > rsync-target")
-        if not exists('rsync-key'):
-            put("rsync-key")
-            put("rsync-key.pub")
-            sudo("mv /home/ubuntu/rsync-key* ./")
-            sudo("chmod 600 rsync-key* ; chown autobuild-ceph.autobuild-ceph rsync-key*")
 
 def _sync_to_gitbuilder(package, format, flavor):
     dist_or_codename = '`lsb_release -s -c`'
@@ -913,7 +881,6 @@ def gitbuilder_serve_rpm():
        'gitbuilder_kernel_rpm',
        'gitbuilder_ceph_deb',
        'gitbuilder_ceph_rpm',
-       'gitbuilder_doc',
        'gitbuilder_samba',
        'gitbuilder_hadoop',
        )
@@ -967,8 +934,3 @@ def install_git():
                 sudo('make -j8')
                 sudo('make install')
                 sudo('rm -Rf /srv/src/git-{version}'.format(version=git_version))
-
-def _ceph_extras():
-    sudo('lsb_release -c | grep -q -e precise -e quantal -e raring && ' +
-    'echo deb http://ceph.com/packages/ceph-extras/debian $(lsb_release -sc) main ' +
-    '| sudo tee /etc/apt/sources.list.d/ceph-extras.list || echo Ceph-Extras unsupported')
