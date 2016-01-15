@@ -809,9 +809,7 @@ def gitbuilder_modfastcgi_deb_precise():
         sudo('echo libapache-mod-fastcgi > pkgname')
     _sync_to_gitbuilder('libapache-mod-fastcgi','deb','basic')
 
-@roles('gitbuilder_ceph_deb',
-       'gitbuilder_ceph_gcov',
-       'gitbuilder_kernel_deb',
+@roles('gitbuilder_kernel_deb',
        'gitbuilder_kernel_rpm',
        'gitbuilder_samba',
        'gitbuilder_hadoop'
@@ -875,11 +873,9 @@ def gitbuilder_serve_rpm():
 
 
 @roles('gitbuilder_ceph',
-       'gitbuilder_ceph_gcov',
        'gitbuilder_ceph_notcmalloc',
        'gitbuilder_kernel_deb',
        'gitbuilder_kernel_rpm',
-       'gitbuilder_ceph_deb',
        'gitbuilder_ceph_rpm',
        'gitbuilder_samba',
        'gitbuilder_hadoop',
