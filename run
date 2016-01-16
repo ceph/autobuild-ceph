@@ -1,29 +1,30 @@
 #!/bin/sh
 set -e
 
-if command -v logrotate >/dev/null; then
-  logrotate --state=logs/.logrotate.status logrotate.conf
-fi
-
-exec >>logs/stdout.log 2>>logs/stderr.log
-
-cd gitbuilder.git
-FILE_OWNER="$(stat --format='%U' out)"
+FILE_OWNER="$(stat --format='%U' gitbuilder.git/out)"
 CUR_USER="$(id -un)"
 if [ "$FILE_OWNER" = "root" ]; then
     echo "$0: root should never own the build tree, aborting." 1>&2
     exit 1
 fi
 
-if [ "$CUR_USER" = "$FILE_OWNER" ]; then
-    # we're already the right user
-
-    exec ../run-real
-elif [ "$CUR_USER" = "root" ]; then
-    # drop down to the right user;
+if [ "$CUR_USER" = "root" ]; then
+    # reexecute as the right user;
     # override /bin/false as shell in passwd
-    exec su -s /bin/sh -c ../run-real "$FILE_OWNER"
-else
+    echo "$0: I'm root, reexecuting as $FILE_OWNER"
+    exec su -s /bin/sh -c "$0 $*" $FILE_OWNER
+fi
+
+if [ "$CUR_USER" != "$FILE_OWNER" ]; then
     echo "$0: not root and not file owner, aborting." 1>&2
     exit 1
 fi
+
+if command -v logrotate >/dev/null; then
+  logrotate -v --state=logs/.logrotate.status logrotate.conf
+fi
+
+exec >>logs/stdout.log 2>>logs/stderr.log
+
+cd gitbuilder.git
+exec ../run-real
