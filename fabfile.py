@@ -515,7 +515,7 @@ def _samba_deps():
 def gitbuilder_samba():
     _samba_deps()
     _gitbuilder(
-        flavor='samba',
+        flavor='samba-deb',
         git_repo='git://apt-mirror.front.sepia.ceph.com/samba.git',
         extra_packages=[
             'fakeroot',
