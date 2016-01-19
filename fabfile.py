@@ -317,8 +317,8 @@ def _gitbuilder(flavor, git_repo, extra_remotes={}, extra_packages=[], ignore=[]
                 sudo('git checkout %s' % gitbuilder_commit)
                 sudo('ln -s ../build.sh ./')
                 if branches_local_name != 'branches-local':
-                    sudo('mv ./branches-local ./branches-local-orig')
-                sudo('ln -s ../{branches_local_name} ./branches-local'.format(branches_local_name=branches_local_name))
+                    sudo('mv ../branches-local ../branches-local-orig')
+                sudo('ln -s ../branches-local {branches_local_name}'.format(branches_local_name=branches_local_name))
                 sudo('chown -R autobuild-ceph:autobuild-ceph out')
             sudo('mv gitbuilder.git.tmp gitbuilder.git')
         with cd('gitbuilder.git'):
