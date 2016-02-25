@@ -3,8 +3,12 @@ set -e
 
 SECONDS=0
 
-function print_runtime() {
-        printf "Total run time: %d:%02d\n" $((SECONDS / 60 )) $((SECONDS % 60))
+function print_elapsed_time() {
+        printf "TIMESTAMP %s: %d:%02d\n" "$1" $((SECONDS / 60 )) $((SECONDS % 60))
+}
+
+function print_total_runtime() {
+	print_elapsed_time "Total run time"
 }
 
 git submodule foreach 'git clean -fdx && git reset --hard'
@@ -26,7 +30,9 @@ git clean -fdx && git reset --hard
 git clean -fdx
 
 echo --START-IGNORE-WARNINGS
+print_elapsed_time "installing dependencies"
 [ ! -x install-deps.sh ] || ./install-deps.sh
+print_elapsed_time "starting configure"
 [ ! -x autogen.sh ] || ./autogen.sh || exit 1
 autoconf || true
 echo --STOP-IGNORE-WARNINGS
@@ -91,12 +97,14 @@ function display_failures() {
     fi
 }
 
+print_elapsed_time "starting make"
 make -j$(get_processors) "$@" || exit 4
 
 # run "make check", but give it a time limit in case a test gets stuck
 
-trap "pkill -9 ceph-osd || true ; pkill -9 ceph-mon || true; print_runtime" EXIT
+trap "pkill -9 ceph-osd || true ; pkill -9 ceph-mon || true; print_total_runtime" EXIT
 
+print_elapsed_time "starting make check"
 if ! ../maxtime 5400 make $(maybe_parallel_make_check) check "$@" ; then
     display_failures .
     exit 5
@@ -110,6 +118,7 @@ printf '%s\n' "$REV" >"$OUTDIR_TMP/sha1"
 MACH="$(uname -m)"
 INSTDIR="inst.tmp"
 [ ! -e "$INSTDIR" ]
+print_elapsed_time "starting make install"
 ../maxtime 1800 ionice -c3 nice -n20 make install DESTDIR="$PWD/$INSTDIR"
 tar czf "$OUTDIR_TMP/ceph.$MACH.tgz" -C "$INSTDIR" .
 rm -rf -- "$INSTDIR"
