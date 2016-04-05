@@ -18,6 +18,7 @@ git clean -fdx && git reset --hard
 /srv/autobuild-ceph/use-mirror.sh
 /srv/git/bin/git submodule update --init
 git clean -fdx
+rm -fr /tmp/*virtualenv*
 
 echo --START-IGNORE-WARNINGS
 [ ! -x install-deps.sh ] || ./install-deps.sh
