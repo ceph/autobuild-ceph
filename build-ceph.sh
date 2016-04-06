@@ -50,7 +50,11 @@ if command -v ccache >/dev/null; then
   if [ ! -e "$CCACHE_DIR" ]; then
     echo "$0: have ccache but cache directory does not exist: $CCACHE_DIR" 1>&2
   else
-    set -- CC='ccache gcc' CXX='ccache g++'
+    CCACHE_PATH="$PATH"
+    for d in /usr/{lib64,lib,lib32,libexec}/ccache{,/bin} ; do
+      test -d "$d" && test -x "$d/g++" && CCACHE_PATH="$d:$PATH" && break
+    done
+    export PATH="$CCACHE_PATH"
   fi
 else
   echo "$0: no ccache found, compiles will be slower." 1>&2
