@@ -22,6 +22,7 @@ env.roledefs['gitbuilder_auto'] = [
     'ubuntu@gitbuilder-ceph-tarball-trusty-amd64-basic.front.sepia.ceph.com',
     'ubuntu@gitbuilder-ceph-tarball-trusty-amd64-cmake.ovh.sepia.ceph.com',
     'ubuntu@gitbuilder-ceph-tarball-trusty-i386-basic.front.sepia.ceph.com',
+    'ubuntu@gitbuilder-ceph-deb-xenial-amd64-basic.front.sepia.ceph.com',
     ]
 
 env.roledefs['gitbuilder_ceph_rpm'] = [
@@ -650,7 +651,6 @@ def _deb_builder(git_url, flavor, extra_remotes={}):
             'python-pip',
             'python-requests',
             'python-virtualenv',
-            'python-support',
             'python-argparse',
             'python-sphinx',
             'pbuilder',
