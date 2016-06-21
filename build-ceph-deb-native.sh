@@ -17,22 +17,28 @@ rm -rf .git/modules/
 git clean -fdx && git reset --hard
 /srv/git/bin/git submodule sync
 /srv/autobuild-ceph/use-mirror.sh
-/srv/git/bin/git submodule update --init
+/srv/git/bin/git submodule update --init --recursive
 git clean -fdx
 
 DIST=`lsb_release -sc`
 
 echo --START-IGNORE-WARNINGS
 [ ! -x install-deps.sh ] || ./install-deps.sh
-[ ! -x autogen.sh ] || ./autogen.sh || exit 1
-autoconf || true
-echo --STOP-IGNORE-WARNINGS
-[ -z "$CEPH_EXTRA_CONFIGURE_ARGS" ] && CEPH_EXTRA_CONFIGURE_ARGS=--with-tcmalloc
-[ ! -x configure ] || CFLAGS="-fno-omit-frame-pointer -g -O2" CXXFLAGS="-fno-omit-frame-pointer -g -O2" ./configure --with-debug --with-radosgw --with-fuse --with-libatomic-ops --with-gtk2 --with-profiler --enable-cephfs-java $CEPH_EXTRA_CONFIGURE_ARGS || exit 2
 
-if [ ! -e Makefile ]; then
-    echo "$0: no Makefile, aborting." 1>&2
-    exit 3
+# we only need to use autogen here if we need a dist tarball
+if [ ! -x make-dist ]; then
+    [ ! -x autogen.sh ] || ./autogen.sh || exit 1
+    autoconf || true
+    echo --STOP-IGNORE-WARNINGS
+    [ -z "$CEPH_EXTRA_CONFIGURE_ARGS" ] && CEPH_EXTRA_CONFIGURE_ARGS=--with-tcmalloc
+    [ ! -x configure ] || CFLAGS="-fno-omit-frame-pointer -g -O2" CXXFLAGS="-fno-omit-frame-pointer -g -O2" ./configure --with-debug --with-radosgw --with-fuse --with-libatomic-ops --with-gtk2 --with-profiler --enable-cephfs-java $CEPH_EXTRA_CONFIGURE_ARGS || exit 2
+    
+    if [ ! -e Makefile ]; then
+	echo "$0: no Makefile, aborting." 1>&2
+	exit 3
+    fi
+else
+    echo --STOP-IGNORE-WARNINGS
 fi
 
 # Actually build the project
