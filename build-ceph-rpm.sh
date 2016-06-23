@@ -2,23 +2,8 @@
 set -e
 
 rm -rf rpmbuild
-git submodule foreach 'git clean -fdx && git reset --hard'
-rm -rf ceph-object-corpus
-rm -rf ceph-erasure-code-corpus
-rm -rf src/gmock
-rm -rf src/leveldb
-rm -rf src/libs3
-rm -rf src/mongoose
-rm -rf src/civetweb
-rm -rf src/rocksdb
-rm -rf src/erasure-code/jerasure/gf-complete
-rm -rf src/erasure-code/jerasure/jerasure
-rm -rf .git/modules/
-git clean -fdx && git reset --hard
-/srv/git/bin/git submodule sync
-/srv/autobuild-ceph/use-mirror.sh
-/srv/git/bin/git submodule update --init
-git clean -fdx
+bindir=`dirname $0`
+. $bindir/reset-modules.sh
 
 DISTS=`cat ../../dists`
 TARGET="$(cat ../../rsync-target)"
@@ -47,21 +32,6 @@ then
     exit 4
 fi
 
-echo --START-IGNORE-WARNINGS
-[ ! -x install-deps.sh ] || ./install-deps.sh
-[ ! -x autogen.sh ] || ./autogen.sh || exit 1
-autoconf || true
-echo --STOP-IGNORE-WARNINGS
-
-[ -z "$CEPH_EXTRA_CONFIGURE_ARGS" ] && CEPH_EXTRA_CONFIGURE_ARGS=--with-tcmalloc
-[ ! -x configure ] || ./configure --with-debug --with-radosgw --with-fuse --with-libatomic-ops --with-gtk2 --with-nss $CEPH_EXTRA_CONFIGURE_ARGS || exit 2
-
-if [ ! -e Makefile ]; then
-    echo "$0: no Makefile, aborting." 1>&2
-    exit 3
-fi
-
-# Actually build the project
 
 # clear out any $@ potentially passed in
 set --
@@ -78,11 +48,32 @@ else
   echo "$0: no ccache found, compiles will be slower." 1>&2
 fi
 
-#
-#  Build Source tarball.  We do this after runing autogen/configure so that
-#  ceph.spec has the correct version number filled in.
-echo "**** Building Tarball ***"
-make dist-bzip2
+echo --START-IGNORE-WARNINGS
+[ ! -x install-deps.sh ] || ./install-deps.sh
+
+# we only need to use autogen here if we need a dist tarball
+if [ -x make-dist ]; then
+    echo --STOP-IGNORE-WARNINGS
+    ./make-dist
+else    
+    [ ! -x autogen.sh ] || ./autogen.sh || exit 1
+    autoconf || true
+    echo --STOP-IGNORE-WARNINGS
+
+    [ -z "$CEPH_EXTRA_CONFIGURE_ARGS" ] && CEPH_EXTRA_CONFIGURE_ARGS=--with-tcmalloc
+    [ ! -x configure ] || ./configure --with-debug --with-radosgw --with-fuse --with-libatomic-ops --with-gtk2 --with-nss $CEPH_EXTRA_CONFIGURE_ARGS || exit 2
+
+    if [ ! -e Makefile ]; then
+	echo "$0: no Makefile, aborting." 1>&2
+	exit 3
+    fi
+
+    #
+    #  Build Source tarball.  We do this after runing autogen/configure so that
+    #  ceph.spec has the correct version number filled in.
+    echo "**** Building Tarball ***"
+    make dist-bzip2
+fi
 
 # Set up build area
 BUILDAREA=./rpmbuild
@@ -251,13 +242,6 @@ printf '%s\n' "$REV" >"$OUTDIR_TMP/sha1"
 printf '%s\n' "$VER" >"$OUTDIR_TMP/version"
 printf '%s\n' "ceph" >"$OUTDIR_TMP/name"
 #mkdir -p $OUTDIR_TMP/conf
-
-#MACH="$(uname -m)"
-#INSTDIR="inst.tmp"
-#[ ! -e "$INSTDIR" ]
-#../maxtime 1800 ionice -c3 nice -n20 make install DESTDIR="$PWD/$INSTDIR"
-#tar czf "$OUTDIR_TMP/ceph.$MACH.tgz" -C "$INSTDIR" .
-#rm -rf -- "$INSTDIR"
 
 # Copy RPMS to output repo
 for dir in ${BUILDAREA}/SRPMS ${BUILDAREA}/RPMS/*
