@@ -32,7 +32,7 @@ install -d -m0755 -- "$REF_OUTDIR"
     # collisions, but we're gonna ignore that for now
     SAFE_REF="${SAFE_REF#origin_}"
 
-    echo "ref $SAFE_REF $SHA"
+    # echo "ref $SAFE_REF $SHA"
 
     if [ -L "$REF_OUTDIR/$SAFE_REF" ]; then
 	# keep symlink fresh
