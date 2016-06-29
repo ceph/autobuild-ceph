@@ -1,6 +1,9 @@
 #!/bin/sh
 set -e
 
+# stdout/stderr are not yet redirected on /etc/init.d systems
+exec >>logs/stdout.log 2>>logs/stderr.log
+
 FILE_OWNER="$(stat --format='%U' gitbuilder.git/out)"
 CUR_USER="$(id -un)"
 if [ "$FILE_OWNER" = "root" ]; then
@@ -24,7 +27,10 @@ if command -v logrotate >/dev/null; then
   logrotate -v --state=logs/.logrotate.status logrotate.conf
 fi
 
+# if the log was rotated, move to the new files; if not
+# nothing changes
 exec >>logs/stdout.log 2>>logs/stderr.log
+
 
 cd gitbuilder.git
 exec ../run-real
