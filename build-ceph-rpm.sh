@@ -13,8 +13,9 @@ VER="$(git describe)"
 
 # Reformat version if needed to match RPM version and release
 if expr index $(git describe --always) '-' > /dev/null ; then
-    RPM_VER=$(git describe --always | cut -d'-' -f1)
-    RPM_REL=$(git describe --always | cut -d- -f2- | tr '-' '.')
+    desc=$(git describe --always | sed 's/^v//')
+    RPM_VER=$(echo $desc | cut -d'-' -f1)
+    RPM_REL=$(echo $desc | cut -d- -f2- | tr '-' '.')
     VER=${RPM_VER}-${RPM_REL}
 fi
 
@@ -54,7 +55,7 @@ echo --START-IGNORE-WARNINGS
 # we only need to use autogen here if we need a dist tarball
 if [ -x make-dist ]; then
     echo --STOP-IGNORE-WARNINGS
-    ./make-dist
+    ./make-dist $RPM_VER
 else    
     [ ! -x autogen.sh ] || ./autogen.sh || exit 1
     autoconf || true
@@ -101,6 +102,10 @@ if [[ "$rpm_version" =~  .*-rc[1-9]$ ]] ; then
     fi
     sed -i "s/^Source0:.*/Source0:        http:\/\/ceph.com\/download\/%{name}-%{version}-$rpm_rc.tar.bz2/" ceph.spec
     sed -i "s/^%setup.*/%setup -q -n %{name}-%{version}-$rpm_rc/" ceph.spec
+else
+    # fix up spec file for non-rc builds too
+    sed -i "s/^Version:.*/Version:        $RPM_VER/" ceph.spec
+    sed -i "s/^Release:.*/Release:        $RPM_REL/" ceph.spec
 fi
 cp ceph.spec /tmp/ceph.spec
 
