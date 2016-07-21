@@ -1,6 +1,12 @@
 #!/bin/bash -x
 set -e -o pipefail
 
+SECONDS=0
+
+function print_runtime() {
+    printf "Total run time: %d:%02d\n" $((SECONDS / 60 )) $((SECONDS % 60))
+}
+
 bindir=`dirname $0`
 . $bindir/reset-modules.sh
 
@@ -13,6 +19,8 @@ OUTDIR="../out/output/sha1/$REV"
 OUTDIR_TMP="${OUTDIR}.tmp"
 install -d -m0755 -- "$OUTDIR_TMP"
 printf '%s\n' "$REV" >"$OUTDIR_TMP/sha1"
+
+trap "pkill -9 'ceph-(osd|mon)' || true; print_runtime" EXIT
 
 ./run-make-check.sh | tee $OUTDIR_TMP/run-make-check.log
 
