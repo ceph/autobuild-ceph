@@ -1,5 +1,5 @@
 #!/bin/bash -x
-set -e
+set -e -o pipefail
 
 bindir=`dirname $0`
 . $bindir/reset-modules.sh
