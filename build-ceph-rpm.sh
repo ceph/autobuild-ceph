@@ -12,12 +12,15 @@ REV="$(git rev-parse HEAD)"
 VER="$(git describe)"
 
 # Reformat version if needed to match RPM version and release
-if expr index $(git describe --always) '-' > /dev/null ; then
-    desc=$(git describe --always | sed 's/^v//')
+desc=$(git describe --always | sed 's/^v//')
+if expr index $desc '-' > /dev/null ; then
     RPM_VER=$(echo $desc | cut -d'-' -f1)
     RPM_REL=$(echo $desc | cut -d- -f2- | tr '-' '.')
-    VER=${RPM_VER}-${RPM_REL}
+else
+    RPM_VER=$desc
+    RPM_REL=0
 fi
+VER=${RPM_VER}-${RPM_REL}
 
 # Try to determine branch name
 BRANCH=$(../branches.sh -v | grep $REV | awk '{print $2}') || BRANCH="unknown"
