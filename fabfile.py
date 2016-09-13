@@ -7,7 +7,6 @@ import sys
 env.roledefs['pre_cxx11'] = [
     'ubuntu@gitbuilder-ceph-deb-precise-amd64-basic.front.sepia.ceph.com',
     'ubuntu@gitbuilder-ceph-deb-precise-amd64-notcmalloc.front.sepia.ceph.com',
-    'ubuntu@gitbuilder-ceph-deb-wheezy-amd64-basic.front.sepia.ceph.com',
     'ubuntu@gitbuilder-ceph-rpm-centos6-5-amd64-basic.front.sepia.ceph.com',
 ]
 
@@ -17,11 +16,6 @@ env.roledefs['gitbuilder_auto'] = [
     'ubuntu@gitbuilder-ceph-deb-precise-amd64-notcmalloc.front.sepia.ceph.com',
     'ubuntu@gitbuilder-ceph-deb-trusty-amd64-basic.front.sepia.ceph.com',
     'ubuntu@gitbuilder-ceph-deb-trusty-amd64-notcmalloc.front.sepia.ceph.com',
-    'ubuntu@gitbuilder-ceph-deb-trusty-i386-basic.front.sepia.ceph.com',
-    'ubuntu@gitbuilder-ceph-deb-wheezy-amd64-basic.front.sepia.ceph.com',
-    'ubuntu@gitbuilder-ceph-tarball-trusty-amd64-basic.front.sepia.ceph.com',
-    'ubuntu@gitbuilder-ceph-tarball-trusty-amd64-cmake.ovh.sepia.ceph.com',
-    'ubuntu@gitbuilder-ceph-tarball-trusty-i386-basic.front.sepia.ceph.com',
     'ubuntu@gitbuilder-ceph-deb-xenial-amd64-basic.front.sepia.ceph.com',
     'ubuntu@gitbuilder-ceph-deb-xenial-amd64-notcmalloc.front.sepia.ceph.com',
     ]
@@ -30,7 +24,6 @@ env.roledefs['gitbuilder_ceph_rpm'] = [
     'ubuntu@gitbuilder-ceph-rpm-centos6-5-amd64-basic.front.sepia.ceph.com',
     'ubuntu@gitbuilder-ceph-rpm-centos7-amd64-basic.ovh.sepia.ceph.com',
     'ubuntu@gitbuilder-ceph-rpm-centos7-amd64-notcmalloc.ovh.sepia.ceph.com',
-    'ubuntu@gitbuilder-ceph-rpm-fedora22-amd64-basic.front.sepia.ceph.com',
     ]
 
 # kernels
@@ -40,22 +33,17 @@ env.roledefs['gitbuilder_kernel_deb'] = [
     'ubuntu@gitbuilder-kernel-deb-xenial-amd64-basic.front.sepia.ceph.com',
     ]
 env.roledefs['gitbuilder_kernel_rpm'] = [
-    'ubuntu@gitbuilder-kernel-rpm-centos6-amd64-basic.front.sepia.ceph.com',
     'ubuntu@gitbuilder-kernel-rpm-centos7-amd64-basic.front.sepia.ceph.com',
-    'ubuntu@gitbuilder-kernel-rpm-fedora20-amd64-basic.front.sepia.ceph.com',
     ]
 
 # special
 env.roledefs['gitbuilder_samba'] = [
-    'ubuntu@gitbuilder-samba-deb-precise-amd64.front.sepia.ceph.com',
     ]
 
 env.roledefs['gitbuilder_hadoop'] = [
-    'ubuntu@gitbuilder-precise-hadoop-amd64.front.sepia.ceph.com',
     ]
 
 env.roledefs['gitbuilder_apache_hadoop'] = [
-    'ubuntu@gitbuilder-precise-apache-hadoop-amd64.front.sepia.ceph.com',
     ]
 
 
