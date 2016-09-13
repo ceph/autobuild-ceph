@@ -23,6 +23,7 @@ env.roledefs['gitbuilder_auto'] = [
     'ubuntu@gitbuilder-ceph-tarball-trusty-amd64-cmake.ovh.sepia.ceph.com',
     'ubuntu@gitbuilder-ceph-tarball-trusty-i386-basic.front.sepia.ceph.com',
     'ubuntu@gitbuilder-ceph-deb-xenial-amd64-basic.front.sepia.ceph.com',
+    'ubuntu@gitbuilder-ceph-deb-xenial-amd64-notcmalloc.front.sepia.ceph.com',
     ]
 
 env.roledefs['gitbuilder_ceph_rpm'] = [
@@ -36,6 +37,7 @@ env.roledefs['gitbuilder_ceph_rpm'] = [
 env.roledefs['gitbuilder_kernel_deb'] = [
     'ubuntu@gitbuilder-kernel-deb-precise-amd64-basic.front.sepia.ceph.com',
     'ubuntu@gitbuilder-kernel-deb-precise-amd64-debug.front.sepia.ceph.com',
+    'ubuntu@gitbuilder-kernel-deb-xenial-amd64-basic.front.sepia.ceph.com',
     ]
 env.roledefs['gitbuilder_kernel_rpm'] = [
     'ubuntu@gitbuilder-kernel-rpm-centos6-amd64-basic.front.sepia.ceph.com',
@@ -396,7 +398,7 @@ def _kernel_deps():
         'xmlto',
         'libgtk2.0-dev',
 	'libunwind-setjmp0-dev',
-	'libunwind7-dev',
+#	'libunwind7-dev',
 	'libaudit-dev',
 	'binutils-dev',
 	'python-dev',
