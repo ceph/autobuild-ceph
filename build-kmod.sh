@@ -13,19 +13,11 @@ make clean
 ./configure
 make
 cat results_ceph-kmod/*/*/build.log
-cd /srv/libceph-kmod-rpm/
-./configure
-make clean
-./configure
-make
-cat results_libceph-kmod/*/*/build.log
 
 rm -Rf /srv/rpm_out/*
 mkdir -p /srv/rpm_out/RPMS/x86_64
 mkdir -p /srv/rpm_out/RPMS/noarch
 mkdir -p /srv/rpm_out/SRPMS
-cp -avf /srv/libceph-kmod-rpm/results_libceph-kmod/*/*/*src.rpm /srv/rpm_out/SRPMS
-cp -avf /srv/libceph-kmod-rpm/results_libceph-kmod/*/*/*x86_64.rpm /srv/rpm_out/RPMS/x86_64
 cp -avf /srv/ceph-kmod-rpm/results_ceph-kmod/*/*/*src.rpm /srv/rpm_out/SRPMS
 cp -avf /srv/ceph-kmod-rpm/results_ceph-kmod/*/*/*x86_64.rpm /srv/rpm_out/RPMS/x86_64
 
