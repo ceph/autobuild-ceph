@@ -902,6 +902,8 @@ def install_filter_branches():
     """install a filter-branches file so old builders will only look at branches before Infernalis
     """
     filter_branches_path = '/srv/autobuild-ceph/filter-branches'
+    if exists(filter_branches_path):
+        sudo('rm -f {path}'.format(path=filter_branches_path))
     # only keep the branches with following keywords in it.
     pre_cxx11_branches = ['hammer',
                           'giant',
